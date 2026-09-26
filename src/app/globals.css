@@ -32,6 +32,8 @@
   --color-line: #e7e9ef;
 
   --animate-marquee: marquee 32s linear infinite;
+  --animate-marquee-slow: marquee 64s linear infinite;
+  --animate-marquee-reverse: marquee-reverse 64s linear infinite;
   --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
 
   @keyframes marquee {
@@ -40,6 +42,15 @@
     }
     to {
       transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marquee-reverse {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
     }
   }
 
@@ -85,6 +96,10 @@ body {
 }
 
 /* Garis grid halus — digunakan hero & section gelap */
+.mask-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+}
 .bg-grid-light {
   background-image:
     linear-gradient(to right, rgb(11 18 32 / 0.045) 1px, transparent 1px),
@@ -201,6 +216,11 @@ body {
   }
   .scan-line {
     display: none;
+  }
+  .animate-marquee,
+  .animate-marquee-slow,
+  .animate-marquee-reverse {
+    animation: none;
   }
   html {
     scroll-behavior: auto;
