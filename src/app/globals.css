@@ -1,26 +1,208 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Brand utama — diekstrak dari logo-mainweb.png (#0047F7) */
+  --color-brand-50: #eef3ff;
+  --color-brand-100: #dfe9ff;
+  --color-brand-200: #c2d3fe;
+  --color-brand-300: #96b4fc;
+  --color-brand-400: #648cf9;
+  --color-brand-500: #3b64f4;
+  --color-brand-600: #0047f7;
+  --color-brand-700: #0034ef;
+  --color-brand-800: #0a2fd0;
+  --color-brand-900: #0e2ba3;
+  --color-brand-950: #0e1d5f;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Penerbit — near-black kebiruan */
+  --color-ink-950: #060b18;
+  --color-ink-900: #0b1220;
+  --color-ink-800: #111a2e;
+  --color-ink-700: #1b2338;
+  --color-ink-600: #2a3550;
+  --color-ink-300: #8b94a8;
+  --color-ink-200: #c6ccd8;
+
+  /* Kertas */
+  --color-paper: #fafafa;
+  --color-line: #e7e9ef;
+
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-pulse-dot: pulse-dot 2.4s ease-in-out infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.35;
+      transform: scale(0.8);
+    }
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-paper text-ink-900/80 antialiased;
+}
+
+::selection {
+  @apply bg-brand-600 text-white;
+}
+
+/* Scrollbar webkit */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c6ccd8;
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8b94a8;
+}
+
+/* Garis grid halus — digunakan hero & section gelap */
+.bg-grid-light {
+  background-image:
+    linear-gradient(to right, rgb(11 18 32 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(11 18 32 / 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+.bg-grid-dark {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+/* Butir halus di atas grid — memberi permukaan pada latar gelap */
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+}
+
+/* Garis pindai — menyapu turun pada latar hero */
+@keyframes scan-line {
+  0% {
+    top: -4%;
+    opacity: 0;
+  }
+  12%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    top: 104%;
+    opacity: 0;
+  }
+}
+
+.scan-line {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(0 71 247 / 0.6), transparent);
+  animation: scan-line 8s linear infinite;
+}
+
+/* Reveal on scroll (IntersectionObserver) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Animasi pembuka hero — kata naik dari dalam mask-nya */
+@keyframes word-rise {
+  from {
+    transform: translateY(115%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* ruang descender (koma, y, p) agar tidak terpotong mask */
+  padding-bottom: 0.09em;
+  margin-bottom: -0.09em;
+}
+
+.word-rise {
+  display: inline-block;
+  transform: translateY(115%);
+  animation: word-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform;
+}
+
+.fade-rise {
+  opacity: 0;
+  animation: fade-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .word-rise {
+    transform: none;
+    animation: none;
+  }
+  .fade-rise {
+    opacity: 1;
+    animation: none;
+  }
+  .scan-line {
+    display: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }
