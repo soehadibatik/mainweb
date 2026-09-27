@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { site, waLink } from "@/lib/site";
 
 export default function Footer() {
@@ -25,11 +26,12 @@ export default function Footer() {
               Indeks
             </h3>
             <ul className="mt-5 space-y-3 font-mono text-xs tracking-[0.1em] uppercase">
-              <li><a className="transition-colors hover:text-brand-600" href="#keunggulan">Keunggulan</a></li>
-              <li><a className="transition-colors hover:text-brand-600" href="#paket">Tarif</a></li>
-              <li><a className="transition-colors hover:text-brand-600" href="#perbandingan">Perbandingan</a></li>
-              <li><a className="transition-colors hover:text-brand-600" href="#proses">Cara kerja</a></li>
-              <li><a className="transition-colors hover:text-brand-600" href="#faq">FAQ</a></li>
+              <li><Link className="transition-colors hover:text-brand-600" href="/#keunggulan">Keunggulan</Link></li>
+              <li><Link className="transition-colors hover:text-brand-600" href="/#paket">Tarif</Link></li>
+              <li><Link className="transition-colors hover:text-brand-600" href="/#perbandingan">Perbandingan</Link></li>
+              <li><Link className="transition-colors hover:text-brand-600" href="/#proses">Cara kerja</Link></li>
+              <li><Link className="transition-colors hover:text-brand-600" href="/klien">Klien</Link></li>
+              <li><Link className="transition-colors hover:text-brand-600" href="/#faq">FAQ</Link></li>
             </ul>
           </div>
 

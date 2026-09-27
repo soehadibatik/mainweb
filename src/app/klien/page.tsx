@@ -1,20 +1,56 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { clients, totalProjects } from "@/lib/clients";
+import JsonLd from "@/components/JsonLd";
+import { clients } from "@/lib/clients";
+import { site } from "@/lib/site";
+
+const desc = `Portofolio ${clients.length} situs klien yang sudah kami rilis — dari company profile, toko online, hingga dashboard internal.`;
 
 export const metadata: Metadata = {
-  title: "Klien",
-  description: `Daftar lengkap situs yang sudah kami rilis — ${clients.length} logo klien dari ${totalProjects} proyek tercatat di mainweb.id.`,
+  title: "Klien — Portofolio Situs yang Sudah Kami Rilis",
+  description: desc,
+  alternates: { canonical: "/klien" },
   openGraph: {
-    title: `Klien — mainweb.id`,
-    description: `Daftar lengkap situs yang sudah kami rilis — ${clients.length} logo klien dari ${totalProjects} proyek tercatat.`,
+    type: "website",
+    locale: "id_ID",
+    url: "/klien",
+    siteName: "mainweb.id",
+    title: `Klien — Portofolio Situs yang Sudah Kami Rilis | mainweb.id`,
+    description: desc,
+    images: [{ url: "/logo-mainweb.png", width: 1672, height: 941, alt: "mainweb.id" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Klien — Portofolio Situs yang Sudah Kami Rilis | mainweb.id`,
+    description: desc,
+    images: ["/logo-mainweb.png"],
+  },
+};
+
+const klienList = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Klien — mainweb.id",
+  url: `${site.url}/klien`,
+  inLanguage: "id-ID",
+  description: desc,
+  mainEntity: {
+    "@type": "ItemList",
+    numberOfItems: clients.length,
+    itemListElement: clients.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: c.name,
+      url: `https://${c.domain}`,
+    })),
   },
 };
 
 export default function KlienPage() {
   return (
     <main className="flex-1">
+      <JsonLd data={klienList} />
       <div className="border-b border-line pt-14">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase sm:px-6 lg:px-8">
           <span>DOC — PORTOFOLIO / KLIEN</span>
@@ -52,7 +88,7 @@ export default function KlienPage() {
 
       <section className="border-b border-line bg-white py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <ul className="grid grid-cols-2 border-t border-l border-line sm:grid-cols-3 lg:grid-cols-4">
+          <ul className="grid grid-cols-2 border-t border-l border-line md:grid-cols-4">
             {clients.map((c) => (
               <li key={c.domain}>
                 <a
@@ -68,7 +104,8 @@ export default function KlienPage() {
                       width={c.w}
                       height={c.h}
                       loading="lazy"
-                      className="max-h-12 w-auto max-w-full object-contain grayscale opacity-65 transition duration-300 group-hover:grayscale-0 group-hover:opacity-100"
+                      unoptimized={c.logo.endsWith(".svg")}
+                      className="max-h-11 w-auto max-w-full object-contain opacity-85 transition duration-300 group-hover:opacity-100"
                     />
                   </span>
                   <span className="flex items-baseline justify-between gap-3">
@@ -92,7 +129,7 @@ export default function KlienPage() {
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
             <p className="font-mono text-[11px] tracking-[0.14em] text-ink-900/45 uppercase">
-              {clients.length} situs tampil · {totalProjects} proyek tercatat
+              {clients.length} situs tampil · klik kartu untuk membuka
             </p>
             <Link
               href="/"

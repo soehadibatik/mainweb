@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { plans, getPlan } from "@/lib/plans";
 import { site, waLink } from "@/lib/site";
+import JsonLd from "@/components/JsonLd";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -16,14 +17,33 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!plan) return {};
 
   const title = `Paket ${plan.name} — ${plan.build}`;
-  const description = `${plan.tagline} Pembuatan ${plan.build}, maintain ${plan.maintain}${
+  const full = `Paket ${plan.name} — ${plan.tagline} Biaya pembuatan ${plan.build}, maintain ${plan.maintain}${
     plan.renewal ? `, perpanjangan ${plan.renewal}/th` : ""
-  }. Lihat spesifikasi lengkap di ${site.name}.`;
+  }.`;
+  const description =
+    full.length <= 160
+      ? full
+      : `Paket ${plan.name} — ${plan.tagline} Lihat spesifikasi, biaya, dan maintain lengkap.`;
 
   return {
     title,
     description,
-    openGraph: { title, description },
+    alternates: { canonical: `/paket/${plan.id}` },
+    openGraph: {
+      type: "website",
+      locale: "id_ID",
+      url: `/paket/${plan.id}`,
+      siteName: site.name,
+      title: `${title} | ${site.name}`,
+      description,
+      images: [{ url: "/logo-mainweb.png", width: 1672, height: 941, alt: site.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | ${site.name}`,
+      description,
+      images: ["/logo-mainweb.png"],
+    },
   };
 }
 
@@ -38,8 +58,23 @@ export default async function PlanDetailPage({ params }: Params) {
 
   const waMessage = `Halo ${site.name}, saya tertarik dengan paket ${plan.name} (${plan.build}). Bisa info lebih lanjut?`;
 
+  const breadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Beranda", item: site.url },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: `Paket ${plan.name}`,
+        item: `${site.url}/paket/${plan.id}`,
+      },
+    ],
+  };
+
   return (
     <main className="flex-1">
+      <JsonLd data={breadcrumb} />
       {/* Meta bar dokumen */}
       <div className="border-b border-line pt-14">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase sm:px-6 lg:px-8">

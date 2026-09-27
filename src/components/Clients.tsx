@@ -1,48 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { clients, totalProjects } from "@/lib/clients";
-
-function LogoRow({ items, reverse }: { items: typeof clients; reverse: boolean }) {
-  const row = [...items, ...items];
-  return (
-    <div className="group mask-fade-x overflow-hidden">
-      <div
-        className={`flex w-max items-center gap-8 pr-8 sm:gap-14 sm:pr-14 group-hover:[animation-play-state:paused] ${
-          reverse ? "animate-marquee-reverse" : "animate-marquee-slow"
-        }`}
-      >
-        {row.map((c, i) => {
-          const dup = i >= items.length;
-          return (
-            <Link
-              key={`${c.domain}-${i}`}
-              href="/klien"
-              target="_blank"
-              rel="noopener noreferrer"
-              tabIndex={dup ? -1 : 0}
-              aria-hidden={dup || undefined}
-              title={`Lihat semua klien — ${c.name}`}
-              className="flex shrink-0 items-center py-4"
-            >
-              <Image
-                src={c.logo}
-                alt={c.name}
-                width={c.w}
-                height={c.h}
-                loading="lazy"
-                className="h-9 w-auto max-w-[140px] object-contain grayscale opacity-50 transition duration-300 hover:grayscale-0 hover:opacity-100 sm:h-10"
-              />
-            </Link>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
+import { featured } from "@/lib/clients";
 
 export default function Clients() {
-  const half = Math.ceil(clients.length / 2);
-
   return (
     <section id="klien" className="border-b border-line bg-white py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -57,29 +17,47 @@ export default function Clients() {
           </div>
           <div className="flex flex-col items-start gap-4">
             <p className="max-w-sm text-sm leading-relaxed text-ink-900/60">
-              Logo diambil langsung dari situs masing-masing klien. Klik salah
-              satu untuk membuka halaman klien lengkap.
+              Logo resmi masing-masing klien. Klik salah satu untuk membuka
+              situsnya langsung.
             </p>
             <Link
               href="/klien"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border border-ink-900/25 px-5 py-3 font-mono text-[11px] tracking-[0.14em] text-ink-950 uppercase transition-colors hover:border-ink-950 hover:bg-ink-950 hover:text-white"
+              className="inline-flex items-center gap-2 border border-ink-900/25 px-5 py-3 font-mono text-[11px] tracking-[0.14em] text-ink-950 uppercase transition-colors hover:border-ink-900 hover:bg-ink-950 hover:text-white"
             >
               Lihat semua klien <span aria-hidden>↗</span>
             </Link>
           </div>
         </div>
-      </div>
 
-      <div className="mt-2 space-y-2">
-        <LogoRow items={clients.slice(0, half)} reverse={false} />
-        <LogoRow items={clients.slice(half)} reverse={true} />
-      </div>
+        <ul className="mt-10 grid grid-cols-2 border-t border-l border-line sm:grid-cols-3 lg:grid-cols-6">
+          {featured.map((c) => (
+            <li key={c.domain}>
+              <a
+                href={`https://${c.domain}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex h-full flex-col items-center gap-5 border-r border-b border-line px-4 py-8 text-center transition-colors hover:bg-paper sm:py-10"
+              >
+                <span className="flex h-12 w-full items-center justify-center sm:h-14">
+                  <Image
+                    src={c.logo}
+                    alt={c.name}
+                    width={c.w}
+                    height={c.h}
+                    loading="lazy"
+                    className="max-h-10 w-auto max-w-full object-contain opacity-85 transition duration-300 group-hover:opacity-100 sm:max-h-11"
+                  />
+                </span>
+                <span className="font-mono text-[10px] tracking-[0.16em] text-ink-900/55 uppercase transition-colors group-hover:text-ink-950">
+                  {c.name}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <p className="mt-6 font-mono text-[11px] tracking-[0.14em] text-ink-900/45 uppercase">
-          {clients.length} situs tampil · {totalProjects} proyek tercatat
+          {featured.length} situs tampil · klik logo untuk membuka
         </p>
       </div>
     </section>

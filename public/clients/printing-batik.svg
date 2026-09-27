@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 220" width="560" height="220">
+  <defs>
+    <linearGradient id="a" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0" stop-color="#fff8eb"/>
+      <stop offset="1" stop-color="#f8efdf"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0" stop-color="#177a67"/>
+      <stop offset="1" stop-color="#005c49"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0" stop-color="#a3560f"/>
+      <stop offset="1" stop-color="#853800"/>
+    </linearGradient>
+    <pattern id="p" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="8" r="2.3" fill="#f3a91e" opacity=".75"/>
+      <circle cx="8" cy="2.6" r="2.7" fill="#fff8eb" opacity=".45"/>
+      <circle cx="13.4" cy="8" r="2.7" fill="#fff8eb" opacity=".45"/>
+      <circle cx="8" cy="13.4" r="2.7" fill="#fff8eb" opacity=".45"/>
+      <circle cx="2.6" cy="8" r="2.7" fill="#fff8eb" opacity=".45"/>
+    </pattern>
+  </defs>
+  <g fill="#f3a91e" opacity="0.35" transform="translate(97 100)"><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(0)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(22.5)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(45)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(67.5)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(90)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(112.5)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(135)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(157.5)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(180)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(202.5)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(225)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(247.5)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(270)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(292.5)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(315)"/><path d="m0 -85 5 20 -5 10 -5 -10 z" transform="rotate(337.5)"/></g><circle cx="97" cy="100" r="78" fill="url(#a)"/><circle cx="97" cy="100" r="73" fill="none" stroke="#164e4c" stroke-width="1.8" stroke-dasharray="4 3" opacity="0.9"/><g transform="translate(97 100)"><rect x="-36" y="-32" width="72" height="10" rx="4" fill="url(#g)" stroke="#472a20" stroke-width="1.5" stroke-linejoin="round"/><rect x="-10" y="-26" width="20" height="16" rx="3" fill="url(#g2)" stroke="#472a20" stroke-width="1"/><circle cx="-4" cy="-12" r="1.6" fill="#f3a91e"/><circle cx="0" cy="-12" r="1.6" fill="#f3a91e"/><circle cx="4" cy="-12" r="1.6" fill="#f3a91e"/><path d="M-24 -10 L24 -10 L24 30 Q0 36 -24 30 Z" fill="#fff8eb" stroke="#472a20" stroke-width="1.5" stroke-linejoin="round"/><path d="M-24 -10 L24 -10 L24 30 Q0 36 -24 30 Z" fill="url(#p)" opacity="0.6"/><rect x="-32" y="30" width="8" height="9" fill="url(#g2)" stroke="#472a20" stroke-width="1"/><rect x="24" y="30" width="8" height="9" fill="url(#g2)" stroke="#472a20" stroke-width="1"/></g><circle cx="18" cy="95.5" r="3.6" fill="#f3a91e"/><circle cx="22.5" cy="100" r="3.6" fill="#f3a91e"/><circle cx="18" cy="104.5" r="3.6" fill="#f3a91e"/><circle cx="13.5" cy="100" r="3.6" fill="#f3a91e"/><circle cx="18" cy="100" r="3.15" fill="#177a67"/><circle cx="176" cy="95.5" r="3.6" fill="#f3a91e"/><circle cx="180.5" cy="100" r="3.6" fill="#f3a91e"/><circle cx="176" cy="104.5" r="3.6" fill="#f3a91e"/><circle cx="171.5" cy="100" r="3.6" fill="#f3a91e"/><circle cx="176" cy="100" r="3.15" fill="#177a67"/><circle cx="97" cy="17.5" r="3.6" fill="#177a67"/><circle cx="101.5" cy="22" r="3.6" fill="#177a67"/><circle cx="97" cy="26.5" r="3.6" fill="#177a67"/><circle cx="92.5" cy="22" r="3.6" fill="#177a67"/><circle cx="97" cy="22" r="3.15" fill="#f3a91e"/><circle cx="97" cy="173.5" r="3.6" fill="#177a67"/><circle cx="101.5" cy="178" r="3.6" fill="#177a67"/><circle cx="97" cy="182.5" r="3.6" fill="#177a67"/><circle cx="92.5" cy="178" r="3.6" fill="#177a67"/><circle cx="97" cy="178" r="3.15" fill="#f3a91e"/>
+  <path d="M52 50.5 Q52 56 57.5 56 Q52 56 52 61.5 Q52 56 46.5 56 Q52 56 52 50.5 Z" fill="#177a67" opacity="0.9"/>
+  <path d="M134 50.5 Q134 56 139.5 56 Q134 56 134 61.5 Q134 56 128.5 56 Q134 56 134 50.5 Z" fill="#177a67" opacity="0.9"/>
+  <path d="M52 146.5 Q52 152 57.5 152 Q52 152 52 157.5 Q52 152 46.5 152 Q52 152 52 146.5 Z" fill="#177a67" opacity="0.9"/>
+  <path d="M134 146.5 Q134 152 139.5 152 Q134 152 134 157.5 Q134 152 128.5 152 Q134 152 134 146.5 Z" fill="#177a67" opacity="0.9"/>
+  <text x="210" y="82" font-family="Georgia, 'Times New Roman', serif" font-size="60.6" font-weight="900" letter-spacing="-0.95" fill="#177a67">PRINTING</text>
+  <rect x="210" y="94" width="334" height="4" rx="2" fill="#f3a91e"/>
+  <circle cx="220" cy="96" r="5" fill="#177a67"/>
+  <circle cx="534" cy="96" r="5" fill="#177a67"/>
+  <text x="208" y="155" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="900" letter-spacing="2" fill="#a3560f">BATIK</text>
+  <rect x="208" y="163" width="332" height="19" rx="2" fill="#164e4c" opacity="0.08"/>
+  <text x="214" y="178" style="font-family:Georgia, 'Times New Roman', serif;font-size:13;font-style:italic;letter-spacing:3;fill:#164e4c;opacity:.85">Digital Printing Tekstil</text>
+</svg>

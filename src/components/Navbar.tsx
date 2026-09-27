@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { waLink } from "@/lib/site";
 
 const navItems = [
-  { href: "#keunggulan", label: "Keunggulan" },
-  { href: "#paket", label: "Paket" },
-  { href: "#perbandingan", label: "Perbandingan" },
-  { href: "#proses", label: "Cara Kerja" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/#keunggulan", label: "Keunggulan" },
+  { href: "/#paket", label: "Paket" },
+  { href: "/#perbandingan", label: "Perbandingan" },
+  { href: "/#proses", label: "Cara Kerja" },
+  { href: "/klien", label: "Klien" },
+  { href: "/#faq", label: "FAQ" },
 ];
 
 export default function Navbar() {
@@ -18,7 +20,7 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper/85 text-ink-950 backdrop-blur-md">
       <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3" aria-label="mainweb.id — beranda">
           <Image
             src="/logo-mainweb.png"
             alt="mainweb.id — web consultancy"
@@ -31,22 +33,22 @@ export default function Navbar() {
           <span className="font-display text-[18px] leading-none font-extrabold tracking-[-0.035em] text-ink-950">
             Main<span className="text-brand-600">Web</span>
           </span>
-        </a>
+        </Link>
 
-        <div className="hidden items-center gap-7 lg:flex">
+        <div className="hidden items-center gap-5 lg:flex xl:gap-7">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               className="font-mono text-[11px] tracking-[0.14em] text-ink-900/65 uppercase transition-colors hover:text-brand-600"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </div>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <span className="flex items-center gap-2 font-mono text-[11px] tracking-[0.12em] text-ink-900/55">
+          <span className="hidden items-center gap-2 font-mono text-[11px] tracking-[0.12em] text-ink-900/55 xl:flex">
             <span className="animate-pulse-dot h-1.5 w-1.5 rounded-full bg-emerald-500" />
             OPEN FOR PROJECTS
           </span>
@@ -80,7 +82,7 @@ export default function Navbar() {
       {open && (
         <div className="border-t border-line bg-paper px-4 pb-5 pt-2 lg:hidden">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
@@ -88,7 +90,7 @@ export default function Navbar() {
             >
               {item.label}
               <span className="text-ink-900/30">→</span>
-            </a>
+            </Link>
           ))}
           <a
             href={waLink("Halo mainweb.id, saya ingin konsultasi pembuatan website.")}
