@@ -58,13 +58,13 @@ export const metadata: Metadata = {
     siteName: site.name,
     title: `${site.name} | ${site.tagline}`,
     description: site.description,
-    images: [{ url: "/logo-mainweb.png", width: 1672, height: 941, alt: site.name }],
+    images: [{ url: "/logo.png", width: 1670, height: 942, alt: site.name }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.name} | ${site.tagline}`,
     description: site.description,
-    images: ["/logo-mainweb.png"],
+    images: ["/logo.png"],
   },
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png" }],

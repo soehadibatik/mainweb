@@ -25,13 +25,13 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "mainweb.id",
       title: `${pageTitle} | mainweb.id`,
       description: desc,
-      images: [{ url: "/logo-mainweb.png", width: 1672, height: 941, alt: "mainweb.id" }],
+      images: [{ url: "/logo.png", width: 1670, height: 942, alt: "mainweb.id" }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${pageTitle} | mainweb.id`,
       description: desc,
-      images: ["/logo-mainweb.png"],
+      images: ["/logo.png"],
     },
   };
 }
@@ -121,7 +121,7 @@ export default async function KlienPage() {
                       href={`https://${c.domain}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex h-full flex-col gap-4 border-r border-b border-line p-5 transition-colors hover:bg-paper hover:shadow-[inset_0_0_0_1px_rgba(0,71,247,0.35)] sm:p-6"
+                      className="group flex h-full flex-col gap-4 border-r border-b border-line p-5 transition-colors hover:bg-paper hover:shadow-[inset_0_0_0_1px_rgba(0,71,210,0.35)] sm:p-6"
                     >
                       <span className="flex items-center justify-between font-mono text-[10px] tracking-[0.16em]">
                         <span className="text-ink-900/25 transition-colors group-hover:text-brand-600">

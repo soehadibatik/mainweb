@@ -22,7 +22,7 @@ export default function Navbar() {
       <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3" aria-label="mainweb.id, beranda">
           <Image
-            src="/logo-mainweb.png"
+            src="/logo.png"
             alt="mainweb.id, jasa pembuatan website"
             width={160}
             height={90}
@@ -102,7 +102,7 @@ export default function Navbar() {
           </a>
           <div className="mt-4">
             <Image
-              src="/logo-mainweb.png"
+              src="/logo.png"
               alt="mainweb.id"
               width={120}
               height={68}

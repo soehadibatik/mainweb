@@ -37,7 +37,7 @@ export default async function Clients() {
                 href={`https://${c.domain}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full flex-col gap-4 border-r border-b border-line px-4 py-7 text-center transition-colors hover:bg-paper hover:shadow-[inset_0_0_0_1px_rgba(0,71,247,0.35)] sm:py-9"
+                className="group flex h-full flex-col gap-4 border-r border-b border-line px-4 py-7 text-center transition-colors hover:bg-paper hover:shadow-[inset_0_0_0_1px_rgba(0,71,210,0.35)] sm:py-9"
               >
                 <span className="flex items-center justify-between font-mono text-[10px] tracking-[0.16em]">
                   <span className="text-ink-900/25 transition-colors group-hover:text-brand-600">

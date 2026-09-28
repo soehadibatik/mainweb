@@ -22,7 +22,7 @@ const organization = {
   "@type": "Organization",
   name: site.name,
   url: site.url,
-  logo: `${site.url}/logo-mainweb.png`,
+  logo: `${site.url}/logo.png`,
   description: site.description,
   email: site.contact.email,
   areaServed: "ID",

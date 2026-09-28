@@ -5,18 +5,18 @@
   --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
 
-  /* Brand utama — diekstrak dari logo-mainweb.png (#0047F7) */
-  --color-brand-50: #eef3ff;
-  --color-brand-100: #dfe9ff;
-  --color-brand-200: #c2d3fe;
-  --color-brand-300: #96b4fc;
-  --color-brand-400: #648cf9;
-  --color-brand-500: #3b64f4;
-  --color-brand-600: #0047f7;
-  --color-brand-700: #0034ef;
-  --color-brand-800: #0a2fd0;
-  --color-brand-900: #0e2ba3;
-  --color-brand-950: #0e1d5f;
+  /* Brand utama — diekstrak dari logo.png (#0047D2); aksen sky #00A1F8, violet #7127E9 */
+  --color-brand-50: #eff4ff;
+  --color-brand-100: #d9e6ff;
+  --color-brand-200: #b1cafe;
+  --color-brand-300: #7da5fa;
+  --color-brand-400: #4279f8;
+  --color-brand-500: #044ffb;
+  --color-brand-600: #0047d2;
+  --color-brand-700: #0040b5;
+  --color-brand-800: #003494;
+  --color-brand-900: #052e73;
+  --color-brand-950: #061e47;
 
   /* Penerbit — near-black kebiruan */
   --color-ink-950: #060b18;
@@ -126,7 +126,7 @@ body {
   right: 0;
   left: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(0 71 247 / 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgb(0 71 210 / 0.6), transparent);
   animation: scan-line 8s linear infinite;
 }
 
@@ -254,10 +254,10 @@ body {
 @keyframes row-flash {
   0%,
   25% {
-    background-color: rgb(0 71 247 / 0.12);
+    background-color: rgb(0 71 210 / 0.12);
   }
   100% {
-    background-color: rgb(0 71 247 / 0);
+    background-color: rgb(0 71 210 / 0);
   }
 }
 
@@ -289,7 +289,7 @@ body {
   }
   .plan-row:target {
     animation: none;
-    background-color: rgb(0 71 247 / 0.1);
+    background-color: rgb(0 71 210 / 0.1);
   }
   .scan-line {
     display: none;

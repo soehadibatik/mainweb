@@ -97,7 +97,7 @@ export default function Hero() {
                 href={waLink("Halo mainweb.id, saya ingin konsultasi gratis untuk website saya.")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group inline-flex items-center justify-center gap-2 bg-brand-600 px-7 py-4 font-mono text-xs font-semibold tracking-[0.14em] text-white uppercase shadow-[0_24px_50px_-26px_rgb(0_71_247/0.7)] transition-all hover:-translate-y-0.5 hover:bg-brand-500"
+                className="group inline-flex items-center justify-center gap-2 bg-brand-600 px-7 py-4 font-mono text-xs font-semibold tracking-[0.14em] text-white uppercase shadow-[0_24px_50px_-26px_rgb(0_71_210/0.7)] transition-all hover:-translate-y-0.5 hover:bg-brand-500"
               >
                 Mulai konsultasi gratis
                 <span className="transition-transform group-hover:translate-x-1">→</span>

@@ -37,13 +37,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       siteName: site.name,
       title: `${title} | ${site.name}`,
       description,
-      images: [{ url: "/logo-mainweb.png", width: 1672, height: 941, alt: site.name }],
+      images: [{ url: "/logo.png", width: 1670, height: 942, alt: site.name }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | ${site.name}`,
       description,
-      images: ["/logo-mainweb.png"],
+      images: ["/logo.png"],
     },
   };
 }

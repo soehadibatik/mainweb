@@ -8,13 +8,19 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-6">
-            <Image
-              src="/logo-mainweb.png"
-              alt="mainweb.id"
-              width={160}
-              height={90}
-              className="h-10 w-auto"
-            />
+            <div className="flex items-center gap-3">
+              <Image
+                src="/logo.png"
+                alt="mainweb.id"
+                width={160}
+                height={90}
+                className="h-10 w-auto"
+              />
+              <span className="h-3.5 w-px bg-ink-900/15" aria-hidden />
+              <span className="font-display text-[18px] leading-none font-extrabold tracking-[-0.035em] text-ink-950">
+                Main<span className="text-brand-600">Web</span>
+              </span>
+            </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed">
               Jasa pembuatan &amp; pengembangan website profesional untuk
               bisnis Anda.

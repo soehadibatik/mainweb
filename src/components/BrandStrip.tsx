@@ -1,7 +1,7 @@
 const swatches = [
-  { hex: "#0047F7", name: "Brand utama", note: "diekstrak dari logo" },
-  { hex: "#028FFA", name: "Sky aksen", note: "ekstraksi logo" },
-  { hex: "#4718F9", name: "Violet aksen", note: "ekstraksi logo" },
+  { hex: "#0047D2", name: "Brand utama", note: "diekstrak dari logo" },
+  { hex: "#00A1F8", name: "Sky aksen", note: "ekstraksi logo" },
+  { hex: "#7127E9", name: "Violet aksen", note: "ekstraksi logo" },
   { hex: "#060B18", name: "Ink", note: "teks & panel gelap" },
   { hex: "#FAFAFA", name: "Paper", note: "latar halaman" },
 ];
@@ -31,13 +31,13 @@ export default function BrandStrip() {
           {/* Spesimen logo */}
           <div className="bg-paper p-8 lg:col-span-5">
             <p className="font-mono text-[10px] tracking-[0.18em] text-ink-900/45 uppercase">
-              Logotype / logo-mainweb.png
+              Logotype / logo.png
             </p>
             <div className="mt-6 flex items-center gap-6">
               <div className="border border-line bg-white p-6">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/logo-mainweb.png"
+                  src="/logo.png"
                   alt="Logo utama mainweb.id"
                   className="h-16 w-auto"
                 />
@@ -45,14 +45,14 @@ export default function BrandStrip() {
               <div className="bg-ink-950 p-6">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/logo-mainweb-white.png"
+                  src="/logo-white.png"
                   alt="Logo mainweb.id versi putih di latar gelap"
                   className="h-16 w-auto"
                 />
               </div>
             </div>
             <p className="mt-5 font-mono text-[10px] leading-relaxed tracking-[0.1em] text-ink-900/40 uppercase">
-              Dua varian, orisinal dan putih, 1672×941 px, RGBA
+              Dua varian, orisinal dan putih, 1670×942 px, RGBA
             </p>
           </div>
 
