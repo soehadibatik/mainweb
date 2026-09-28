@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { plans, getPlan } from "@/lib/plans";
+import { getPlan, getPlans } from "@/lib/catalog";
 import { site, waLink } from "@/lib/site";
 import JsonLd from "@/components/JsonLd";
 
 type Params = { params: Promise<{ id: string }> };
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const plans = await getPlans();
   return plans.map((plan) => ({ id: plan.id }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { id } = await params;
-  const plan = getPlan(id);
+  const plan = await getPlan(id);
   if (!plan) return {};
 
   const title = `Paket ${plan.name}: ${plan.build}`;
@@ -49,7 +50,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function PlanDetailPage({ params }: Params) {
   const { id } = await params;
-  const plan = getPlan(id);
+  const plans = await getPlans();
+  const plan = await getPlan(id);
   if (!plan) notFound();
 
   const idx = plans.findIndex((p) => p.id === plan.id);

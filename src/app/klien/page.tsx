@@ -1,60 +1,71 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import ClientLogo from "@/components/ClientLogo";
 import JsonLd from "@/components/JsonLd";
-import { clients, groups } from "@/lib/clients";
+import { getClients } from "@/lib/catalog";
 import { site, waLink } from "@/lib/site";
 
-const desc = `Portofolio ${clients.length} situs klien yang sudah kami rilis, mulai dari company profile dan toko online sampai dashboard internal.`;
+const pageTitle = "Klien: Portofolio Situs yang Sudah Kami Rilis";
 
-export const metadata: Metadata = {
-  title: "Klien: Portofolio Situs yang Sudah Kami Rilis",
-  description: desc,
-  alternates: { canonical: "/klien" },
-  openGraph: {
-    type: "website",
-    locale: "id_ID",
-    url: "/klien",
-    siteName: "mainweb.id",
-    title: `Klien: Portofolio Situs yang Sudah Kami Rilis | mainweb.id`,
+const describe = (count: number) =>
+  `Portofolio ${count} situs klien yang sudah kami rilis, mulai dari company profile dan toko online sampai dashboard internal.`;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { clients } = await getClients();
+  const desc = describe(clients.length);
+
+  return {
+    title: pageTitle,
     description: desc,
-    images: [{ url: "/logo-mainweb.png", width: 1672, height: 941, alt: "mainweb.id" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `Klien: Portofolio Situs yang Sudah Kami Rilis | mainweb.id`,
+    alternates: { canonical: "/klien" },
+    openGraph: {
+      type: "website",
+      locale: "id_ID",
+      url: "/klien",
+      siteName: "mainweb.id",
+      title: `${pageTitle} | mainweb.id`,
+      description: desc,
+      images: [{ url: "/logo-mainweb.png", width: 1672, height: 941, alt: "mainweb.id" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${pageTitle} | mainweb.id`,
+      description: desc,
+      images: ["/logo-mainweb.png"],
+    },
+  };
+}
+
+export default async function KlienPage() {
+  const { clients, groups } = await getClients();
+  const desc = describe(clients.length);
+
+  const klienList = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Klien mainweb.id",
+    url: `${site.url}/klien`,
+    inLanguage: "id-ID",
     description: desc,
-    images: ["/logo-mainweb.png"],
-  },
-};
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: clients.length,
+      itemListElement: clients.map((c, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: c.name,
+        url: `https://${c.domain}`,
+      })),
+    },
+  };
 
-const klienList = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: "Klien mainweb.id",
-  url: `${site.url}/klien`,
-  inLanguage: "id-ID",
-  description: desc,
-  mainEntity: {
-    "@type": "ItemList",
-    numberOfItems: clients.length,
-    itemListElement: clients.map((c, i) => ({
-      "@type": "ListItem",
-      position: i + 1,
-      name: c.name,
-      url: `https://${c.domain}`,
-    })),
-  },
-};
+  // penomoran kartu 01–NN, berurutan melintasi kelompok
+  let counter = 0;
+  const numbered = groups.map((g) => ({
+    ...g,
+    items: g.items.map((c) => ({ ...c, n: ++counter })),
+  }));
 
-// penomoran kartu 01–30, berurutan melintasi kelompok
-let counter = 0;
-const numbered = groups.map((g) => ({
-  ...g,
-  items: g.items.map((c) => ({ ...c, n: ++counter })),
-}));
-
-export default function KlienPage() {
   return (
     <main className="flex-1">
       <JsonLd data={klienList} />
@@ -124,13 +135,11 @@ export default function KlienPage() {
                         </span>
                       </span>
                       <span className="flex h-16 items-center justify-center sm:h-20">
-                        <Image
+                        <ClientLogo
                           src={c.logo}
                           alt={c.name}
-                          width={c.w}
-                          height={c.h}
-                          loading="lazy"
-                          unoptimized={c.logo.endsWith(".svg")}
+                          w={c.w}
+                          h={c.h}
                           className="max-h-11 w-auto max-w-full object-contain opacity-85 transition duration-300 group-hover:scale-105 group-hover:opacity-100"
                         />
                       </span>

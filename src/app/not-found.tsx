@@ -1,13 +1,15 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { plans } from "@/lib/plans";
+import { getPlans } from "@/lib/catalog";
 import { waLink } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "404: Halaman tidak ditemukan",
 };
 
-export default function NotFound() {
+export default async function NotFound() {
+  const plans = await getPlans();
+
   return (
     <main className="flex-1">
       {/* Meta bar dokumen */}
@@ -61,7 +63,7 @@ export default function NotFound() {
               Arsip paket
             </h2>
             <span className="font-mono text-[11px] tracking-[0.16em] text-ink-900/45 uppercase">
-              9 dokumen tersedia
+              {plans.length} dokumen tersedia
             </span>
           </div>
 

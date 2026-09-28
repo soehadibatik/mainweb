@@ -1,8 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
-import { clients, featured } from "@/lib/clients";
+import ClientLogo from "@/components/ClientLogo";
+import { getClients } from "@/lib/catalog";
 
-export default function Clients() {
+export default async function Clients() {
+  const { clients, featured } = await getClients();
   return (
     <section id="klien" className="border-b border-line bg-white py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -50,12 +51,11 @@ export default function Clients() {
                   </span>
                 </span>
                 <span className="flex h-12 w-full items-center justify-center sm:h-14">
-                  <Image
+                  <ClientLogo
                     src={c.logo}
                     alt={c.name}
-                    width={c.w}
-                    height={c.h}
-                    loading="lazy"
+                    w={c.w}
+                    h={c.h}
                     className="max-h-10 w-auto max-w-full object-contain opacity-85 transition duration-300 group-hover:scale-105 group-hover:opacity-100 sm:max-h-11"
                   />
                 </span>

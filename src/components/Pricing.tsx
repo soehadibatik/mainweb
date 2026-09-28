@@ -1,45 +1,49 @@
 import Link from "next/link";
-import { plans } from "@/lib/plans";
+import { getPlans } from "@/lib/catalog";
+import type { Plan } from "@/lib/plans";
 import { waLink } from "@/lib/site";
 import PlanChooser from "@/components/PlanChooser";
 
-const bands = [
-  {
-    label: "Mulai",
-    from: "01",
-    to: "03",
-    range: "Rp 1,5 – 5 jt",
-    ids: ["basic", "beginner", "elementary"],
-  },
-  {
-    label: "Tumbuh",
-    from: "04",
-    to: "05",
-    range: "Rp 10 – 20 jt",
-    ids: ["intermediate", "advance"],
-  },
-  {
-    label: "Skala",
-    from: "06",
-    to: "09",
-    range: "Rp 30 – 100 jt",
-    ids: ["proficient", "pro-proficient", "max-proficient", "pro-max-proficient"],
-  },
-];
-
 const included = ["SSL (https)", "Desain responsif", "SEO dasar", "Google Analytics"];
 
-const chooserPlans = plans.map(({ id, name, build, tagline }) => ({
-  id,
-  name,
-  build,
-  tagline,
-}));
+const BAND_SIZES = [3, 2, Number.POSITIVE_INFINITY];
+const BAND_LABELS = ["Mulai", "Tumbuh", "Skala"];
 
-const idxOf = (id: string) =>
-  String(plans.findIndex((p) => p.id === id) + 1).padStart(2, "0");
+/** Band harga disusun dari urutan paket — paket baru dari back office otomatis masuk. */
+function buildBands(list: Plan[]) {
+  const bands: { label: string; from: string; to: string; range: string; ids: string[] }[] = [];
+  let i = 0;
+  for (let b = 0; b < BAND_LABELS.length && i < list.length; b++) {
+    const take = Math.min(BAND_SIZES[b], list.length - i);
+    const slice = list.slice(i, i + take);
+    const first = slice[0];
+    const last = slice[slice.length - 1];
+    bands.push({
+      label: BAND_LABELS[b],
+      from: String(i + 1).padStart(2, "0"),
+      to: String(i + take).padStart(2, "0"),
+      range: slice.length > 1 ? `${first.build} \u2013 ${last.build}` : first.build,
+      ids: slice.map((p) => p.id),
+    });
+    i += take;
+  }
+  return bands;
+}
 
-export default function Pricing() {
+export default async function Pricing() {
+  const plans = await getPlans();
+  const bands = buildBands(plans);
+
+  const chooserPlans = plans.map(({ id, name, build, tagline }) => ({
+    id,
+    name,
+    build,
+    tagline,
+  }));
+
+  const idxOf = (id: string) =>
+    String(plans.findIndex((p) => p.id === id) + 1).padStart(2, "0");
+
   return (
     <section id="paket" className="border-y border-line bg-white text-ink-950">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">

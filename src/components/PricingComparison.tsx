@@ -2,8 +2,8 @@
 
 import { Fragment, useState } from "react";
 import Link from "next/link";
-import { plans } from "@/lib/plans";
-import { comparisonSections, type CompareValue } from "@/lib/comparison";
+import type { CompareSection, CompareValue } from "@/lib/comparison";
+import type { Plan } from "@/lib/plans";
 import { waLink } from "@/lib/site";
 
 function Cell({ value }: { value: CompareValue }) {
@@ -24,7 +24,13 @@ function Cell({ value }: { value: CompareValue }) {
   return <span className="font-mono text-xs text-ink-900/75">{value}</span>;
 }
 
-export default function PricingComparison() {
+export default function PricingComparison({
+  plans,
+  sections,
+}: {
+  plans: Plan[];
+  sections: CompareSection[];
+}) {
   const [activeCol, setActiveCol] = useState<string | null>(null);
   const [hidden, setHidden] = useState<Set<string>>(new Set());
 
@@ -143,7 +149,7 @@ export default function PricingComparison() {
               </tr>
             </thead>
             <tbody>
-              {comparisonSections.map((section) => (
+              {sections.map((section) => (
                 <Fragment key={section.title}>
                   <tr>
                     <td

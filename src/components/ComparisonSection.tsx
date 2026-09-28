@@ -1,10 +1,11 @@
 import PricingComparison from "@/components/PricingComparison";
-import { comparisonSections } from "@/lib/comparison";
-import { plans } from "@/lib/plans";
+import { getComparison, getPlans } from "@/lib/catalog";
 
-const rowCount = comparisonSections.reduce((n, s) => n + s.rows.length, 0);
+export default async function ComparisonSection() {
+  const plans = await getPlans();
+  const comparisonSections = await getComparison();
+  const rowCount = comparisonSections.reduce((n, s) => n + s.rows.length, 0);
 
-export default function ComparisonSection() {
   return (
     <section id="perbandingan" className="border-b border-line bg-paper">
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
@@ -24,7 +25,7 @@ export default function ComparisonSection() {
         </div>
 
         <div className="mt-12">
-          <PricingComparison />
+          <PricingComparison plans={plans} sections={comparisonSections} />
         </div>
       </div>
     </section>
