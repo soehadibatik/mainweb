@@ -17,9 +17,7 @@ export default function Footer() {
                 className="h-10 w-auto"
               />
               <span className="h-3.5 w-px bg-ink-900/15" aria-hidden />
-              <span className="font-display text-[18px] leading-none font-extrabold tracking-[-0.035em] text-ink-950">
-                Main<span className="text-brand-600">Web</span>
-              </span>
+              <span className="brand-wordmark font-display text-[18px] leading-none font-black tracking-[-0.045em]">MainWeb</span>
             </div>
             <p className="mt-5 max-w-sm text-sm leading-relaxed">
               Jasa pembuatan &amp; pengembangan website profesional untuk

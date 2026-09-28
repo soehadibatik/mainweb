@@ -30,9 +30,7 @@ export default function Navbar() {
             className="h-8 w-auto"
           />
           <span className="hidden h-3.5 w-px bg-ink-900/15 sm:block" />
-          <span className="font-display text-[18px] leading-none font-extrabold tracking-[-0.035em] text-ink-950">
-            Main<span className="text-brand-600">Web</span>
-          </span>
+          <span className="brand-wordmark font-display text-[18px] leading-none font-black tracking-[-0.045em]">MainWeb</span>
         </Link>
 
         <div className="hidden items-center gap-5 lg:flex xl:gap-7">

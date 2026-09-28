@@ -18,6 +18,10 @@
   --color-brand-900: #052e73;
   --color-brand-950: #061e47;
 
+  /* Aksen dari logo — sky & violet */
+  --color-aksen-sky: #00a1f8;
+  --color-aksen-ungu: #7127e9;
+
   /* Penerbit — near-black kebiruan */
   --color-ink-950: #060b18;
   --color-ink-900: #0b1220;
@@ -299,5 +303,29 @@ body {
   }
   html {
     scroll-behavior: auto;
+  }
+}
+
+/* Kunci brand — gradasi 3 warna logo: biru tua → sky → violet */
+.brand-wordmark {
+  display: inline-block;
+  background-image: linear-gradient(
+    90deg,
+    var(--color-brand-600) 0%,
+    var(--color-aksen-sky) 52%,
+    var(--color-aksen-ungu) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@media print {
+  /* Gradasi bisa hilang saat cetak (background mati) — paksa solid */
+  .brand-wordmark {
+    background-image: none;
+    color: var(--color-brand-600);
+    -webkit-text-fill-color: var(--color-brand-600);
   }
 }
