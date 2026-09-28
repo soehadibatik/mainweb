@@ -59,7 +59,20 @@ export default function Footer() {
                   {site.contact.email}
                 </a>
               </li>
-              <li>Indonesia</li>
+              <li className="flex items-start gap-2 normal-case tracking-normal">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-600"
+                  aria-hidden
+                >
+                  <path d="M12 21s-6.5-5.6-6.5-10.2A6.5 6.5 0 0 1 12 4.5a6.5 6.5 0 0 1 6.5 6.3C18.5 15.4 12 21 12 21Z" />
+                  <circle cx="12" cy="10.6" r="2.3" />
+                </svg>
+                <span className="max-w-[24ch] leading-relaxed">{site.contact.address}</span>
+              </li>
             </ul>
           </div>
         </div>

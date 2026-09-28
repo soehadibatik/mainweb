@@ -5,6 +5,7 @@ import { site } from "@/lib/site";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
+import FloatingWa from "@/components/FloatingWa";
 
 const interTight = localFont({
   src: [
@@ -83,6 +84,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <Footer />
         <Reveal />
+        <FloatingWa />
       </body>
     </html>
   );

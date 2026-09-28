@@ -306,6 +306,100 @@ body {
   }
 }
 
+/* Tombol WhatsApp mengambang — gradasi brand ikut logo */
+.brand-gradient {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-brand-600) 0%,
+    var(--color-aksen-sky) 52%,
+    var(--color-aksen-ungu) 100%
+  );
+  background-size: 200% 200%;
+  animation: brand-drift 9s ease-in-out infinite alternate;
+}
+
+@keyframes brand-drift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Cincin denyut di belakang tombol */
+.wa-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background-image: linear-gradient(
+    135deg,
+    var(--color-brand-600),
+    var(--color-aksen-sky),
+    var(--color-aksen-ungu)
+  );
+  animation: wa-ring 2.8s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes wa-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+/* Kilau melintas, sekali tiap 5,5 detik */
+.wa-sheen {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 38%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.4), transparent);
+  animation: wa-sheen 5.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes wa-sheen {
+  0% {
+    transform: translateX(-160%) skewX(-18deg);
+  }
+  10%,
+  100% {
+    transform: translateX(360%) skewX(-18deg);
+  }
+}
+
+/* Melayang halus */
+.wa-float {
+  animation: wa-float 5s ease-in-out infinite;
+}
+
+@keyframes wa-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-gradient,
+  .wa-ring,
+  .wa-sheen,
+  .wa-float {
+    animation: none !important;
+  }
+}
+
 /* Kunci brand — gradasi 3 warna logo: biru tua → sky → violet */
 .brand-wordmark {
   display: inline-block;

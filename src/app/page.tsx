@@ -25,6 +25,14 @@ const organization = {
   logo: `${site.url}/logo.png`,
   description: site.description,
   email: site.contact.email,
+  telephone: `+${site.contact.whatsapp}`,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Jl. Kediri Utara 1 No. 21A RT 05 RW 15, Bonorejo Nusukan Banjarsari",
+    addressLocality: "Surakarta",
+    addressCountry: "ID",
+    postalCode: "57135",
+  },
   areaServed: "ID",
   contactPoint: {
     "@type": "ContactPoint",

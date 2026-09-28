@@ -5,10 +5,11 @@ export const site = {
   description:
     "Jasa pembuatan & pengembangan website profesional. 9 tingkatan paket, dari landing page sampai platform enterprise, dengan harga yang tertulis di muka.",
   contact: {
-    // TODO: ganti dengan nomor WhatsApp & email asli mainweb.id
-    whatsapp: "6281234567890",
-    whatsappDisplay: "+62 812-3456-7890",
+    whatsapp: "6281234561663",
+    whatsappDisplay: "+62 812-3456-1663",
     email: "hello@mainweb.id",
+    address:
+      "Jl. Kediri Utara 1 No. 21A RT 05 RW 15, Bonorejo Nusukan Banjarsari, Surakarta, Indonesia, 57135",
   },
 };
 
