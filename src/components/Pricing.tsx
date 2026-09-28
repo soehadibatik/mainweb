@@ -1,6 +1,43 @@
 import Link from "next/link";
 import { plans } from "@/lib/plans";
 import { waLink } from "@/lib/site";
+import PlanChooser from "@/components/PlanChooser";
+
+const bands = [
+  {
+    label: "Mulai",
+    from: "01",
+    to: "03",
+    range: "Rp 1,5 – 5 jt",
+    ids: ["basic", "beginner", "elementary"],
+  },
+  {
+    label: "Tumbuh",
+    from: "04",
+    to: "05",
+    range: "Rp 10 – 20 jt",
+    ids: ["intermediate", "advance"],
+  },
+  {
+    label: "Skala",
+    from: "06",
+    to: "09",
+    range: "Rp 30 – 100 jt",
+    ids: ["proficient", "pro-proficient", "max-proficient", "pro-max-proficient"],
+  },
+];
+
+const included = ["SSL (https)", "Desain responsif", "SEO dasar", "Google Analytics"];
+
+const chooserPlans = plans.map(({ id, name, build, tagline }) => ({
+  id,
+  name,
+  build,
+  tagline,
+}));
+
+const idxOf = (id: string) =>
+  String(plans.findIndex((p) => p.id === id) + 1).padStart(2, "0");
 
 export default function Pricing() {
   return (
@@ -12,15 +49,15 @@ export default function Pricing() {
               Tarif
             </p>
             <h2 className="mt-4 max-w-2xl font-display text-4xl font-black tracking-[-0.03em] text-balance sm:text-5xl">
-              Sembilan tingkatan.
+              Semua biaya ada di sini.
               <br />
-              Satu standar kualitas.
+              Bandingkan dulu, baru pesan.
             </h2>
           </div>
           <div className="max-w-sm">
             <p className="text-sm leading-relaxed text-ink-900/60">
-              Biaya pembuatan dibayar di awal. Maintain dirawat bulanan.
-              Perpanjangan menjaga situs tetap hidup setiap tahun.
+              Biaya pembuatan dibayar di awal, maintain dibayar tiap bulan, dan
+              perpanjangan tahunan agar situs tetap online.
             </p>
             <a
               href="#perbandingan"
@@ -31,82 +68,134 @@ export default function Pricing() {
           </div>
         </div>
 
-        <ul>
-          {plans.map((plan) => (
-            <li
-              key={plan.id}
-              className={`group relative grid gap-4 border-b border-line py-7 transition-colors sm:grid-cols-12 sm:items-center sm:gap-6 ${
-                plan.highlight ? "bg-brand-600/[0.06] hover:bg-brand-600/[0.1]" : "hover:bg-paper"
-              }`}
+        {/* Termasuk di semua paket — dipindah dari footnote ke posisi terlihat */}
+        <div className="mt-8 flex flex-wrap items-center gap-2">
+          <span className="mr-1 font-mono text-[10px] tracking-[0.18em] text-ink-900/45 uppercase">
+            Termasuk semua paket:
+          </span>
+          {included.map((item) => (
+            <span
+              key={item}
+              className="border border-line bg-paper px-3 py-1.5 font-mono text-[10px] tracking-[0.1em] text-ink-900/70 uppercase"
             >
-              {plan.highlight && (
-                <span className="absolute top-0 left-0 h-full w-0.5 bg-brand-600" aria-hidden />
-              )}
-
-              <div className="sm:col-span-4">
-                <div className="flex items-center gap-3">
-                  <h3 className="font-display text-xl font-bold tracking-tight sm:text-2xl">
-                    {plan.name}
-                  </h3>
-                  {plan.highlight && (
-                    <span className="bg-brand-600 px-2 py-0.5 font-mono text-[9px] font-semibold tracking-[0.14em] text-white uppercase">
-                      Populer
-                    </span>
-                  )}
-                </div>
-                <p className="mt-1.5 max-w-[36ch] text-sm leading-relaxed text-ink-900/55">
-                  {plan.tagline}
-                </p>
-              </div>
-
-              <div className="sm:col-span-3">
-                <p className="font-mono text-3xl font-semibold tracking-tight text-ink-950 sm:text-4xl">
-                  {plan.build}
-                </p>
-                <p className="mt-1 font-mono text-[10px] tracking-[0.16em] text-ink-900/45 uppercase">
-                  biaya pembuatan / awal
-                </p>
-              </div>
-
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-2 font-mono text-xs sm:col-span-3 sm:grid-cols-1 sm:gap-y-1.5">
-                <div className="flex items-center justify-between gap-3 sm:justify-start">
-                  <dt className="tracking-[0.12em] text-ink-900/45 uppercase">Maintain</dt>
-                  <dd className="font-semibold text-ink-900 sm:ml-2">{plan.maintain}{plan.renewal ? "/bln" : ""}</dd>
-                </div>
-                <div className="flex items-center justify-between gap-3 sm:justify-start">
-                  <dt className="tracking-[0.12em] text-ink-900/45 uppercase">Perpanjangan</dt>
-                  <dd className="font-semibold text-ink-900 sm:ml-2">
-                    {plan.renewal ? `${plan.renewal}/th` : "—"}
-                  </dd>
-                </div>
-              </dl>
-
-              <div className="flex items-center gap-3 sm:col-span-2 sm:flex-col sm:items-stretch sm:gap-2">
-                <a
-                  href={waLink(`Halo mainweb.id, saya tertarik dengan paket ${plan.name} (${plan.build}).`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex-1 px-4 py-2.5 text-center font-mono text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors ${
-                    plan.highlight
-                      ? "bg-brand-600 text-white hover:bg-brand-500"
-                      : "border border-ink-900/25 text-ink-950 hover:border-ink-950 hover:bg-ink-950 hover:text-white"
-                  }`}
-                >
-                  Pesan
-                </a>
-                <Link
-                  href={`/paket/${plan.id}`}
-                  className="flex-1 px-4 py-2.5 text-center font-mono text-[11px] tracking-[0.12em] text-ink-900/50 uppercase transition-colors hover:text-ink-950"
-                >
-                  Detail →
-                </Link>
-              </div>
-            </li>
+              {item}
+            </span>
           ))}
-        </ul>
+        </div>
+
+        <PlanChooser plans={chooserPlans} />
+
+        {/* Sembilan tingkatan, dikelompokkan jadi tiga band harga */}
+        <div className="mt-8">
+          {bands.map((band) => (
+            <div key={band.label} className="mt-6 first:mt-0">
+              <h3 className="flex items-baseline justify-between gap-4 border-b border-line bg-paper py-3 font-mono text-[10px] tracking-[0.18em] uppercase">
+                <span className="text-brand-600">
+                  Tingkat {band.from}–{band.to} · {band.label}
+                </span>
+                <span className="text-ink-900/45">{band.range}</span>
+              </h3>
+              <ul>
+                {plans
+                  .filter((p) => band.ids.includes(p.id))
+                  .map((plan) => (
+                    <li
+                      key={plan.id}
+                      id={`paket-${plan.id}`}
+                      className={`plan-row group relative grid grid-cols-2 gap-4 border-b border-line py-7 transition-colors sm:grid-cols-12 sm:items-center sm:gap-6 ${
+                        plan.highlight
+                          ? "bg-brand-600/[0.06] hover:bg-brand-600/[0.1]"
+                          : "hover:bg-paper"
+                      }`}
+                    >
+                      {plan.highlight && (
+                        <span
+                          className="absolute top-0 left-0 h-full w-0.5 bg-brand-600"
+                          aria-hidden
+                        />
+                      )}
+
+                      <div className="order-1 col-span-2 flex items-baseline gap-3 sm:col-span-4">
+                        <span className="font-mono text-[11px] tracking-[0.1em] text-ink-900/35 tabular-nums">
+                          {idxOf(plan.id)}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-3">
+                            <h4 className="font-display text-xl font-bold tracking-tight sm:text-2xl">
+                              {plan.name}
+                            </h4>
+                            {plan.highlight && (
+                              <span className="bg-brand-600 px-2 py-0.5 font-mono text-[9px] font-semibold tracking-[0.14em] text-white uppercase">
+                                Populer
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-1.5 max-w-[36ch] text-sm leading-relaxed text-ink-900/55">
+                            {plan.tagline}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="order-2 col-span-1 sm:col-span-3">
+                        <p className="font-mono text-2xl font-semibold tracking-tight text-ink-950 sm:text-4xl">
+                          {plan.build}
+                        </p>
+                        <p className="mt-1 font-mono text-[10px] tracking-[0.16em] text-ink-900/45 uppercase">
+                          biaya pembuatan / awal
+                        </p>
+                      </div>
+
+                      <dl className="order-4 col-span-2 grid grid-cols-2 gap-x-6 gap-y-2 font-mono text-xs sm:order-3 sm:col-span-3 sm:grid-cols-1 sm:gap-y-1.5">
+                        <div className="flex items-center justify-between gap-3 sm:justify-start">
+                          <dt className="tracking-[0.12em] text-ink-900/45 uppercase">
+                            Maintain
+                          </dt>
+                          <dd className="font-semibold text-ink-900 sm:ml-2">
+                            {plan.maintain}
+                            {plan.renewal ? "/bln" : ""}
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 sm:justify-start">
+                          <dt className="tracking-[0.12em] text-ink-900/45 uppercase">
+                            Perpanjangan
+                          </dt>
+                          <dd className="font-semibold text-ink-900 sm:ml-2">
+                            {plan.renewal ? `${plan.renewal}/th` : "—"}
+                          </dd>
+                        </div>
+                      </dl>
+
+                      <div className="order-3 col-span-1 flex flex-col gap-2 sm:order-4 sm:col-span-2 sm:items-stretch">
+                        <a
+                          href={waLink(
+                            `Halo mainweb.id, saya tertarik dengan paket ${plan.name} (${plan.build}).`,
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`px-4 py-2.5 text-center font-mono text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors ${
+                            plan.highlight
+                              ? "bg-brand-600 text-white hover:bg-brand-500"
+                              : "border border-ink-900/25 text-ink-950 hover:border-ink-950 hover:bg-ink-950 hover:text-white"
+                          }`}
+                        >
+                          Pesan
+                        </a>
+                        <Link
+                          href={`/paket/${plan.id}`}
+                          className="px-4 py-2.5 text-center font-mono text-[11px] tracking-[0.12em] text-ink-900/50 uppercase transition-colors hover:text-ink-950"
+                        >
+                          Detail →
+                        </Link>
+                      </div>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
         <p className="mt-8 font-mono text-[11px] leading-relaxed tracking-[0.08em] text-ink-900/45">
-          * BASIC — maintain termasuk maks. 1 bulan pertama. Semua paket termasuk SSL,
+          * BASIC: maintain termasuk maks. 1 bulan pertama. Semua paket termasuk SSL,
           desain responsif &amp; SEO dasar.{" "}
           <a
             href={waLink("Halo mainweb.id, saya butuh paket custom.")}

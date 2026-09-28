@@ -5,7 +5,7 @@ import LiveClock from "@/components/LiveClock";
 const stats = [
   { idx: "01", value: "9", label: "Tingkatan paket" },
   { idx: "02", value: "100%", label: "Desain responsif" },
-  { idx: "03", value: "0", label: "Template acakan — semua custom" },
+  { idx: "03", value: "0", label: "Template dipakai ulang" },
   { idx: "04", value: "GRATIS", label: "Konsultasi awal" },
 ];
 
@@ -84,8 +84,8 @@ export default function Hero() {
               className="fade-rise max-w-[46ch] text-lg leading-relaxed font-light text-ink-900/70"
               style={{ animationDelay: "720ms" }}
             >
-              mainweb.id merancang, membangun, dan merawat website untuk bisnis
-              yang serius — dari landing page pertama hingga platform enterprise.
+              mainweb.id merancang dan membangun website untuk bisnis yang
+              serius, dari landing page pertama hingga platform enterprise.
               Sembilan tingkatan paket, satu standar kualitas.
             </p>
 
@@ -110,19 +110,52 @@ export default function Hero() {
               </a>
             </div>
 
+            {/* Kartu terminal — build log yang mengetik sendiri, murni CSS tanpa JS */}
             <div
-              className="fade-rise mt-8 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-ink-900/60"
-              style={{ animationDelay: "900ms" }}
+              className="fade-rise mt-8 max-w-md overflow-hidden border border-ink-950 bg-ink-950 shadow-[0_28px_56px_-28px_rgb(11_18_32/0.55)]"
+              style={{ animationDelay: "860ms" }}
             >
-              <span className="tracking-[0.18em] text-ink-900/40 uppercase">Stack</span>
-              <span aria-hidden className="text-brand-600">/</span>
-              <span>Next.js</span>
-              <span aria-hidden className="text-ink-900/25">·</span>
-              <span>React</span>
-              <span aria-hidden className="text-ink-900/25">·</span>
-              <span>TypeScript</span>
-              <span aria-hidden className="text-ink-900/25">·</span>
-              <span>Tailwind CSS</span>
+              <div className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5 font-mono text-[10px] tracking-[0.14em] text-white/35 uppercase">
+                <span className="h-2 w-2 rounded-full bg-white/20" />
+                <span className="h-2 w-2 rounded-full bg-white/20" />
+                <span className="h-2 w-2 rounded-full bg-white/20" />
+                <span className="ml-2 truncate">~/mainweb · zsh</span>
+                <span className="ml-auto hidden shrink-0 items-center gap-1.5 text-emerald-400/80 sm:flex">
+                  <span className="animate-pulse-dot h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  ci passing
+                </span>
+              </div>
+
+              {/* Progress build — transform sekali jalan, sinkron dengan ketikan */}
+              <div className="h-0.5 w-full bg-white/5" aria-hidden>
+                <div className="term-progress h-full w-full origin-left bg-gradient-to-r from-brand-500 to-emerald-400" />
+              </div>
+
+              <div className="scanlines space-y-2 px-4 py-4 font-mono text-[11px] leading-relaxed text-white/70 sm:text-xs">
+                <p>
+                  <span className="text-emerald-400">$</span>{" "}
+                  <span className="term-type">npm run build</span>
+                </p>
+                <p className="fade-rise text-white/45" style={{ animationDelay: "2.6s" }}>
+                  <span className="text-emerald-400">✓</span> compiled
+                  successfully in 2.4s
+                </p>
+                <p className="fade-rise text-white/45" style={{ animationDelay: "2.75s" }}>
+                  <span className="text-emerald-400">✓</span> 16/16 pages
+                  prerendered
+                </p>
+                <p
+                  className="fade-rise font-semibold text-emerald-400 [text-shadow:0_0_14px_rgb(52_211_153/0.45)]"
+                  style={{ animationDelay: "2.9s" }}
+                >
+                  <span className="animate-pulse-dot mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 align-middle" />
+                  live at mainweb.id
+                </p>
+                <p className="fade-rise" style={{ animationDelay: "3.15s" }}>
+                  <span className="text-emerald-400">$</span>{" "}
+                  <span className="term-caret" aria-hidden />
+                </p>
+              </div>
             </div>
           </div>
 

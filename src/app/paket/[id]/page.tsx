@@ -16,14 +16,14 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const plan = getPlan(id);
   if (!plan) return {};
 
-  const title = `Paket ${plan.name} — ${plan.build}`;
-  const full = `Paket ${plan.name} — ${plan.tagline} Biaya pembuatan ${plan.build}, maintain ${plan.maintain}${
+  const title = `Paket ${plan.name}: ${plan.build}`;
+  const full = `Paket ${plan.name}. ${plan.tagline} Biaya pembuatan ${plan.build}, maintain ${plan.maintain}${
     plan.renewal ? `, perpanjangan ${plan.renewal}/th` : ""
   }.`;
   const description =
     full.length <= 160
       ? full
-      : `Paket ${plan.name} — ${plan.tagline} Lihat spesifikasi, biaya, dan maintain lengkap.`;
+      : `Paket ${plan.name}. ${plan.tagline} Lihat spesifikasi, biaya, dan maintain lengkap.`;
 
   return {
     title,
@@ -79,7 +79,7 @@ export default async function PlanDetailPage({ params }: Params) {
       <div className="border-b border-line pt-14">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase sm:px-6 lg:px-8">
           <span>
-            DOC — LAMPIRAN PAKET / {plan.name.toUpperCase()}
+            DOC · LAMPIRAN PAKET / {plan.name.toUpperCase()}
           </span>
           <span className="hidden sm:block">PAKET {plan.name.toUpperCase()}</span>
           <span className="text-brand-600">AKTIF</span>
@@ -107,7 +107,7 @@ export default async function PlanDetailPage({ params }: Params) {
               </h1>
               <p className="mt-7 max-w-[58ch] leading-relaxed text-ink-900/70">
                 <span className="font-mono text-[11px] font-semibold tracking-[0.16em] text-ink-900/50 uppercase">
-                  Ideal untuk —{" "}
+                  Ideal untuk:{" "}
                 </span>
                 {plan.idealFor}
               </p>
@@ -150,7 +150,7 @@ export default async function PlanDetailPage({ params }: Params) {
                     <span className="transition-transform group-hover:translate-x-1">→</span>
                   </a>
                   <p className="mt-3 text-center font-mono text-[10px] tracking-[0.14em] text-ink-900/40 uppercase">
-                    Konsultasi gratis — tanpa komitmen
+                    Konsultasi gratis, tanpa komitmen
                   </p>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export default async function PlanDetailPage({ params }: Params) {
               Spesifikasi lengkap
             </h2>
             <span className="font-mono text-[11px] tracking-[0.16em] text-ink-900/45 uppercase">
-              {plan.featureGroups.reduce((n, g) => n + g.items.length, 0)} butir — 3 kategori
+              {plan.featureGroups.reduce((n, g) => n + g.items.length, 0)} butir, 3 kategori
             </span>
           </div>
 
@@ -208,7 +208,7 @@ export default async function PlanDetailPage({ params }: Params) {
               </Link>
             ) : (
               <span className="font-mono text-[11px] tracking-[0.14em] text-ink-900/25 uppercase">
-                — Awal daftar
+                Awal daftar
               </span>
             )}
             {next ? (
@@ -220,7 +220,7 @@ export default async function PlanDetailPage({ params }: Params) {
               </Link>
             ) : (
               <span className="font-mono text-[11px] tracking-[0.14em] text-ink-900/25 uppercase sm:text-right">
-                Akhir daftar —
+                Akhir daftar
               </span>
             )}
           </nav>

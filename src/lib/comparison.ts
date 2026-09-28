@@ -80,11 +80,11 @@ export const comparisonSections: CompareSection[] = [
     rows: [
       {
         label: "Revisi desain",
-        values: V(["1x", "2x", "3x", "3x", "Unlimited", "Custom", "Custom", "Custom", "Custom"]),
+        values: V(["1x", "2x", "3x", "3x", "Tanpa batas", "Custom", "Custom", "Custom", "Custom"]),
       },
       {
         label: "Update konten",
-        values: V(["Termasuk*", "1x /bln", "2x /bln", "4x /bln", "Flexible", "Flexible", "Flexible", "Flexible", "Flexible"]),
+        values: V(["Termasuk*", "1x /bln", "2x /bln", "4x /bln", "Fleksibel", "Fleksibel", "Fleksibel", "Fleksibel", "Fleksibel"]),
       },
       {
         label: "Dukungan teknis",

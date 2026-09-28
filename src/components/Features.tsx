@@ -1,33 +1,33 @@
 const features = [
   {
     title: "Pembuatan cepat & profesional",
-    desc: "Timeline jelas di setiap fase — dari blueprint hingga peluncuran. Tanpa molor, tanpa drama.",
-    meta: "DELIVERY / TEROBSERVASI",
+    desc: "Timeline jelas di setiap fase, dari blueprint sampai peluncuran.",
+    meta: "JADWAL",
   },
   {
     title: "Desain elegan & responsif",
-    desc: "Diuji di desktop, tablet, dan smartphone. Tampilan yang dirancang, bukan sekadar disusun.",
-    meta: "DESIGN SYSTEM",
+    desc: "Diuji di desktop, tablet, dan smartphone. Tipografi dan spasi disesuaikan untuk tiap layar.",
+    meta: "DESAIN",
   },
   {
     title: "Anti lemot & SEO friendly",
-    desc: "Core Web Vitals hijau, struktur konten teroptimasi mesin pencari sejak hari pertama.",
-    meta: "PERFORMANCE / SEO",
+    desc: "Core Web Vitals hijau dan struktur konten teroptimasi mesin pencari sejak hari pertama.",
+    meta: "PERFORMA",
   },
   {
     title: "Mudah dikelola sendiri",
-    desc: "CMS lengkap untuk mengubah konten kapan saja — tanpa menyentuh satu baris kode pun.",
-    meta: "CMS / AUTONOMI",
+    desc: "CMS lengkap untuk mengubah konten kapan saja, tanpa menyentuh kode.",
+    meta: "CMS",
   },
   {
     title: "Tim berpengalaman",
     desc: "Developer dan desainer yang sudah menangani berbagai industri, dari UMKM hingga korporasi.",
-    meta: "PEOPLE / SENIORITY",
+    meta: "TIM",
   },
   {
     title: "Konsultasi gratis",
-    desc: "Diskusikan kebutuhan Anda dulu — kami bantu memetakan solusi sebelum Anda memutuskan.",
-    meta: "COMMENCEMENT / 0 rupiah",
+    desc: "Diskusikan kebutuhan Anda dulu; kami memetakan solusi sebelum Anda memutuskan.",
+    meta: "GRATIS",
   },
 ];
 
@@ -45,8 +45,8 @@ export default function Features() {
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-ink-900/60">
-            Enam alasan yang bisa diverifikasi — bukan klaim, melainkan cara
-            kerja yang kami jalankan di setiap proyek.
+            Enam hal berikut bisa Anda periksa sendiri; semuanya memang kami
+            jalankan di setiap proyek.
           </p>
         </div>
 

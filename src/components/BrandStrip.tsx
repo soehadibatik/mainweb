@@ -16,15 +16,14 @@ export default function BrandStrip() {
               Identitas
             </p>
             <h2 className="mt-4 font-display text-4xl font-black tracking-[-0.03em] text-ink-950 sm:text-5xl">
-              Satu logo,
+              Seluruh desain
               <br />
-              satu sistem desain
+              bermula dari logo
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-ink-900/60">
-            Seluruh situs ini diturunkan dari satu aset: logo utama mainweb.id.
-            Warna dan tipografi di bawah adalah sistem yang mengikat setiap
-            halaman.
+            Warna dan tipografi di bawah diambil langsung dari logo utama
+            mainweb.id, lalu dipakai konsisten di setiap halaman.
           </p>
         </div>
 
@@ -32,7 +31,7 @@ export default function BrandStrip() {
           {/* Spesimen logo */}
           <div className="bg-paper p-8 lg:col-span-5">
             <p className="font-mono text-[10px] tracking-[0.18em] text-ink-900/45 uppercase">
-              Logotype — logo-mainweb.png
+              Logotype / logo-mainweb.png
             </p>
             <div className="mt-6 flex items-center gap-6">
               <div className="border border-line bg-white p-6">
@@ -53,14 +52,14 @@ export default function BrandStrip() {
               </div>
             </div>
             <p className="mt-5 font-mono text-[10px] leading-relaxed tracking-[0.1em] text-ink-900/40 uppercase">
-              Dua varian: orisinal &amp; putih — 1672×941 px, RGBA
+              Dua varian, orisinal dan putih, 1672×941 px, RGBA
             </p>
           </div>
 
           {/* Swatch warna */}
           <div className="bg-paper p-8 lg:col-span-4">
             <p className="font-mono text-[10px] tracking-[0.18em] text-ink-900/45 uppercase">
-              Palet — hasil ekstraksi logo
+              Palet / hasil ekstraksi logo
             </p>
             <ul className="mt-6 space-y-3">
               {swatches.map((s) => (
@@ -95,7 +94,7 @@ export default function BrandStrip() {
             <p className="mt-2 font-mono text-xs text-ink-900/60">Archivo Black</p>
             <p className="mt-6 font-mono text-4xl font-semibold text-ink-950">09</p>
             <p className="mt-2 font-mono text-xs text-ink-900/60">
-              IBM Plex Mono — harga &amp; metadata
+              IBM Plex Mono, harga &amp; metadata
             </p>
             <p className="mt-6 text-sm font-light text-ink-900/60">
               IBM Plex Sans untuk body teks.

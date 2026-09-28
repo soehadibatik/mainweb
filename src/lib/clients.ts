@@ -48,3 +48,9 @@ const atah: Client[] = [
 
 export const featured = featuredList;
 export const clients: Client[] = [...featuredList, ...ecosystem, ...atah];
+
+export const groups: { id: string; label: string; items: Client[] }[] = [
+  { id: "unggulan", label: "Unggulan", items: featuredList },
+  { id: "ekosistem", label: "Ekosistem batik", items: ecosystem },
+  { id: "lainnya", label: "Proyek lain", items: atah },
+];

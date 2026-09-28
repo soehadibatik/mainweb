@@ -2,9 +2,9 @@ const steps = [
   { title: "Konsultasi ide", desc: "Ceritakan tujuan bisnis Anda. Kami petakan kebutuhan, tanpa biaya." },
   { title: "Paket & domain", desc: "Tentukan tingkatan paket dan nama domain yang paling menguntungkan." },
   { title: "Pemesanan", desc: "Konfirmasi ruang lingkup dan pembayaran. Pengerjaan dijadwalkan." },
-  { title: "Penyerahan konten", desc: "Kirim teks, foto, dan aset brand. Kami yang menata menjadi halaman." },
-  { title: "Pengerjaan", desc: "Tim membangun situs Anda — desain, kode, konten, pengujian." },
-  { title: "Peluncuran", desc: "Situs tayang, terukur, dan siap menghasilkan. Maintenance dimulai." },
+  { title: "Penyerahan konten", desc: "Kirim teks, foto, dan aset brand. Kami menatanya jadi halaman." },
+  { title: "Pengerjaan", desc: "Tim mengerjakan desain, kode, dan pengujian dalam satu alur." },
+  { title: "Peluncuran", desc: "Situs tayang dan langsung dipantau. Maintenance pun dimulai." },
 ];
 
 export default function Process() {
@@ -17,12 +17,12 @@ export default function Process() {
               Cara kerja
             </p>
             <h2 className="mt-4 font-display text-4xl font-black tracking-[-0.03em] text-ink-950 sm:text-5xl">
-              Enam langkah, nol kejutan
+              Dari konsultasi sampai peluncuran
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-ink-900/60">
-            Proses yang sama dijalankan untuk paket Basic maupun Pro Max —
-            yang berubah hanya skala dan kedalaman fiturnya.
+            Prosesnya sama untuk paket Basic maupun Pro Max; yang berubah
+            hanya skalanya.
           </p>
         </div>
 

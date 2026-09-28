@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { featured } from "@/lib/clients";
+import { clients, featured } from "@/lib/clients";
 
 export default function Clients() {
   return (
@@ -17,8 +17,8 @@ export default function Clients() {
           </div>
           <div className="flex flex-col items-start gap-4">
             <p className="max-w-sm text-sm leading-relaxed text-ink-900/60">
-              Logo resmi masing-masing klien. Klik salah satu untuk membuka
-              situsnya langsung.
+              Di sini kami tampilkan {featured.length} pilihan, dari toko online
+              sampai situs monitoring. Logo diambil dari situsnya sendiri.
             </p>
             <Link
               href="/klien"
@@ -30,14 +30,25 @@ export default function Clients() {
         </div>
 
         <ul className="mt-10 grid grid-cols-2 border-t border-l border-line sm:grid-cols-3 lg:grid-cols-6">
-          {featured.map((c) => (
+          {featured.map((c, i) => (
             <li key={c.domain}>
               <a
                 href={`https://${c.domain}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full flex-col items-center gap-5 border-r border-b border-line px-4 py-8 text-center transition-colors hover:bg-paper sm:py-10"
+                className="group flex h-full flex-col gap-4 border-r border-b border-line px-4 py-7 text-center transition-colors hover:bg-paper hover:shadow-[inset_0_0_0_1px_rgba(0,71,247,0.35)] sm:py-9"
               >
+                <span className="flex items-center justify-between font-mono text-[10px] tracking-[0.16em]">
+                  <span className="text-ink-900/25 transition-colors group-hover:text-brand-600">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="translate-x-1.5 text-transparent transition-all duration-300 group-hover:translate-x-0 group-hover:text-brand-600"
+                  >
+                    ↗
+                  </span>
+                </span>
                 <span className="flex h-12 w-full items-center justify-center sm:h-14">
                   <Image
                     src={c.logo}
@@ -45,11 +56,16 @@ export default function Clients() {
                     width={c.w}
                     height={c.h}
                     loading="lazy"
-                    className="max-h-10 w-auto max-w-full object-contain opacity-85 transition duration-300 group-hover:opacity-100 sm:max-h-11"
+                    className="max-h-10 w-auto max-w-full object-contain opacity-85 transition duration-300 group-hover:scale-105 group-hover:opacity-100 sm:max-h-11"
                   />
                 </span>
-                <span className="font-mono text-[10px] tracking-[0.16em] text-ink-900/55 uppercase transition-colors group-hover:text-ink-950">
-                  {c.name}
+                <span className="space-y-1.5">
+                  <span className="block font-mono text-[10px] tracking-[0.16em] text-ink-900/55 uppercase transition-colors group-hover:text-ink-950">
+                    {c.name}
+                  </span>
+                  <span className="hidden font-mono text-[10px] tracking-[0.08em] text-ink-900/35 transition-colors group-hover:text-ink-900/70 sm:block">
+                    {c.domain}
+                  </span>
                 </span>
               </a>
             </li>
@@ -57,7 +73,8 @@ export default function Clients() {
         </ul>
 
         <p className="mt-6 font-mono text-[11px] tracking-[0.14em] text-ink-900/45 uppercase">
-          {featured.length} situs tampil · klik logo untuk membuka
+          {featured.length} dari {clients.length} situs · klik logo untuk
+          membuka di tab baru
         </p>
       </div>
     </section>

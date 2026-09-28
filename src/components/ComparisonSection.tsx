@@ -1,4 +1,8 @@
 import PricingComparison from "@/components/PricingComparison";
+import { comparisonSections } from "@/lib/comparison";
+import { plans } from "@/lib/plans";
+
+const rowCount = comparisonSections.reduce((n, s) => n + s.rows.length, 0);
 
 export default function ComparisonSection() {
   return (
@@ -10,12 +14,12 @@ export default function ComparisonSection() {
               Matriks
             </p>
             <h2 className="mt-4 font-display text-4xl font-black tracking-[-0.03em] text-ink-950 sm:text-5xl">
-              Bandingkan sekaligus
+              Bandingkan semua paket
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-ink-900/60">
-            Dua puluh dua baris spesifikasi, sembilan paket. Sembunyikan yang
-            tidak relevan — sisanya bicara sendiri.
+            {rowCount} baris spesifikasi, {plans.length} paket. Sembunyikan
+            baris yang tidak relevan, lalu bandingkan sisanya.
           </p>
         </div>
 

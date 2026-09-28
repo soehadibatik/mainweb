@@ -219,7 +219,7 @@ export default function PricingComparison() {
 
       <p className="mt-4 font-mono text-[11px] leading-relaxed text-ink-900/50">
         * Maintain paket Basic termasuk hingga 1 bulan pertama. Spesifikasi dapat
-        disesuaikan —{" "}
+        disesuaikan;{" "}
         <a
           href={waLink("Halo mainweb.id, saya butuh paket custom.")}
           target="_blank"

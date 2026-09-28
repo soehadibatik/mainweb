@@ -20,10 +20,10 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper/85 text-ink-950 backdrop-blur-md">
       <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3" aria-label="mainweb.id — beranda">
+        <Link href="/" className="flex items-center gap-3" aria-label="mainweb.id, beranda">
           <Image
             src="/logo-mainweb.png"
-            alt="mainweb.id — web consultancy"
+            alt="mainweb.id, jasa pembuatan website"
             width={160}
             height={90}
             priority

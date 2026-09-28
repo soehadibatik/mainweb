@@ -46,7 +46,7 @@ export const plans: Plan[] = [
       {
         title: "Teknis & Performa",
         items: [
-          "Website anti lemot, performa optimal",
+          "Website ringan, cepat dibuka termasuk di jaringan seluler",
           "SEO dasar (meta tag, heading terstruktur)",
           "SSL certificate (https)",
           "Integrasi Google Analytics",
@@ -170,7 +170,7 @@ export const plans: Plan[] = [
     build: "Rp 10 jt",
     maintain: "Rp 750 rb",
     renewal: "Rp 2 jt",
-    idealFor: "Bisnis yang ingin update konten sendiri tanpa coding — artikel, produk, atau galeri bisa diatur dari dashboard.",
+    idealFor: "Bisnis yang ingin update konten sendiri tanpa coding: artikel, produk, dan galeri diatur dari dashboard.",
     featureGroups: [
       {
         title: "Desain & Halaman",
@@ -413,11 +413,11 @@ export const plans: Plan[] = [
     id: "pro-max-proficient",
     name: "Pro Max Proficient",
     short: "Pro Max Prof.",
-    tagline: "Solusi berskala terbesar dengan tim khusus untuk Anda.",
+    tagline: "Paket terbesar, dikerjakan tim tersendiri untuk Anda.",
     build: "Rp 100 jt",
     maintain: "Rp 50 jt",
     renewal: "Rp 20 jt",
-    idealFor: "Korporasi & grup usaha yang butuh ekosistem digital menyeluruh dengan tim khusus yang bekerja khusus untuk Anda.",
+    idealFor: "Korporasi & grup usaha yang butuh ekosistem digital menyeluruh, dari situs korporat sampai aplikasi internal, dengan tim khusus.",
     featureGroups: [
       {
         title: "Desain & Halaman",
@@ -444,7 +444,7 @@ export const plans: Plan[] = [
       {
         title: "Dukungan",
         items: [
-          "Maintenance Rp 50 jt/bln — tim khusus untuk Anda",
+          "Maintenance Rp 50 jt/bln, tim khusus untuk Anda",
           "Squad dedikasi: PM, engineer, QA, designer",
           "Perpanjangan tahunan Rp 20 jt/th termasuk maintenance",
           "SLA tertinggi + meeting strategi bulanan",

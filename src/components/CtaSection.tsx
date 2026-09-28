@@ -10,9 +10,9 @@ export default function CtaSection() {
           </p>
 
           <h2 className="mt-8 max-w-4xl font-display text-[clamp(2.5rem,6.5vw,5rem)] leading-[0.95] font-black tracking-[-0.04em] text-balance">
-            Dokumen tarif sudah Anda baca.
+            Tinggal pilih paketnya.
             <br />
-            <span className="text-white/55">Sekarang tulis babak baru bisnis Anda.</span>
+            <span className="text-white/55">Kami yang mengerjakan sisanya.</span>
           </h2>
 
           <div className="mt-12 flex flex-col gap-3 sm:flex-row">
@@ -34,7 +34,7 @@ export default function CtaSection() {
           </div>
 
           <p className="mt-8 font-mono text-[11px] tracking-[0.14em] text-white/60 uppercase">
-            Respons &lt; 1×24 jam — tanpa komitmen
+            Respons &lt; 1×24 jam, tanpa komitmen
           </p>
       </div>
     </section>

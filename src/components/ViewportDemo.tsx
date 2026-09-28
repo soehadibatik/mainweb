@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const MIN_W = 320;
 
@@ -10,6 +10,12 @@ function breakpointOf(w: number) {
   return "Desktop";
 }
 
+const subscribeReduced = (cb: () => void) => {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+};
+
 /**
  * Viewport Hidup — mini-browser yang bisa diseret lebarnya.
  * Layout di dalam me-reflow nyata via container queries (@lg/@2xl).
@@ -18,15 +24,36 @@ function breakpointOf(w: number) {
 export default function ViewportDemo() {
   const [width, setWidth] = useState(680);
   const [auto, setAuto] = useState(true);
+  const [inView, setInView] = useState(true);
   const raf = useRef<number | null>(null);
   const last = useRef<number>(0);
   const dir = useRef<1 | -1>(1);
   const zone = useRef<HTMLDivElement | null>(null);
+  const root = useRef<HTMLDivElement | null>(null);
   const dragging = useRef(false);
+  const [forced, setForced] = useState(false);
 
-  // Auto-play sweep
+  // prefers-reduced-motion sebagai store eksternal (aman untuk hydration)
+  const reducedMotion = useSyncExternalStore(
+    subscribeReduced,
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false,
+  );
+
+  // Jeda sweep saat demo tidak terlihat (hemat baterai saat scroll)
   useEffect(() => {
-    if (!auto) return;
+    const el = root.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => setInView(e.intersectionRatio >= 0.25), {
+      threshold: [0, 0.25],
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Auto-play sweep — hanya berjalan saat terlihat & bukan reduced-motion
+  useEffect(() => {
+    if (!auto || !inView || (reducedMotion && !forced)) return;
     const tick = (t: number) => {
       if (!last.current) last.current = t;
       const dt = t - last.current;
@@ -50,7 +77,7 @@ export default function ViewportDemo() {
       if (raf.current) cancelAnimationFrame(raf.current);
       last.current = 0;
     };
-  }, [auto]);
+  }, [auto, inView, reducedMotion, forced]);
 
   const stopAuto = useCallback(() => setAuto(false), []);
 
@@ -90,17 +117,20 @@ export default function ViewportDemo() {
 
   const bp = breakpointOf(width);
 
+  // Status tombol: sweep berjalan, atau demo sudah diminta manual
+  const playing = auto && !(reducedMotion && !forced);
+
   const preset = (w: number) => {
     stopAuto();
     setWidth(w);
   };
 
   return (
-    <div className="w-full">
+    <div ref={root} className="w-full">
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <span className="order-1 font-mono text-[11px] tabular-nums text-ink-900/55">
-          {Math.round(width)}px — {bp}
+          {Math.round(width)}px · {bp}
         </span>
         <div className="order-3 flex w-full gap-2 sm:order-2 sm:w-auto">
           {[
@@ -122,10 +152,11 @@ export default function ViewportDemo() {
             </button>
           ))}
         </div>
-        {!auto ? (
+        {!playing ? (
           <button
             type="button"
             onClick={() => {
+              setForced(true);
               setAuto(true);
               dir.current = 1;
             }}
@@ -251,7 +282,7 @@ export default function ViewportDemo() {
       </div>
 
       <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-900/45">
-        Seret garis biru — layar di dalam benar-benar berubah
+        Seret garis biru, layar di dalam ikut berubah
       </p>
     </div>
   );

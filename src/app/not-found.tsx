@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { plans } from "@/lib/plans";
-import { site, waLink } from "@/lib/site";
+import { waLink } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "404 — Halaman tidak ditemukan",
+  title: "404: Halaman tidak ditemukan",
 };
 
 export default function NotFound() {
@@ -13,7 +13,7 @@ export default function NotFound() {
       {/* Meta bar dokumen */}
       <div className="border-b border-line pt-14">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase sm:px-6 lg:px-8">
-          <span>DOC — ERROR</span>
+          <span>DOC · ERROR</span>
           <span className="hidden sm:block">HALAMAN TIDAK TERDAFTAR</span>
           <span className="text-brand-600">STATUS 404</span>
         </div>
@@ -30,8 +30,8 @@ export default function NotFound() {
             404
           </p>
           <p className="mt-6 max-w-[52ch] text-lg leading-relaxed font-light text-ink-900/70">
-            Halaman yang Anda cari tidak ada dalam arsip ini — mungkin pindah,
-            diganti nama, atau belum pernah dibuat. Berikut yang tersedia.
+            Halaman yang Anda cari mungkin sudah dipindah atau memang belum
+            pernah dibuat. Yang tersedia ada di bawah.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -89,14 +89,15 @@ export default function NotFound() {
           </ul>
 
           <p className="mt-8 font-mono text-[11px] leading-relaxed text-ink-900/50">
-            Mencari sesuatu yang lain? {site.description.split(" — ")[0]} —{" "}
+            Tidak menemukan yang Anda cari? Bicarakan langsung dengan kami
+            lewat{" "}
             <a
               href={waLink()}
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold text-brand-600 hover:underline"
             >
-              hubungi kami
+              WhatsApp
             </a>
             .
           </p>
