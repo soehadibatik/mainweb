@@ -93,7 +93,7 @@ export default async function Pricing() {
         <div className="mt-8">
           {bands.map((band) => (
             <div key={band.label} className="mt-6 first:mt-0">
-              <h3 className="flex items-baseline justify-between gap-4 border-b border-line bg-paper py-3 font-mono text-[10px] tracking-[0.18em] uppercase">
+              <h3 className="flex flex-col items-start gap-1 border-b border-line bg-paper py-3 font-mono text-[10px] tracking-[0.18em] uppercase sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
                 <span className="text-brand-600">
                   Tingkat {band.from}–{band.to} · {band.label}
                 </span>
@@ -106,7 +106,7 @@ export default async function Pricing() {
                     <li
                       key={plan.id}
                       id={`paket-${plan.id}`}
-                      className={`plan-row group relative grid grid-cols-2 gap-4 border-b border-line py-7 transition-colors sm:grid-cols-12 sm:items-center sm:gap-6 ${
+                      className={`plan-row group relative grid grid-cols-1 gap-4 border-b border-line py-6 transition-colors lg:grid-cols-12 lg:items-center lg:gap-6 lg:py-7 ${
                         plan.highlight
                           ? "bg-brand-600/[0.06] hover:bg-brand-600/[0.1]"
                           : "hover:bg-paper"
@@ -119,7 +119,7 @@ export default async function Pricing() {
                         />
                       )}
 
-                      <div className="order-1 col-span-2 flex items-baseline gap-3 sm:col-span-4">
+                      <div className="col-span-1 flex items-baseline gap-3 lg:col-span-4">
                         <span className="font-mono text-[11px] tracking-[0.1em] text-ink-900/35 tabular-nums">
                           {idxOf(plan.id)}
                         </span>
@@ -140,7 +140,7 @@ export default async function Pricing() {
                         </div>
                       </div>
 
-                      <div className="order-2 col-span-1 sm:col-span-3">
+                      <div className="col-span-1 lg:col-span-3">
                         <p className="font-mono text-2xl font-semibold tracking-tight text-ink-950 sm:text-4xl">
                           {plan.build}
                         </p>
@@ -149,34 +149,34 @@ export default async function Pricing() {
                         </p>
                       </div>
 
-                      <dl className="order-4 col-span-2 grid grid-cols-2 gap-x-6 gap-y-2 font-mono text-xs sm:order-3 sm:col-span-3 sm:grid-cols-1 sm:gap-y-1.5">
-                        <div className="flex items-center justify-between gap-3 sm:justify-start">
+                      <dl className="col-span-1 flex flex-wrap items-baseline gap-x-5 gap-y-1 font-mono text-xs lg:col-span-3 lg:grid lg:grid-cols-1 lg:gap-y-1.5">
+                        <div className="flex items-baseline gap-2 lg:gap-3">
                           <dt className="tracking-[0.12em] text-ink-900/45 uppercase">
                             Maintain
                           </dt>
-                          <dd className="font-semibold text-ink-900 sm:ml-2">
+                          <dd className="font-semibold text-ink-900">
                             {plan.maintain}
                             {plan.renewal ? "/bln" : ""}
                           </dd>
                         </div>
-                        <div className="flex items-center justify-between gap-3 sm:justify-start">
+                        <div className="flex items-baseline gap-2 lg:gap-3">
                           <dt className="tracking-[0.12em] text-ink-900/45 uppercase">
                             Perpanjangan
                           </dt>
-                          <dd className="font-semibold text-ink-900 sm:ml-2">
+                          <dd className="font-semibold text-ink-900">
                             {plan.renewal ? `${plan.renewal}/th` : "—"}
                           </dd>
                         </div>
                       </dl>
 
-                      <div className="order-3 col-span-1 flex flex-col gap-2 sm:order-4 sm:col-span-2 sm:items-stretch">
+                      <div className="col-span-1 flex gap-2 sm:max-w-xs lg:col-span-2 lg:max-w-none lg:flex-col lg:items-stretch">
                         <a
                           href={waLink(
                             `Halo mainweb.id, saya tertarik dengan paket ${plan.name} (${plan.build}).`,
                           )}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`px-4 py-2.5 text-center font-mono text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors ${
+                          className={`flex-1 px-4 py-3 text-center font-mono text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors lg:flex-none lg:py-2.5 ${
                             plan.highlight
                               ? "bg-brand-600 text-white hover:bg-brand-500"
                               : "border border-ink-900/25 text-ink-950 hover:border-ink-950 hover:bg-ink-950 hover:text-white"
@@ -186,7 +186,7 @@ export default async function Pricing() {
                         </a>
                         <Link
                           href={`/paket/${plan.id}`}
-                          className="px-4 py-2.5 text-center font-mono text-[11px] tracking-[0.12em] text-ink-900/50 uppercase transition-colors hover:text-ink-950"
+                          className="flex-1 border border-ink-900/20 px-4 py-3 text-center font-mono text-[11px] tracking-[0.12em] text-ink-900/60 uppercase transition-colors hover:border-ink-900/60 hover:text-ink-950 lg:flex-none lg:border-0 lg:py-2.5"
                         >
                           Detail →
                         </Link>

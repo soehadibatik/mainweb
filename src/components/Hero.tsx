@@ -59,7 +59,7 @@ export default function Hero() {
 
         {/* Judul — membulat penuh lebar, melewati tepi bidang biru */}
         <div className="relative pt-12 sm:pt-16">
-          <h1 className="font-display text-[clamp(2.75rem,7.4vw,6rem)] leading-[0.92] font-black tracking-[-0.045em] text-balance">
+          <h1 className="font-display text-[clamp(2.25rem,7.4vw,6rem)] leading-[0.92] font-black tracking-[-0.045em] text-balance">
             <span className="word-mask"><span className="word-rise" style={{ animationDelay: line1[0].delay }}>{line1[0].text}</span></span>{" "}
             <span className="word-mask"><span className="word-rise" style={{ animationDelay: line1[1].delay }}>{line1[1].text}</span></span>{" "}
             <span className="word-mask"><span className="word-rise" style={{ animationDelay: line1[2].delay }}>{line1[2].text}</span></span>
