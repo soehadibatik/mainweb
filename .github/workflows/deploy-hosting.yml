@@ -1,0 +1,184 @@
+name: Deploy to Domainesia Hosting
+
+# Static export (out/) -> folder domain di shared hosting Domainesia via SSH + rsync.
+# Perlu repo Variables + Secret, lihat docs/DEPLOY-DOMAINESIA.md.
+#
+# Kalau konfigurasi belum diisi, job SKIP (hijau) — bukan gagal. Jadi aman
+# dipush ke branch main project yang hosting-nya belum disiapkan.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true = rsync dry-run, tidak menulis ke server"
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-hosting-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  H_HOST: ${{ vars.HOSTING_HOST }}
+  H_USER: ${{ vars.HOSTING_USER }}
+  H_PATH: ${{ vars.HOSTING_PATH }}
+  H_PORT: ${{ vars.HOSTING_PORT }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check hosting config
+        id: cfg
+        env:
+          KEY: ${{ secrets.HOSTING_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$H_HOST" ] || [ -z "$H_USER" ] || [ -z "$H_PATH" ] || [ -z "$KEY" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "### ⏭️ Deploy hosting di-skip"
+              echo
+              echo "Konfigurasi belum lengkap. Isi repo **Variables**:"
+              echo '`HOSTING_HOST`, `HOSTING_USER`, `HOSTING_PATH`, `HOSTING_PORT`'
+              echo "dan secret \`HOSTING_SSH_KEY\`."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+          echo "target=$H_USER@$H_HOST:$H_PATH (port ${H_PORT:-64000})" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Siapkan SSH
+        if: steps.cfg.outputs.enabled == 'true'
+        env:
+          KEY: ${{ secrets.HOSTING_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          {
+            echo "Host hosting"
+            echo "  HostName $H_HOST"
+            # Domainesia shared hosting: SSH/SFTP = port 64000 (bukan 22)
+            echo "  Port ${H_PORT:-64000}"
+            echo "  User $H_USER"
+            echo "  IdentityFile ~/.ssh/deploy_key"
+            echo "  IdentitiesOnly yes"
+            echo "  StrictHostKeyChecking accept-new"
+            echo "  ServerAliveInterval 30"
+          } > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: Koneksi SSH
+        if: steps.cfg.outputs.enabled == 'true'
+        run: |
+          ssh hosting 'echo "connected as $(whoami)@$(hostname)"; pwd'
+
+      - uses: actions/setup-node@v4
+        if: steps.cfg.outputs.enabled == 'true'
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: npm ci
+        if: steps.cfg.outputs.enabled == 'true'
+        run: npm ci
+
+      # Build static export butuh API key: generateStaticParams() memanggil
+      # /api/v1/articles, dan tanpa key hasilnya 401 -> params kosong ->
+      # Next.js gagal dengan "missing generateStaticParams()".
+      - name: Tulis .env dari secrets
+        if: steps.cfg.outputs.enabled == 'true'
+        env:
+          API_KEY: ${{ secrets.BATIKSOEHADI_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -n "$API_KEY" ]; then
+            printf 'BATIKSOEHADI_API_KEY=%s\n' "$API_KEY" > .env
+          else
+            echo "::warning::Secret BATIKSOEHADI_API_KEY kosong — build bisa gagal di route dinamis"
+            : > .env
+          fi
+
+      - name: npm run build
+        if: steps.cfg.outputs.enabled == 'true'
+        run: npm run build
+
+      - name: Validasi out/
+        if: steps.cfg.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          test -f out/index.html || { echo "::error::out/index.html tidak ada — static export gagal?"; exit 1; }
+          echo "out/ berisi $(find out -type f | wc -l | tr -d ' ') file" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Pastikan folder tujuan ada
+        if: steps.cfg.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          ssh hosting "mkdir -p '$H_PATH' && test -d '$H_PATH'" \
+            || { echo "::error::Gagal menyiapkan '$H_PATH'. Cek HOSTING_PATH & hak akses folder."; exit 1; }
+
+      # cPanel menyimpan file konfigurasi sendiri di dalam folder domain:
+      #   .htaccess  -> directive PHP cPanel (jangan dihapus)
+      #   .user.ini  -> setting PHP per-folder (jangan dihapus)
+      #   php.ini    -> salinan cPanel (jangan dihapus)
+      #   .well-known/ -> dipakai AutoSSL/acme-challenge, hapus = renewal SSL gagal
+      # Semuanya dikecualikan dari --delete supaya aman.
+      - name: Proteksi file cPanel
+        if: steps.cfg.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          cat > /tmp/rsync-filter <<'EOF'
+          protect .htaccess
+          protect .user.ini
+          protect php.ini
+          protect .well-known/
+          EOF
+          echo "filter dibuat:"
+          cat /tmp/rsync-filter
+
+      - name: rsync dry-run
+        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run == true
+        run: |
+          set -euo pipefail
+          rsync -azn --delete --stats \
+            --filter 'merge /tmp/rsync-filter' \
+            --exclude '.well-known/' \
+            out/ "hosting:$H_PATH/"
+
+      - name: rsync out/ ke hosting
+        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        run: |
+          set -euo pipefail
+          rsync -az --delete --stats \
+            --filter 'merge /tmp/rsync-filter' \
+            --exclude '.well-known/' \
+            out/ "hosting:$H_PATH/"
+
+      - name: Pastikan file cPanel masih ada
+        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        run: |
+          set -euo pipefail
+          ssh hosting "
+            miss=0
+            for f in .htaccess .user.ini php.ini; do
+              [ -f '$H_PATH'/\$f ] || { echo \"::error::\$f hilang di \$H_PATH\"; miss=1; }
+            done
+            [ -d '$H_PATH'/.well-known ] || { echo \"::error::.well-known hilang di \$H_PATH\"; miss=1; }
+            exit \$miss
+          "
+
+      - name: Verifikasi
+        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        run: |
+          set -euo pipefail
+          ssh hosting "ls -1 '$H_PATH' | head -20"
+          {
+            echo
+            echo "### ✅ Ter-deploy ke \`$H_USER@$H_HOST:$H_PATH\`"
+          } >> "$GITHUB_STEP_SUMMARY"

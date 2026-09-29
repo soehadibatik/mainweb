@@ -1,0 +1,72 @@
+name: Discover Domainesia folders
+
+# Manual: connect SSH ke hosting lalu listing folder yang tersedia.
+# Jalankan sekali per repo untuk tahu nama folder domain yang sebenarnya,
+# hasilnya dipakai untuk mengisi Variable HOSTING_PATH.
+#
+# Butuh secret HOSTING_SSH_KEY + Variables HOSTING_HOST / HOSTING_USER / HOSTING_PORT.
+
+on:
+  workflow_dispatch:
+    inputs:
+      subpath:
+        description: "Folder yang mau dilisting (kosong = home directory)"
+        required: false
+        default: ""
+      detail:
+        description: "true = ls -la (mode/owner/ukuran)"
+        type: boolean
+        default: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Siapkan SSH
+        env:
+          KEY: ${{ secrets.HOSTING_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$KEY" ] || [ -z "${{ vars.HOSTING_HOST }}" ] || [ -z "${{ vars.HOSTING_USER }}" ]; then
+            echo "::error::Butuh secret HOSTING_SSH_KEY + Variables HOSTING_HOST & HOSTING_USER."
+            exit 1
+          fi
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          {
+            echo "Host hosting"
+            echo "  HostName ${{ vars.HOSTING_HOST }}"
+            echo "  Port ${{ vars.HOSTING_PORT || '64000' }}"
+            echo "  User ${{ vars.HOSTING_USER }}"
+            echo "  IdentityFile ~/.ssh/deploy_key"
+            echo "  IdentitiesOnly yes"
+            echo "  StrictHostKeyChecking accept-new"
+          } > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: Test koneksi
+        run: |
+          set -euo pipefail
+          ssh hosting 'echo "connected: $(whoami)@$(hostname)"'
+          {
+            echo "### ✅ SSH jalan"
+            echo '```'
+            ssh hosting 'pwd; echo; ls -1 ~/'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: List folder
+        env:
+          SUB: ${{ inputs.subpath }}
+          DETAIL: ${{ inputs.detail }}
+        run: |
+          set -euo pipefail
+          FLAG=ls
+          [ "$DETAIL" = "true" ] && FLAG="ls -la"
+          {
+            echo "### 📂 \`${SUB:-$HOME/public_html}\`"
+            echo '```'
+            ssh hosting "$FLAG -- '${SUB:-$HOME/public_html}'"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

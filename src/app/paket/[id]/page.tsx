@@ -7,6 +7,9 @@ import JsonLd from "@/components/JsonLd";
 
 type Params = { params: Promise<{ id: string }> };
 
+// Static export: slug yang tidak dikenal harus 404, bukan dirender saat runtime.
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const plans = await getPlans();
   return plans.map((plan) => ({ id: plan.id }));

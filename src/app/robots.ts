@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/lib/site";
 
+// Wajib untuk output: "export" — route metadata harus statis.
+export const dynamic = "force-static";
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
