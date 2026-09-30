@@ -7,6 +7,11 @@ import { useEffect, useState } from "react";
  * dibaca, dihapus lebih cepat, lalu mengetik kalimat berikutnya.
  * Siklus berulang ini permintaan eksplisit pemilik situs; temponya dibuat
  * santai dan tetap hormat prefers-reduced-motion (fallback: teks statis).
+ *
+ * SSR dan render awal menampilkan kalimat pertama SECARA PENUH: pembaca
+ * tanpa JS (atau yang hydration-nya telat) tetap membaca headline lengkap,
+ * bukan baris kosong dengan caret menyala. Siklus ketik baru mulai setelah
+ * fase hold pertama, jadi tidak ada kilatan teks hilang saat hydration.
  */
 const PHRASES = [
   "Jasa pembuatan website profesional, mulai Rp 1,5 jt, harga tertulis di muka.",
@@ -24,9 +29,10 @@ const REST_MS = 1200; // baris kosong sesaat sebelum siklus baru
 type Phase = "typing" | "hold" | "erasing" | "rest";
 
 export default function CoderHeading() {
+  // Mulai dari kalimat pertama penuh (fase hold): identik dengan SSR.
   const [phraseIndex, setPhraseIndex] = useState(0);
-  const [length, setLength] = useState(0);
-  const [phase, setPhase] = useState<Phase>("typing");
+  const [length, setLength] = useState(PHRASES[0].length);
+  const [phase, setPhase] = useState<Phase>("hold");
   const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
