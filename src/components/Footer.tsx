@@ -80,6 +80,14 @@ export default function Footer() {
 
         <div className="mt-16 flex flex-col justify-between gap-3 border-t border-line pt-6 font-mono text-[10px] tracking-[0.16em] text-ink-900/40 uppercase sm:flex-row">
           <p>© {new Date().getFullYear()} mainweb.id, hak cipta dilindungi</p>
+          <p className="flex gap-4">
+            <Link className="transition-colors hover:text-brand-600" href="/kebijakan-privasi">
+              Kebijakan privasi
+            </Link>
+            <Link className="transition-colors hover:text-brand-600" href="/syarat-layanan">
+              Syarat layanan
+            </Link>
+          </p>
           <p>DOC. {new Date().getFullYear()} / dibuat di Indonesia</p>
         </div>
       </div>

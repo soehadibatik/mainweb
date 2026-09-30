@@ -172,6 +172,38 @@ body {
   animation: fade-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Halaman legal (kebijakan privasi, syarat layanan) */
+.legal-body h2 {
+  margin-top: 3rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-ink-950);
+}
+.legal-body h2:first-child {
+  margin-top: 0;
+}
+.legal-body p,
+.legal-body li {
+  margin-top: 0.75rem;
+  font-size: 0.925rem;
+  line-height: 1.75;
+  color: color-mix(in oklab, var(--color-ink-900) 72%, transparent);
+}
+.legal-body ul {
+  margin-top: 0.75rem;
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+.legal-body li + li {
+  margin-top: 0.375rem;
+}
+.legal-body strong {
+  font-weight: 600;
+  color: var(--color-ink-950);
+}
+
 /* Baris tarif bisa dibuka lewat hash (#paket-advance) — aman di bawah navbar */
 .plan-row {
   scroll-margin-top: 5rem;
