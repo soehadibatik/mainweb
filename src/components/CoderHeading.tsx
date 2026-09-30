@@ -20,10 +20,10 @@ const PHRASES = [
 ];
 
 /* Tempo santai: ketik pelan, tahan lama, hapus cepat, tarik napas. */
-const FIRST_TYPE_MS = 500; // jeda sebelum karakter pertama tiap kalimat
-const TYPE_TICK_MS = 55; // kecepatan ketik per karakter
+const FIRST_TYPE_MS = 700; // jeda sebelum karakter pertama tiap kalimat
+const TYPE_TICK_MS = 85; // kecepatan ketik per karakter
 const HOLD_MS = 6500; // kalimat dibaca penonton sebelum dihapus
-const ERASE_TICK_MS = 18; // penghapusan lebih cepat dari ketik
+const ERASE_TICK_MS = 22; // penghapusan lebih cepat dari ketik
 const REST_MS = 1200; // baris kosong sesaat sebelum siklus baru
 
 type Phase = "typing" | "hold" | "erasing" | "rest";
