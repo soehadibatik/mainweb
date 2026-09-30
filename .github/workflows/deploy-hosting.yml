@@ -198,12 +198,19 @@ jobs:
 
       # Aset baru masuk duluan; aset lama dibiarkan hidup. Aman karena nama
       # file di-hash dari isinya: nama sama pasti isi sama.
+      # Transfer pakai tar over SSH: rsync di shared hosting terbukti bisa
+      # selesai tanpa pesan namun tidak menaruh file; tar tidak punya mode
+      # gagal-diam, dan langkah ini memverifikasi CSS-nya langsung.
       - name: Unggah aset _next/static lebih dulu
         if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
         run: |
           set -euo pipefail
+          CSS=$(grep -o '/_next/static/[^\"]*\.css' out/index.html | head -1)
+          [ -n "$CSS" ] || { echo "::error::out/index.html tidak merujuk CSS"; exit 1; }
           ssh hosting "mkdir -p '$H_PATH/_next/static'"
-          rsync -az out/_next/static/ "hosting:$H_PATH/_next/static/"
+          tar -C out -cf - _next/static \
+            | ssh hosting "cd '$H_PATH' && tar -xf -"
+          ssh hosting "[ -f '$H_PATH$CSS' ] || { echo ::error::\"aset \$CSS gagal terpasang\"; exit 1; }; echo \"aset ok: \$CSS ($(wc -c < '$H_PATH$CSS' | tr -d ' ') byte)\""
 
       - name: rsync out/ ke hosting (HTML paling akhir)
         if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
