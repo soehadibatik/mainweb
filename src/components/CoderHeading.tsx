@@ -15,8 +15,8 @@ import { useEffect, useState } from "react";
  */
 const PHRASES = [
   "Jasa pembuatan website profesional, mulai Rp 1,5 jt, harga tertulis di muka.",
-  "Desain digambar tangan, kode ditulis satu per satu, tanpa template.",
-  "31 situs klien sudah tayang, dikerjakan dari Solo untuk bisnis Anda.",
+  "Ceritakan usaha Anda lewat WhatsApp, konsultasinya gratis.",
+  "Tanpa template: setiap situs digambar dan ditulis khusus untuk Anda.",
 ];
 
 /* Tempo santai: ketik pelan, tahan lama, hapus cepat, tarik napas. */
