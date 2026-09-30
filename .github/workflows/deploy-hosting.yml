@@ -12,7 +12,7 @@ name: Deploy to Domainesia Hosting
 # itulah sebabnya sering ada laporan "style hilang" setelah deploy.
 # Tar over SSH murni mengekstrak (merge, tidak menghapus), jadi urutan
 # amannya bisa dijamin: aset build baru masuk lebih dulu, HTML ditukar
-# kemudian, dan aset generasi lama baru dibersihkan setelah >24 jam.
+# kemudian, dan verifikasi CSS menjadi gerbang akhir deploy.
 
 on:
   push:
@@ -129,7 +129,7 @@ jobs:
       # 1) Header cache: HTML selalu revalidasi, aset ber-hash cache setahun.
       # 2) Aset _next/static build baru diunggah TANPA menghapus yang lama.
       # 3) HTML & konten lain ditukar paling akhir.
-      # 4) Aset sisa generasi lama dihapus hanya jika berumur >24 jam.
+      # 4) Verifikasi: CSS wajib ada di server DAN terbaca publik.
       - name: Pasang header cache (.htaccess)
         if: steps.cfg.outputs.enabled == 'true'
         run: |
@@ -220,29 +220,27 @@ jobs:
             echo "### ✅ Ter-deploy ke \`$H_USER@$H_HOST:$H_PATH\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # Langkah 4: sisa aset generasi lama (tidak ada di build sekarang)
-      # dihapus hanya jika berumur >24 jam: masa tenggang bagi HTML lama di
-      # cache browser.
-      - name: Bersihkan aset statis generasi lama
-        if: steps.cfg.outputs.enabled == 'true'
-        run: |
-          set -euo pipefail
-          (cd out/_next/static && LC_ALL=C find . -type f | LC_ALL=C sort) > /tmp/aset-baru.txt
-          ssh hosting "cd '$H_PATH/_next/static' && LC_ALL=C find . -type f | LC_ALL=C sort" > /tmp/aset-terpasang.txt
-          SISA=$(comm -23 /tmp/aset-terpasang.txt /tmp/aset-baru.txt | wc -l | tr -d ' ')
-          comm -23 /tmp/aset-terpasang.txt /tmp/aset-baru.txt \
-            | ssh hosting "cd '$H_PATH/_next/static' && while IFS= read -r f; do [ -n \"\$f\" ] && find \"\$f\" -mtime +0 -delete; done; true"
-          echo "sisa aset lama dievaluasi (hapus jika >24 jam): $SISA file"
+      # Sengaja TIDAK ada langkah pembersihan aset otomatis. Di server ini
+      # rsync pernah menghapus aset yang seharusnya aman, dan setelah beralih
+      # ke tar pun aset baru sempat hilang di sekitar langkah pembersih.
+      # Total aset hanya beberapa MB; pembersihan manual lewat cPanel
+      # sesekali sudah cukup.
 
-      # Kalau CSS yang dirujuk index.html tidak ada di server, halaman tampil
-      # tanpa style. Gagal di sini berarti deploy merah, bukan hijau lalu
-      # situs rusak diam-diam.
+      # Gerbang akhir: CSS yang dirujuk index.html WAJIB ada di server DAN
+      # bisa diambil publik dari mainweb.id. Kalau tidak, deploy merah,
+      # bukan hijau lalu situs tampil tanpa style diam-diam.
       - name: Verifikasi CSS ter-serve
         if: steps.cfg.outputs.enabled == 'true'
         run: |
           set -euo pipefail
-          ssh hosting "css=\$(grep -o '/_next/static/[^\"]*\.css' '$H_PATH/index.html' | head -1); [ -n \"\$css\" ] || { echo '::error::index.html tidak merujuk CSS manapun'; exit 1; }; [ -f '$H_PATH\$css' ] || { echo \"::error::CSS \$css tidak ada di hosting, style akan hilang\"; exit 1; }; echo \"CSS ok: \$css\""
+          CSS_REF=$(grep -o '/_next/static/[^"]*\.css' out/index.html | head -1)
+          [ -n "$CSS_REF" ] || { echo "::error::out/index.html tidak merujuk CSS manapun"; exit 1; }
+          ssh hosting "test -f '$H_PATH$CSS_REF'" \
+            || { echo "::error::CSS $CSS_REF tidak ada di hosting, style akan hilang"; exit 1; }
+          echo "CSS ada di server: $CSS_REF"
+          curl -fsSI "https://mainweb.id$CSS_REF" | grep -iE "HTTP/|content-type" \
+            || { echo "::error::CSS tidak bisa diambil publik dari mainweb.id"; exit 1; }
           {
             echo
-            echo "### 🔒 Verifikasi CSS ok"
+            echo "### 🔒 CSS terverifikasi ter-serve publik: \`$CSS_REF\`"
           } >> "$GITHUB_STEP_SUMMARY"
