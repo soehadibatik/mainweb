@@ -27,54 +27,23 @@ const h = (minPx: number, prefCqw: number, maxPx: number) => ({
 
 /* ── 1. Sedasa Resort — villa pegunungan: gerbang lengkung + widget booking ── */
 
-/** Pemandangan vila saat fajar: tiga gerbang lengkung berlapis dengan matahari
- * di belakangnya — geometri arsitektur murni CSS, pengganti foto hero. */
-function SedasaFajar() {
+/** Foto hero resor: vila kayu di tepi air pegunungan. Sumber Unsplash
+ * (lisensi bebas dipakai), load lazy, skala mengikuti lebar frame. */
+function SedasaHero() {
   return (
-    <div
-      aria-hidden
-      className="relative w-full overflow-hidden"
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=900&q=70"
+      alt="Vila kayu di tepi danau pegunungan"
+      loading="lazy"
+      decoding="async"
+      className="w-full object-cover"
       style={{
-        ...h(88, 23, 168),
+        ...h(120, 32, 230),
         borderRadius: "clamp(8px,2cqw,14px)",
-        background: "linear-gradient(180deg, #F7E8D0 0%, #EDC390 55%, #D99A62 100%)",
+        objectPosition: "center 62%",
       }}
-    >
-      {/* matahari */}
-      <span
-        className="absolute rounded-full"
-        style={{
-          width: "38%",
-          aspectRatio: "1",
-          left: "31%",
-          top: "12%",
-          background: "radial-gradient(circle at 42% 38%, #FFF7E6 0%, #FBD98E 55%, #F2B95F 100%)",
-          boxShadow: "0 0 clamp(12px,4cqw,30px) rgb(251 217 142 / 0.9)",
-        }}
-      />
-      {/* tiga gerbang lengkung — belakang, tengah, depan */}
-      {[
-        { l: "6%", w: "30%", top: "30%", bg: "linear-gradient(180deg,#EBD6B4,#CFA878)", o: 0.85 },
-        { l: "38%", w: "30%", top: "22%", bg: "linear-gradient(180deg,#F2E3C6,#D6B183)", o: 0.95 },
-        { l: "70%", w: "30%", top: "34%", bg: "linear-gradient(180deg,#E8D2AE,#C29B6A)", o: 0.9 },
-      ].map((a, i) => (
-        <span
-          key={i}
-          className="absolute bottom-0"
-          style={{
-            left: a.l,
-            width: a.w,
-            top: a.top,
-            background: a.bg,
-            opacity: a.o,
-            borderTopLeftRadius: "999px",
-            borderTopRightRadius: "999px",
-          }}
-        />
-      ))}
-      {/* garis tanah */}
-      <span className="absolute inset-x-0 bottom-0 h-[7%] bg-[#8A6238]/45" />
-    </div>
+    />
   );
 }
 
@@ -96,30 +65,37 @@ function MiniSedasa() {
         </span>
       </div>
 
-      {/* Hero: teks kiri, fajar vila kanan */}
-      <div className="flex items-center gap-[clamp(10px,3cqw,26px)] px-[clamp(12px,3.4cqw,22px)] py-[clamp(8px,2.2cqw,18px)] @max-[672px]:flex-col @max-[672px]:items-stretch">
-        <div className="min-w-0 flex-1">
-          <p className="text-[clamp(0.55rem,1.55cqw,0.7rem)] font-medium tracking-[0.16em] text-[#A8833B] uppercase">
-            Tawangmangu · 900 mdpl
-          </p>
-          <p className="mt-[clamp(4px,1.2cqw,9px)] font-display text-[clamp(1.4rem,5.4cqw,2.5rem)] leading-[1.03] font-semibold tracking-tight">
-            Pagi di atas kabut,
-            <br />
-            hening sepanjang hari.
-          </p>
-          <p className="mt-[clamp(4px,1.3cqw,9px)] text-[clamp(0.6rem,1.7cqw,0.78rem)] leading-relaxed text-[#22301F]/60">
-            Enam vila kayu di tepi hutan pinus. Sarapan dari dapur resor,
-            disajikan di beranda masing-masing.
-          </p>
-          <p className="mt-[clamp(5px,1.6cqw,12px)] text-[clamp(0.64rem,1.85cqw,0.85rem)] font-semibold text-[#A8833B]">
-            Rp 850rb <span className="font-normal text-[#22301F]/50">/ malam · sarapan termasuk</span>
-          </p>
-          <p className="mt-1 flex items-center gap-1.5 text-[clamp(0.52rem,1.5cqw,0.68rem)] font-semibold text-[#22301F]/60">
-            <span className="text-[#CA8A04]">★★★★★</span> 4,9 · 218 ulasan tamu
-          </p>
-        </div>
-        <div className="shrink-0 @max-[672px]:w-full" style={{ width: "clamp(140px,34cqw,230px)" }}>
-          <SedasaFajar />
+      {/* Foto pemandangan full-width — jualan pertama */}
+      <div className="px-[clamp(12px,3.4cqw,22px)] pt-[clamp(10px,2.6cqw,20px)]">
+        <SedasaHero />
+      </div>
+
+      {/* Teks di bawah pemandangan */}
+      <div className="px-[clamp(12px,3.4cqw,22px)] py-[clamp(8px,2.2cqw,18px)]">
+        <p className="text-[clamp(0.55rem,1.55cqw,0.7rem)] font-medium tracking-[0.16em] text-[#A8833B] uppercase">
+          Tawangmangu · 900 mdpl
+        </p>
+        <p className="mt-[clamp(4px,1.2cqw,9px)] font-display text-[clamp(1.4rem,5.4cqw,2.5rem)] leading-[1.03] font-semibold tracking-tight">
+          Pagi di atas kabut,
+          <br />
+          hening sepanjang hari.
+        </p>
+        <p className="mt-[clamp(4px,1.3cqw,9px)] text-[clamp(0.6rem,1.7cqw,0.78rem)] leading-relaxed text-[#22301F]/60">
+          Enam vila kayu di tepi hutan pinus. Sarapan dari dapur resor,
+          disajikan di beranda masing-masing.
+        </p>
+        <p className="mt-[clamp(5px,1.6cqw,12px)] text-[clamp(0.64rem,1.85cqw,0.85rem)] font-semibold text-[#A8833B]">
+          Rp 850rb <span className="font-normal text-[#22301F]/50">/ malam · sarapan termasuk</span>
+        </p>
+        <div className="mt-[clamp(5px,1.5cqw,11px)] flex flex-wrap gap-[clamp(4px,1.1cqw,7px)]">
+          {["Vila kayu", "Tepi hutan pinus", "Sarapan di beranda"].map((chip) => (
+            <span
+              key={chip}
+              className="border border-[#22301F]/15 px-[clamp(5px,1.4cqw,9px)] py-[clamp(2px,0.6cqw,5px)] text-[clamp(0.5rem,1.45cqw,0.66rem)] font-medium text-[#22301F]/65"
+            >
+              {chip}
+            </span>
+          ))}
         </div>
       </div>
 
@@ -403,6 +379,26 @@ function MiniNawa() {
 
 /* ── 5. Arunika — wedding organizer: editorial tengah, garis emas ─── */
 
+/** Foto suasana pernikahan outdoor: gerbang bunga saat golden hour.
+ * Sumber Unsplash (lisensi bebas), load lazy, tone hangat lewat CSS. */
+function ArunikaGerbang() {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=70"
+      alt="Gerbang bunga pernikahan outdoor saat sore"
+      loading="lazy"
+      decoding="async"
+      className="mx-auto w-full object-cover"
+      style={{
+        ...h(96, 24, 170),
+        borderRadius: "clamp(8px,2cqw,14px)",
+        objectPosition: "center 55%",
+      }}
+    />
+  );
+}
+
 function MiniArunika() {
   const langkah: [string, string][] = [
     ["Konsultasi", "Ceritakan konsep dan keduanya kami dengar baik-baik."],
@@ -422,6 +418,11 @@ function MiniArunika() {
         <span aria-hidden className="mt-[clamp(6px,1.8cqw,14px)] h-px w-[clamp(40px,11cqw,72px)] bg-[#A8833B]/50" />
       </div>
 
+      {/* Gerbang pernikahan — jualan suasana sebelum teks */}
+      <div className="px-[clamp(14px,4cqw,36px)] pt-[clamp(6px,1.6cqw,13px)]">
+        <ArunikaGerbang />
+      </div>
+
       {/* Headline editorial tengah */}
       <p
         className="mx-auto max-w-[26ch] px-6 pt-[clamp(4px,1.2cqw,10px)] text-center font-normal leading-[1.14] tracking-tight"
@@ -430,9 +431,35 @@ function MiniArunika() {
         Hari besar yang tenang, dirancang sampai detail terkecil.
       </p>
       <p className="mx-auto mt-[clamp(5px,1.5cqw,12px)] max-w-[36ch] px-6 text-center text-[clamp(0.58rem,1.65cqw,0.76rem)] leading-relaxed text-[#2A2118]/55">
-        84 pernikahan kami rancang di Jawa Tengah sejak 2021 — masing-masing
-        terasa berbeda, karena memang bukan paket jadi.
+        Setiap pernikahan kami rancang dari nol bersama kedua mempelai,
+        bukan paket jadi.
       </p>
+
+      {/* Baris undangan: tanggal dan lokasi — kepastian yang dicari calon klien */}
+      <div className="mt-[clamp(8px,2.2cqw,18px)] flex justify-center">
+        <span className="border border-[#A8833B]/45 px-[clamp(10px,2.8cqw,22px)] py-[clamp(4px,1.2cqw,9px)] text-[clamp(0.52rem,1.5cqw,0.68rem)] font-medium tracking-[0.18em] text-[#A8833B] uppercase">
+          Minggu, 14 Juni 2027 · Tawangmangu
+        </span>
+      </div>
+
+      {/* Tiga paket dengan harga — calon klien langsung tahu titik masuknya */}
+      <div className="mx-[clamp(14px,4cqw,36px)] mt-[clamp(8px,2.2cqw,18px)] flex items-stretch justify-center divide-x divide-[#2A2118]/12 border-y border-[#2A2118]/12">
+        {[
+          { nama: "Intimate", tamu: "20 tamu", harga: "Rp 45jt" },
+          { nama: "Signature", tamu: "60 tamu", harga: "Rp 85jt" },
+          { nama: "Grand", tamu: "200+ tamu", harga: "Rp 160jt" },
+        ].map((p) => (
+          <div key={p.nama} className="flex-1 px-[clamp(6px,1.8cqw,14px)] py-[clamp(7px,1.9cqw,13px)] text-center">
+            <p className="text-[clamp(0.5rem,1.45cqw,0.66rem)] font-semibold tracking-[0.14em] text-[#A8833B] uppercase">
+              {p.nama}
+            </p>
+            <p className="mt-0.5 text-[clamp(0.48rem,1.4cqw,0.64rem)] text-[#2A2118]/50">{p.tamu}</p>
+            <p className="mt-0.5 font-display text-[clamp(0.8rem,2.4cqw,1.15rem)] font-black tabular-nums text-[#2A2118]">
+              {p.harga}
+            </p>
+          </div>
+        ))}
+      </div>
 
       {/* Tiga langkah — benar-benar urutan, maka boleh bernomor */}
       <div className="mx-[clamp(14px,4cqw,36px)] mt-[clamp(8px,2.2cqw,18px)] divide-y divide-[#2A2118]/10 border-y border-[#2A2118]/10">
@@ -464,7 +491,7 @@ function MiniArunika() {
 
       {/* CTA outline emas */}
       <div className="flex justify-center px-4 pb-[clamp(12px,3.2cqw,26px)] pt-[clamp(6px,1.8cqw,16px)]">
-        <span className="border border-[#A8833B] px-[clamp(12px,3.4cqw,24px)] py-[clamp(5px,1.5cqw,10px)] text-[clamp(0.56rem,1.6cqw,0.74rem)] font-semibold tracking-[0.12em] text-[#A8833B] uppercase">
+        <span className="bg-[#A8833B] px-[clamp(12px,3.4cqw,24px)] py-[clamp(5px,1.5cqw,10px)] text-[clamp(0.56rem,1.6cqw,0.74rem)] font-semibold tracking-[0.12em] text-[#FAF6EE] uppercase">
           Jadwalkan konsultasi
         </span>
       </div>
@@ -574,6 +601,13 @@ export default function ViewportDemo() {
     };
   }, [auto, inView, reducedMotion, forced, rangeOk, effMin, effMax]);
 
+  // Di layar sempit sweep tidak muat — putar contoh klien saja tiap 4 detik
+  useEffect(() => {
+    if (rangeOk || !inView || (reducedMotion && !forced)) return;
+    const iv = setInterval(() => setThemeIdx((i) => (i + 1) % themes.length), 4000);
+    return () => clearInterval(iv);
+  }, [rangeOk, inView, reducedMotion, forced]);
+
   const stopAuto = useCallback(() => setAuto(false), []);
 
   const onPointerDown = (e: React.PointerEvent) => {
@@ -628,10 +662,11 @@ export default function ViewportDemo() {
     <div ref={root} className="w-full">
       {/* Toolbar */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <span className="order-1 font-mono text-[11px] tabular-nums text-ink-900/55">
+        <span className="order-1 font-mono text-[11px] tabular-nums text-ink-900/65 max-sm:hidden">
           {shown}px · {bp}
         </span>
-        <div className="order-3 flex w-full gap-2 sm:order-2 sm:w-auto">
+        {/* Preset hanya relevan saat bisa seret — disembunyikan di mobile */}
+        <div className="order-3 hidden w-full gap-2 sm:order-2 sm:flex sm:w-auto">
           {[
             { label: "Mobile", w: 360 },
             { label: "Tablet", w: 600 },
@@ -642,10 +677,10 @@ export default function ViewportDemo() {
               type="button"
               onClick={() => preset(p.w)}
               aria-pressed={bp === p.label}
-              className={`flex min-h-9 flex-1 cursor-pointer items-center justify-center px-3 text-[11px] font-medium transition-colors sm:flex-none ${
+              className={`flex min-h-9 shrink-0 cursor-pointer items-center justify-center px-3 text-[11px] font-medium transition-colors max-sm:min-w-[84px] ${
                 bp === p.label
                   ? "bg-brand-600 text-white"
-                  : "border border-line text-ink-900/60 hover:border-ink-900/40 hover:text-ink-950"
+                  : "border border-line text-ink-900/70 hover:border-ink-900/40 hover:text-ink-950"
               }`}
             >
               {p.label}
@@ -665,25 +700,31 @@ export default function ViewportDemo() {
             Putar demo
           </button>
         ) : (
-          <span className="order-2 flex min-h-9 items-center gap-2 text-[11px] font-medium text-ink-900/45 sm:order-3 sm:ml-auto">
-            <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-emerald-500" />
+          <span className="order-2 flex min-h-9 items-center gap-2 text-[11px] font-medium text-ink-900/60 sm:order-3 sm:ml-auto">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
             Demo
           </span>
         )}
       </div>
 
-      {/* Pilih contoh klien */}
-      <div className="mb-3 flex flex-wrap items-center gap-1.5" aria-label="Contoh klien">
+      {/* Pilih contoh konsep — scroll horizontal di layar sempit */}
+      <div
+        className="mb-3 flex flex-wrap items-center gap-1.5 max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:pb-1"
+        aria-label="Contoh konsep desain"
+      >
+        <span className="sr-only">
+          Konsep desain ilustratif, bukan situs klien nyata.
+        </span>
         {themes.map((th, i) => (
           <button
             key={th.key}
             type="button"
             onClick={() => pickTheme(i)}
             aria-pressed={i === themeIdx}
-            className={`min-h-7 cursor-pointer px-2.5 text-[11px] font-medium transition-colors ${
+            className={`min-h-7 shrink-0 cursor-pointer px-2.5 text-[11px] font-medium transition-colors ${
               i === themeIdx
                 ? "bg-ink-950 text-white"
-                : "border border-line text-ink-900/60 hover:border-ink-900/40 hover:text-ink-950"
+                : "border border-line text-ink-900/70 hover:border-ink-900/40 hover:text-ink-950"
             }`}
           >
             {th.pill}
@@ -705,7 +746,7 @@ export default function ViewportDemo() {
               <span className="h-2.5 w-2.5 rounded-full bg-ink-200" />
               <span className="h-2.5 w-2.5 rounded-full bg-ink-200" />
             </span>
-            <span className="flex-1 truncate bg-white px-3 py-0.5 font-mono text-[9px] text-ink-900/50">
+            <span className="flex-1 truncate bg-white px-3 py-0.5 font-mono text-[9px] text-ink-900/65">
               {t.domain}
             </span>
           </div>
@@ -729,7 +770,7 @@ export default function ViewportDemo() {
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onKeyDown={onKeyDown}
-          className="group/handle absolute inset-y-0 -left-3 z-10 flex w-6 cursor-ew-resize touch-none items-center justify-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+          className="group/handle absolute inset-y-0 -left-3 z-10 hidden w-6 cursor-ew-resize touch-none items-center justify-center rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-brand-500 max-sm:hidden sm:flex"
         >
           <span aria-hidden className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-brand-600/25" />
           <span
@@ -738,10 +779,6 @@ export default function ViewportDemo() {
           />
         </div>
       </div>
-
-      <p className="mt-4 text-[13px] text-ink-900/55">
-        Seret garis biru — tata letak situs di dalam ikut menyesuaikan.
-      </p>
     </div>
   );
 }

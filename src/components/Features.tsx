@@ -41,7 +41,7 @@ export default function Features() {
               Keunggulan
             </p>
             <h2 className="mt-4 max-w-xl font-display text-4xl font-black tracking-[-0.03em] text-ink-950 sm:text-5xl">
-              Mengapa mainweb.id
+              Mengapa pilih mainweb.id untuk website bisnis Anda
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-ink-900/60">

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Hero from "@/components/Hero";
-import Marquee from "@/components/Marquee";
 import Features from "@/components/Features";
 import Pricing from "@/components/Pricing";
 import ComparisonSection from "@/components/ComparisonSection";
@@ -68,7 +67,6 @@ export default function Home() {
       <JsonLd data={website} />
       <JsonLd data={faqPage} />
       <Hero />
-      <Marquee />
       <Features />
       <Pricing />
       <ComparisonSection />

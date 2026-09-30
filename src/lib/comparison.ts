@@ -17,15 +17,15 @@ export const comparisonSections: CompareSection[] = [
     rows: [
       {
         label: "Biaya pembuatan",
-        values: V(["Rp 1,5 jt", "Rp 3 jt", "Rp 5 jt", "Rp 10 jt", "Rp 20 jt", "Rp 30 jt", "Rp 40 jt", "Rp 50 jt", "Rp 100 jt"]),
+        values: V(["Rp 1,5 jt", "Rp 3 jt", "Rp 5 jt", "Rp 10 jt", "Rp 20 jt", "Rp 30 jt", "Rp 50 jt", "Rp 75 jt", "Rp 100 jt"]),
       },
       {
         label: "Maintain /bulan",
-        values: V(["Termasuk*", "Rp 300 rb", "Rp 500 rb", "Rp 750 rb", "Rp 1,5 jt", "Rp 3 jt", "Rp 5 jt", "Rp 10 jt", "Rp 50 jt"]),
+        values: V(["Termasuk*", "Rp 300 rb", "Rp 500 rb", "Rp 750 rb", "Rp 1,5 jt", "Rp 3 jt", "Rp 5 jt", "Rp 7,5 jt", "Rp 10 jt"]),
       },
       {
         label: "Perpanjangan /tahun",
-        values: V([F, F, "Rp 1 jt", "Rp 2 jt", "Rp 3,5 jt", "Rp 5 jt", "Rp 7 jt", "Rp 8 jt", "Rp 20 jt"]),
+        values: V([F, F, "Rp 1 jt", "Rp 2 jt", "Rp 3,5 jt", "Rp 5 jt", "Rp 10 jt", "Rp 15 jt", "Rp 20 jt"]),
       },
     ],
   },

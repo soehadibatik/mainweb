@@ -17,7 +17,7 @@ function Cell({ value }: { value: CompareValue }) {
   if (value === false) {
     return (
       <span aria-label="tidak termasuk" className="font-mono text-sm text-ink-900/20">
-        —
+        ✕
       </span>
     );
   }

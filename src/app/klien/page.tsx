@@ -3,6 +3,7 @@ import Link from "next/link";
 import ClientLogo from "@/components/ClientLogo";
 import JsonLd from "@/components/JsonLd";
 import { getClients } from "@/lib/catalog";
+import { caseStudies } from "@/lib/case-studies";
 import { site, waLink } from "@/lib/site";
 
 const pageTitle = "Klien: Portofolio Situs yang Sudah Kami Rilis";
@@ -59,12 +60,8 @@ export default async function KlienPage() {
     },
   };
 
-  // penomoran kartu 01–NN, berurutan melintasi kelompok
-  let counter = 0;
-  const numbered = groups.map((g) => ({
-    ...g,
-    items: g.items.map((c) => ({ ...c, n: ++counter })),
-  }));
+  // domain -> slug studi kasus, untuk menautkan kartu klien ke studinya
+  const studyByDomain = new Map(caseStudies.map((cs) => [cs.domain, cs.slug]));
 
   return (
     <main className="flex-1">
@@ -106,27 +103,24 @@ export default async function KlienPage() {
 
       <section className="border-b border-line bg-white py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {numbered.map((g, gi) => (
+          {groups.map((g, gi) => (
             <div key={g.id} className={gi > 0 ? "mt-10" : ""}>
               <div className="flex items-baseline justify-between gap-4 border-b border-line bg-paper py-3 font-mono text-[10px] tracking-[0.18em] uppercase">
-                <span className="text-brand-600">
-                  Kelompok 0{gi + 1} · {g.label}
-                </span>
+                <span className="text-brand-600">{g.label}</span>
                 <span className="text-ink-900/45">{g.items.length} situs</span>
               </div>
               <ul className="grid grid-cols-2 border-l border-line md:grid-cols-4">
-                {g.items.map((c) => (
-                  <li key={c.domain}>
+                {g.items.map((c) => {
+                  const study = studyByDomain.get(c.domain);
+                  return (
+                  <li key={c.domain} className="flex flex-col">
                     <a
                       href={`https://${c.domain}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex h-full flex-col gap-4 border-r border-b border-line p-5 transition-colors hover:bg-paper hover:shadow-[inset_0_0_0_1px_rgba(0,71,210,0.35)] sm:p-6"
+                      className="group flex flex-1 flex-col gap-4 border-r border-b border-line p-5 transition-colors hover:bg-paper hover:shadow-[inset_0_0_0_1px_rgba(0,71,210,0.35)] sm:p-6"
                     >
-                      <span className="flex items-center justify-between font-mono text-[10px] tracking-[0.16em]">
-                        <span className="text-ink-900/25 transition-colors group-hover:text-brand-600">
-                          {String(c.n).padStart(2, "0")}
-                        </span>
+                      <span className="flex justify-end font-mono text-[10px] tracking-[0.16em]">
                         <span
                           aria-hidden
                           className="translate-x-1.5 text-transparent transition-all duration-300 group-hover:translate-x-0 group-hover:text-brand-600"
@@ -152,8 +146,17 @@ export default async function KlienPage() {
                         </span>
                       </span>
                     </a>
+                    {study && (
+                      <Link
+                        href={`/studi-kasus/${study}`}
+                        className="border-r border-b border-line bg-paper px-5 py-3 font-mono text-[10px] tracking-[0.14em] text-brand-600 uppercase transition-colors hover:bg-white hover:text-ink-950"
+                      >
+                        Baca studi kasus
+                      </Link>
+                    )}
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </div>
           ))}

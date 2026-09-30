@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ClientLogo from "@/components/ClientLogo";
 import { getClients } from "@/lib/catalog";
+import { caseStudies } from "@/lib/case-studies";
 
 export default async function Clients() {
   const { clients, featured } = await getClients();
@@ -31,18 +32,17 @@ export default async function Clients() {
         </div>
 
         <ul className="mt-10 grid grid-cols-2 border-t border-l border-line sm:grid-cols-3 lg:grid-cols-6">
-          {featured.map((c, i) => (
-            <li key={c.domain}>
+          {featured.map((c) => {
+            const study = caseStudies.find((cs) => cs.domain === c.domain);
+            return (
+            <li key={c.domain} className="flex flex-col">
               <a
                 href={`https://${c.domain}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full flex-col gap-4 border-r border-b border-line px-4 py-7 text-center transition-colors hover:bg-paper hover:shadow-[inset_0_0_0_1px_rgba(0,71,210,0.35)] sm:py-9"
+                className="group flex flex-1 flex-col gap-4 border-r border-b border-line px-4 py-7 text-center transition-colors hover:bg-paper hover:shadow-[inset_0_0_0_1px_rgba(0,71,210,0.35)] sm:py-9"
               >
-                <span className="flex items-center justify-between font-mono text-[10px] tracking-[0.16em]">
-                  <span className="text-ink-900/25 transition-colors group-hover:text-brand-600">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+                <span className="flex justify-end font-mono text-[10px] tracking-[0.16em]">
                   <span
                     aria-hidden
                     className="translate-x-1.5 text-transparent transition-all duration-300 group-hover:translate-x-0 group-hover:text-brand-600"
@@ -68,8 +68,17 @@ export default async function Clients() {
                   </span>
                 </span>
               </a>
+              {study && (
+                <Link
+                  href={`/studi-kasus/${study.slug}`}
+                  className="border-r border-b border-line bg-paper px-2 py-2.5 text-center font-mono text-[10px] tracking-[0.12em] text-brand-600 uppercase transition-colors hover:bg-white hover:text-ink-950"
+                >
+                  Studi kasus
+                </Link>
+              )}
             </li>
-          ))}
+            );
+          })}
         </ul>
 
         <p className="mt-6 font-mono text-[11px] tracking-[0.14em] text-ink-900/45 uppercase">

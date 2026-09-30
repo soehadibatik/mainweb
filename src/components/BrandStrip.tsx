@@ -16,9 +16,9 @@ export default function BrandStrip() {
               Identitas
             </p>
             <h2 className="mt-4 font-display text-4xl font-black tracking-[-0.03em] text-ink-950 sm:text-5xl">
-              Seluruh desain
+              Identitas visual yang konsisten
               <br />
-              bermula dari logo
+              di setiap halaman
             </h2>
           </div>
           <p className="max-w-sm text-sm leading-relaxed text-ink-900/60">

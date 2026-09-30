@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getPlans } from "@/lib/catalog";
+import { caseStudies } from "@/lib/case-studies";
 import { site } from "@/lib/site";
 
 // Wajib untuk output: "export" — route metadata harus statis.
@@ -20,6 +21,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     },
+    ...caseStudies.map((c) => ({
+      url: `${site.url}/studi-kasus/${c.slug}`,
+      lastModified: new Date() as Date,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
     ...plans.map((plan) => ({
       url: `${site.url}/paket/${plan.id}`,
       lastModified: new Date() as Date,

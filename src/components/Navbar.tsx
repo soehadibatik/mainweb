@@ -46,17 +46,13 @@ export default function Navbar() {
         </div>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <span className="hidden items-center gap-2 font-mono text-[11px] tracking-[0.12em] text-ink-900/55 xl:flex">
-            <span className="animate-pulse-dot h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            OPEN FOR PROJECTS
-          </span>
           <a
             href={waLink("Halo mainweb.id, saya ingin konsultasi pembuatan website.")}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-brand-600 px-4 py-2 font-mono text-[11px] font-semibold tracking-[0.12em] text-white uppercase transition-colors hover:bg-brand-500"
           >
-            Konsultasi →
+            Konsultasi
           </a>
         </div>
 
@@ -87,7 +83,6 @@ export default function Navbar() {
               className="flex items-center justify-between border-b border-line py-3 font-mono text-xs tracking-[0.14em] text-ink-900/70 uppercase transition-colors hover:text-brand-600"
             >
               {item.label}
-              <span className="text-ink-900/30">→</span>
             </Link>
           ))}
           <a
@@ -96,7 +91,7 @@ export default function Navbar() {
             rel="noopener noreferrer"
             className="mt-4 block bg-brand-600 px-4 py-3 text-center font-mono text-xs font-semibold tracking-[0.12em] text-white uppercase"
           >
-            Konsultasi Gratis →
+            Konsultasi Gratis
           </a>
           <div className="mt-4">
             <Image

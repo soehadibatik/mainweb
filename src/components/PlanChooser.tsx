@@ -15,10 +15,10 @@ const questions: Question[] = [
     q: "1/3 · Patokan biaya pembuatan?",
     options: [
       { label: "≤ Rp 5 jt", boost: { basic: 3, beginner: 3, elementary: 2 } },
-      { label: "Rp 5 – 20 jt", boost: { elementary: 1, intermediate: 3, advance: 3 } },
+      { label: "Rp 5 – 20 jt", boost: { elementary: 1, light: 3, intermediate: 3 } },
       {
         label: "≥ Rp 30 jt",
-        boost: { advance: 1, proficient: 3, "pro-proficient": 2, "max-proficient": 2, "pro-max-proficient": 1 },
+        boost: { advance: 1, proficient: 3, max: 2, "pro-max": 1 },
       },
     ],
   },
@@ -27,8 +27,8 @@ const questions: Question[] = [
     q: "2/3 · Butuh berapa halaman?",
     options: [
       { label: "1 halaman saja", boost: { basic: 5 } },
-      { label: "3 – 8 halaman", boost: { beginner: 3, elementary: 4, intermediate: 1 } },
-      { label: "Banyak, plus blog / katalog", boost: { intermediate: 3, advance: 4, proficient: 1 } },
+      { label: "3 – 8 halaman", boost: { beginner: 3, elementary: 4, light: 1 } },
+      { label: "Banyak, plus blog / katalog", boost: { light: 3, intermediate: 4, advance: 1 } },
     ],
   },
   {
@@ -39,7 +39,7 @@ const questions: Question[] = [
       { label: "Ya, CMS", boost: { intermediate: 4, advance: 4 } },
       {
         label: "Booking, dashboard, dll",
-        boost: { proficient: 4, "pro-proficient": 3, "max-proficient": 3, "pro-max-proficient": 2 },
+        boost: { advance: 4, proficient: 3, max: 3, "pro-max": 2 },
       },
     ],
   },

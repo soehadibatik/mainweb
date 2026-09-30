@@ -26,23 +26,24 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-3">
-            <h3 className="font-mono text-[10px] tracking-[0.2em] text-ink-900/45 uppercase">
+            <p className="font-mono text-[10px] tracking-[0.2em] text-ink-900/45 uppercase">
               Indeks
-            </h3>
+            </p>
             <ul className="mt-5 space-y-3 font-mono text-xs tracking-[0.1em] uppercase">
               <li><Link className="transition-colors hover:text-brand-600" href="/#keunggulan">Keunggulan</Link></li>
               <li><Link className="transition-colors hover:text-brand-600" href="/#paket">Tarif</Link></li>
               <li><Link className="transition-colors hover:text-brand-600" href="/#perbandingan">Perbandingan</Link></li>
               <li><Link className="transition-colors hover:text-brand-600" href="/#proses">Cara kerja</Link></li>
               <li><Link className="transition-colors hover:text-brand-600" href="/klien">Klien</Link></li>
+              <li><Link className="transition-colors hover:text-brand-600" href="/studi-kasus">Studi kasus</Link></li>
               <li><Link className="transition-colors hover:text-brand-600" href="/#faq">FAQ</Link></li>
             </ul>
           </div>
 
           <div className="md:col-span-3">
-            <h3 className="font-mono text-[10px] tracking-[0.2em] text-ink-900/45 uppercase">
+            <p className="font-mono text-[10px] tracking-[0.2em] text-ink-900/45 uppercase">
               Kontak
-            </h3>
+            </p>
             <ul className="mt-5 space-y-3 font-mono text-xs tracking-[0.1em] uppercase">
               <li>
                 <a
@@ -79,7 +80,7 @@ export default function Footer() {
 
         <div className="mt-16 flex flex-col justify-between gap-3 border-t border-line pt-6 font-mono text-[10px] tracking-[0.16em] text-ink-900/40 uppercase sm:flex-row">
           <p>© {new Date().getFullYear()} mainweb.id, hak cipta dilindungi</p>
-          <p>DOC. 2026 / dibuat di Indonesia</p>
+          <p>DOC. {new Date().getFullYear()} / dibuat di Indonesia</p>
         </div>
       </div>
     </footer>

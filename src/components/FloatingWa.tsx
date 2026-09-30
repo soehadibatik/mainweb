@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { waLink } from "@/lib/site";
 
 const MESSAGE =
-  "Halo mainweb.id, saya lihat website mainweb.id dan mau konsultasi soal pembuatan website.";
+  "Halo mainweb.id, saya mau konsultasi soal pembuatan website.";
 
 function WaIcon() {
   return (
@@ -15,45 +14,25 @@ function WaIcon() {
 }
 
 /**
- * Tombol WhatsApp mengambang — warna diambil dari logo (gradasi biru tua →
- * sky → violet) lewat kelas .brand-gradient.
+ * Tombol WhatsApp mengambang, permanen agar selalu terjangkau satu tangan.
+ * Warna diambil dari logo (gradasi biru tua ke sky ke violet); label muncul
+ * saat hover/fokus, bukan berulang sendiri.
  */
 export default function FloatingWa() {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setShow(window.scrollY > 200);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <div
-      className={`fixed right-4 bottom-5 z-50 sm:right-7 sm:bottom-8 ${
-        show
-          ? "translate-y-0 opacity-100"
-          : "pointer-events-none translate-y-6 opacity-0"
-      } transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]`}
-    >
-      <div className="wa-float relative">
-        <span className="wa-ring" style={{ animationDelay: "0s" }} aria-hidden />
-        <span className="wa-ring" style={{ animationDelay: "1.4s" }} aria-hidden />
-
-        <a
-          href={waLink(MESSAGE)}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Chat WhatsApp mainweb.id"
-          className="group brand-gradient relative flex h-14 w-14 items-center gap-3 overflow-hidden rounded-full pl-[15px] pr-4 text-white shadow-[0_18px_40px_-12px_rgb(0_71_210/0.5),inset_0_1px_0_rgb(255_255_255/0.28)] ring-1 ring-ink-950/5 transition-[width,transform] duration-300 ease-out hover:scale-[1.04] hover:shadow-[0_22px_50px_-12px_rgb(0_71_210/0.6),inset_0_1px_0_rgb(255_255_255/0.35)] focus-visible:w-[184px] focus-visible:scale-[1.04] focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper focus-visible:outline-none sm:hover:w-[184px]"
-        >
-          <span className="wa-sheen" aria-hidden />
-          <WaIcon />
-          <span className="max-w-0 translate-x-2 overflow-hidden font-mono text-[11px] tracking-[0.16em] whitespace-nowrap uppercase opacity-0 transition-all duration-300 ease-out group-hover:max-w-[120px] group-hover:translate-x-0 group-hover:opacity-100">
-            Chat WhatsApp
-          </span>
-        </a>
-      </div>
+    <div className="fixed right-4 bottom-5 z-50 sm:right-7 sm:bottom-8">
+      <a
+        href={waLink(MESSAGE)}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat WhatsApp mainweb.id"
+        className="group brand-gradient relative flex h-14 w-14 items-center gap-3 overflow-hidden rounded-full pl-[15px] pr-4 text-white shadow-[0_14px_30px_-14px_rgb(0_71_210/0.55)] ring-1 ring-ink-950/5 transition-all duration-200 hover:w-[184px] focus-visible:w-[184px] focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper focus-visible:outline-none"
+      >
+        <WaIcon />
+        <span className="max-w-0 overflow-hidden font-mono text-[11px] tracking-[0.16em] whitespace-nowrap uppercase opacity-0 transition-all duration-200 group-hover:max-w-[120px] group-hover:opacity-100 group-focus-visible:max-w-[120px] group-focus-visible:opacity-100">
+          Chat WhatsApp
+        </span>
+      </a>
     </div>
   );
 }

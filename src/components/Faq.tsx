@@ -11,12 +11,8 @@ export default function Faq() {
               <p className="font-mono text-[11px] tracking-[0.22em] text-brand-600 uppercase">
                 FAQ
               </p>
-              <h2 className="mt-4 font-display text-4xl font-black tracking-[-0.03em] text-ink-950 sm:text-5xl">
-                Pertanyaan
-                <br />
-                yang sering
-                <br />
-                diajukan
+              <h2 className="mt-4 font-display text-4xl font-black tracking-[-0.03em] text-balance text-ink-950 sm:text-5xl">
+                Pertanyaan seputar jasa pembuatan website
               </h2>
               <p className="mt-6 max-w-xs text-sm leading-relaxed text-ink-900/60">
                 Tidak menemukan jawaban Anda? Tim kami merespons cepat di jam

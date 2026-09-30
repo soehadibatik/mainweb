@@ -140,7 +140,7 @@ export default async function PlanDetailPage({ params }: Params) {
                     <div className="flex items-baseline justify-between gap-4">
                       <dt className="tracking-[0.14em] text-ink-900/45 uppercase">Perpanjangan</dt>
                       <dd className="font-semibold text-ink-950">
-                        {plan.renewal ? `${plan.renewal}/th` : "—"}
+                        {plan.renewal ? `${plan.renewal}/th` : "Termasuk"}
                       </dd>
                     </div>
                   </dl>
@@ -152,7 +152,6 @@ export default async function PlanDetailPage({ params }: Params) {
                     className="group mt-8 flex items-center justify-center gap-3 bg-brand-600 px-6 py-4 font-mono text-xs font-semibold tracking-[0.14em] text-white uppercase transition-colors hover:bg-brand-700"
                   >
                     Pesan paket {plan.short}
-                    <span className="transition-transform group-hover:translate-x-1">→</span>
                   </a>
                   <p className="mt-3 text-center font-mono text-[10px] tracking-[0.14em] text-ink-900/40 uppercase">
                     Konsultasi gratis, tanpa komitmen
@@ -231,9 +230,9 @@ export default async function PlanDetailPage({ params }: Params) {
           </nav>
 
           <div className="mt-8">
-            <h3 className="font-mono text-[10px] font-semibold tracking-[0.2em] text-ink-900/45 uppercase">
+            <p className="font-mono text-[10px] font-semibold tracking-[0.2em] text-ink-900/45 uppercase">
               Lihat paket lainnya
-            </h3>
+            </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {plans
                 .filter((p) => p.id !== plan.id)

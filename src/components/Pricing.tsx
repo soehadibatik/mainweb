@@ -11,7 +11,7 @@ const BAND_LABELS = ["Mulai", "Tumbuh", "Skala"];
 
 /** Band harga disusun dari urutan paket — paket baru dari back office otomatis masuk. */
 function buildBands(list: Plan[]) {
-  const bands: { label: string; from: string; to: string; range: string; ids: string[] }[] = [];
+  const bands: { label: string; range: string; ids: string[] }[] = [];
   let i = 0;
   for (let b = 0; b < BAND_LABELS.length && i < list.length; b++) {
     const take = Math.min(BAND_SIZES[b], list.length - i);
@@ -20,8 +20,6 @@ function buildBands(list: Plan[]) {
     const last = slice[slice.length - 1];
     bands.push({
       label: BAND_LABELS[b],
-      from: String(i + 1).padStart(2, "0"),
-      to: String(i + take).padStart(2, "0"),
       range: slice.length > 1 ? `${first.build} \u2013 ${last.build}` : first.build,
       ids: slice.map((p) => p.id),
     });
@@ -40,9 +38,6 @@ export default async function Pricing() {
     build,
     tagline,
   }));
-
-  const idxOf = (id: string) =>
-    String(plans.findIndex((p) => p.id === id) + 1).padStart(2, "0");
 
   return (
     <section id="paket" className="border-y border-line bg-white text-ink-950">
@@ -94,9 +89,7 @@ export default async function Pricing() {
           {bands.map((band) => (
             <div key={band.label} className="mt-6 first:mt-0">
               <h3 className="flex flex-col items-start gap-1 border-b border-line bg-paper py-3 font-mono text-[10px] tracking-[0.18em] uppercase sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
-                <span className="text-brand-600">
-                  Tingkat {band.from}–{band.to} · {band.label}
-                </span>
+                <span className="text-brand-600">{band.label}</span>
                 <span className="text-ink-900/45">{band.range}</span>
               </h3>
               <ul>
@@ -119,10 +112,7 @@ export default async function Pricing() {
                         />
                       )}
 
-                      <div className="col-span-1 flex items-baseline gap-3 lg:col-span-4">
-                        <span className="font-mono text-[11px] tracking-[0.1em] text-ink-900/35 tabular-nums">
-                          {idxOf(plan.id)}
-                        </span>
+                      <div className="col-span-1 flex items-baseline lg:col-span-4">
                         <div className="min-w-0">
                           <div className="flex items-center gap-3">
                             <h4 className="font-display text-xl font-bold tracking-tight sm:text-2xl">
@@ -164,7 +154,7 @@ export default async function Pricing() {
                             Perpanjangan
                           </dt>
                           <dd className="font-semibold text-ink-900">
-                            {plan.renewal ? `${plan.renewal}/th` : "—"}
+                            {plan.renewal ? `${plan.renewal}/th` : "Termasuk"}
                           </dd>
                         </div>
                       </dl>

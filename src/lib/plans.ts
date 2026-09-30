@@ -163,9 +163,9 @@ export const plans: Plan[] = [
     },
   },
   {
-    id: "intermediate",
-    name: "Intermediate",
-    short: "Intermediate",
+    id: "light",
+    name: "Light",
+    short: "Light",
     tagline: "Website bisnis dengan CMS agar mudah dikelola sendiri.",
     build: "Rp 10 jt",
     maintain: "Rp 750 rb",
@@ -211,9 +211,9 @@ export const plans: Plan[] = [
     },
   },
   {
-    id: "advance",
-    name: "Advance",
-    short: "Advance",
+    id: "intermediate",
+    name: "Intermediate",
+    short: "Intermediate",
     tagline: "Website bisnis full-fitur: blog, katalog, integrasi dasar.",
     build: "Rp 20 jt",
     maintain: "Rp 1,5 jt",
@@ -262,9 +262,9 @@ export const plans: Plan[] = [
     },
   },
   {
-    id: "proficient",
-    name: "Proficient",
-    short: "Proficient",
+    id: "advance",
+    name: "Advance",
+    short: "Advance",
     tagline: "Platform custom: portal, booking, dan sistem internal.",
     build: "Rp 30 jt",
     maintain: "Rp 3 jt",
@@ -311,13 +311,13 @@ export const plans: Plan[] = [
     },
   },
   {
-    id: "pro-proficient",
-    name: "Pro Proficient",
-    short: "Pro Prof.",
+    id: "proficient",
+    name: "Proficient",
+    short: "Proficient",
     tagline: "Web app kompleks dengan integrasi API & dashboard.",
-    build: "Rp 40 jt",
+    build: "Rp 50 jt",
     maintain: "Rp 5 jt",
-    renewal: "Rp 7 jt",
+    renewal: "Rp 10 jt",
     idealFor: "Bisnis digital yang butuh web app kompleks: marketplace internal, sistem operasional, atau integrasi banyak API.",
     featureGroups: [
       {
@@ -347,7 +347,7 @@ export const plans: Plan[] = [
         items: [
           "Maintenance Rp 5 jt/bln",
           "Monitoring 24/7 & incident response",
-          "Perpanjangan tahunan Rp 7 jt/th termasuk maintenance",
+          "Perpanjangan tahunan Rp 10 jt/th termasuk maintenance",
           "Dedicated account manager",
         ],
       },
@@ -360,13 +360,13 @@ export const plans: Plan[] = [
     },
   },
   {
-    id: "max-proficient",
-    name: "Max Proficient",
-    short: "Max Prof.",
+    id: "max",
+    name: "Max",
+    short: "Max",
     tagline: "Platform enterprise dengan performa & keamanan tinggi.",
-    build: "Rp 50 jt",
-    maintain: "Rp 10 jt",
-    renewal: "Rp 8 jt",
+    build: "Rp 75 jt",
+    maintain: "Rp 7,5 jt",
+    renewal: "Rp 15 jt",
     idealFor: "Perusahaan besar / enterprise yang menangani data sensitif dan trafik tinggi dengan standar keamanan ketat.",
     featureGroups: [
       {
@@ -394,9 +394,9 @@ export const plans: Plan[] = [
       {
         title: "Dukungan",
         items: [
-          "Maintenance Rp 10 jt/bln",
+          "Maintenance Rp 7,5 jt/bln",
           "Tim dedikasi & monitoring 24/7",
-          "Perpanjangan tahunan Rp 8 jt/th termasuk maintenance",
+          "Perpanjangan tahunan Rp 15 jt/th termasuk maintenance",
           "SLA uptime 99,9% dengan penalti",
           "Training tim internal di kantor Anda",
         ],
@@ -410,12 +410,12 @@ export const plans: Plan[] = [
     },
   },
   {
-    id: "pro-max-proficient",
-    name: "Pro Max Proficient",
-    short: "Pro Max Prof.",
+    id: "pro-max",
+    name: "Pro Max",
+    short: "Pro Max",
     tagline: "Paket terbesar, dikerjakan tim tersendiri untuk Anda.",
     build: "Rp 100 jt",
-    maintain: "Rp 50 jt",
+    maintain: "Rp 10 jt",
     renewal: "Rp 20 jt",
     idealFor: "Korporasi & grup usaha yang butuh ekosistem digital menyeluruh, dari situs korporat sampai aplikasi internal, dengan tim khusus.",
     featureGroups: [
@@ -444,7 +444,7 @@ export const plans: Plan[] = [
       {
         title: "Dukungan",
         items: [
-          "Maintenance Rp 50 jt/bln, tim khusus untuk Anda",
+          "Maintenance Rp 10 jt/bln, tim khusus untuk Anda",
           "Squad dedikasi: PM, engineer, QA, designer",
           "Perpanjangan tahunan Rp 20 jt/th termasuk maintenance",
           "SLA tertinggi + meeting strategi bulanan",
