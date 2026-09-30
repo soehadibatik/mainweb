@@ -192,7 +192,7 @@ jobs:
         run: |
           set -euo pipefail
           ssh hosting "find '$H_PATH' -name '*.html' -not -path '*/.well-known/*' -delete 2>/dev/null || true"
-          tar -C out -cf - . --exclude='_next/static' \
+          tar --exclude='./_next/static' -C out -cf - . \
             | ssh hosting "cd '$H_PATH' && tar -xf -"
           ssh hosting "test -f '$H_PATH/index.html'" \
             || { echo "::error::index.html gagal terpasang"; exit 1; }
