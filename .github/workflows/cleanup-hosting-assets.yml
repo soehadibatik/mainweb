@@ -132,8 +132,13 @@ jobs:
           ssh hosting "cd '$H_PATH/_next/static' && find . -type f -printf '%p\t%T@\t%s\n' | LC_ALL=C sort" > /tmp/aset-server.txt
 
           # Sisa = ada di server, tidak ada di build sekarang.
-          LC_ALL=C join -t $'\t' -j 1 /tmp/aset-server.txt \
-            <(LC_ALL=C sed 's|^|./|' /tmp/aset-baru.txt | LC_ALL=C sort) -v1 > /tmp/sisa-mentah.txt
+          # Kedua sisi sudah berawalan ./ dari find, jadi TIDAK perlu sed;
+          # awalan ganda membuat pencocokan selalu gagal dan semua file
+          # kelihatan sebagai sisa.
+          # (Opsi join ditaruh sebelum operand: BSD join menolak urutan lain.)
+          LC_ALL=C join -t $'\t' -j 1 -v 1 /tmp/aset-server.txt \
+            <(LC_ALL=C sort /tmp/aset-baru.txt) > /tmp/sisa-mentah.txt
+          echo "aset server: $(wc -l < /tmp/aset-server.txt | tr -d ' ') file, build sekarang: $(wc -l < /tmp/aset-baru.txt | tr -d ' ') file, sisa path-level: $(wc -l < /tmp/sisa-mentah.txt | tr -d ' ') file"
 
           # Ambil CSS_REF dari env (tanpa leading slash) lalu keluarkan dari
           # daftar hapus, plus segala file berumur <24 jam.
