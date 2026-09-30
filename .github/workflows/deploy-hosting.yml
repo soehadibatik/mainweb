@@ -151,11 +151,69 @@ jobs:
             --exclude '.well-known/' \
             out/ "hosting:$H_PATH/"
 
-      - name: rsync out/ ke hosting
+      # === Rencana anti "style hilang" ===
+      # Aset _next/static ber-nama hash konten: tiap build ganti nama. Browser
+      # yang masih pegang HTML lama akan minta aset lama; kalau aset lama
+      # dihapus bersamaan HTML ditukar (rsync --delete polos), halaman mereka
+      # tampil tanpa style sampai refresh. Urutan amannya:
+      #  1) pasang header cache (.htaccess): HTML revalidasi tiap kali,
+      #     aset ber-hash aman di-cache setahun
+      #  2) unggah aset build baru lebih dulu TANPA menghapus yang lama
+      #  3) baru tukar HTML & sisanya (--delete, kecuali _next/static)
+      #  4) aset sisa generasi lama dihapus hanya jika berumur >24 jam
+      - name: Pasang header cache (.htaccess)
         if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
         run: |
           set -euo pipefail
+          cat > /tmp/htaccess-cache <<'HTACCESS'
+
+          # BEGIN mainweb-cache (dipasang otomatis oleh GitHub Actions)
+          # HTML tanpa cache: deploy baru langsung terlihat.
+          # Aset ber-hash: aman di-cache setahun.
+          <IfModule mod_expires.c>
+            ExpiresActive On
+            ExpiresDefault "access plus 0 seconds"
+            ExpiresByType text/css "access plus 1 year"
+            ExpiresByType application/javascript "access plus 1 year"
+            ExpiresByType text/javascript "access plus 1 year"
+            ExpiresByType font/woff2 "access plus 1 year"
+            ExpiresByType image/png "access plus 1 month"
+            ExpiresByType image/jpeg "access plus 1 month"
+            ExpiresByType image/svg+xml "access plus 1 month"
+            ExpiresByType image/webp "access plus 1 month"
+            ExpiresByType image/x-icon "access plus 1 month"
+          </IfModule>
+          <IfModule mod_headers.c>
+            <FilesMatch "\.(css|js|mjs|woff2)$">
+              Header set Cache-Control "public, max-age=31536000, immutable"
+            </FilesMatch>
+          </IfModule>
+          # END mainweb-cache
+          HTACCESS
+          # Idempoten: blok hanya di-append jika belum ada; .htaccess milik
+          # cPanel tidak pernah ditimpa. Indentasi YAML dibuang saat masuk.
+          sed 's/^          //' /tmp/htaccess-cache \
+            | ssh hosting "grep -q 'BEGIN mainweb-cache' '$H_PATH/.htaccess' 2>/dev/null || cat >> '$H_PATH/.htaccess'"
+          ssh hosting "tail -3 '$H_PATH/.htaccess'"
+
+      # Aset baru masuk duluan; aset lama dibiarkan hidup. Aman karena nama
+      # file di-hash dari isinya: nama sama pasti isi sama.
+      - name: Unggah aset _next/static lebih dulu
+        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        run: |
+          set -euo pipefail
+          ssh hosting "mkdir -p '$H_PATH/_next/static'"
+          rsync -az out/_next/static/ "hosting:$H_PATH/_next/static/"
+
+      - name: rsync out/ ke hosting (HTML paling akhir)
+        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        run: |
+          set -euo pipefail
+          # _next/static dikecualikan: sudah diunggah di atas, dan TIDAK boleh
+          # ikut --delete agar HTML lama di cache browser masih menemukan
+          # asetnya selama masa tenggang.
           rsync -az --delete --stats \
+            --exclude '/_next/static/' \
             --filter 'merge /tmp/rsync-filter' \
             --exclude '.well-known/' \
             out/ "hosting:$H_PATH/"
@@ -181,4 +239,30 @@ jobs:
           {
             echo
             echo "### ✅ Ter-deploy ke \`$H_USER@$H_HOST:$H_PATH\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Sisa aset generasi lama (tidak ada di build sekarang) dihapus hanya
+      # jika berumur >24 jam: masa tenggang bagi HTML lama di cache browser.
+      - name: Bersihkan aset statis generasi lama
+        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        run: |
+          set -euo pipefail
+          (cd out/_next/static && LC_ALL=C find . -type f | LC_ALL=C sort) > /tmp/aset-baru.txt
+          ssh hosting "cd '$H_PATH/_next/static' && LC_ALL=C find . -type f | LC_ALL=C sort" > /tmp/aset-terpasang.txt
+          SISA=$(comm -23 /tmp/aset-terpasang.txt /tmp/aset-baru.txt | wc -l | tr -d ' ')
+          comm -23 /tmp/aset-terpasang.txt /tmp/aset-baru.txt \
+            | ssh hosting "cd '$H_PATH/_next/static' && while IFS= read -r f; do [ -n \"\$f\" ] && find \"\$f\" -mtime +0 -delete; done; true"
+          echo "sisa aset lama dievaluasi (hapus jika >24 jam): $SISA file"
+
+      # Kalau CSS yang dirujuk index.html tidak ada di server, halaman tampil
+      # tanpa style. Gagal di sini berarti deploy merah, bukan hijau lalu
+      # situs rusak diam-diam.
+      - name: Verifikasi CSS ter-serve
+        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        run: |
+          set -euo pipefail
+          ssh hosting "css=\$(grep -o '/_next/static/[^\"]*\.css' '$H_PATH/index.html' | head -1); [ -n \"\$css\" ] || { echo '::error::index.html tidak merujuk CSS manapun'; exit 1; }; [ -f '$H_PATH\$css' ] || { echo \"::error::CSS \$css tidak ada di hosting, style akan hilang\"; exit 1; }; echo \"CSS ok: \$css\""
+          {
+            echo
+            echo "### 🔒 Verifikasi CSS ok"
           } >> "$GITHUB_STEP_SUMMARY"
