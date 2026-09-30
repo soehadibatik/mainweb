@@ -1,20 +1,23 @@
 name: Deploy to Domainesia Hosting
 
-# Static export (out/) -> folder domain di shared hosting Domainesia via SSH + rsync.
+# Static export (out/) -> folder domain di shared hosting Domainesia via SSH + tar.
 # Perlu repo Variables + Secret, lihat docs/DEPLOY-DOMAINESIA.md.
 #
 # Kalau konfigurasi belum diisi, job SKIP (hijau) — bukan gagal. Jadi aman
 # dipush ke branch main project yang hosting-nya belum disiapkan.
+#
+# PENTING: sengaja TIDAK memakai rsync. Di shared hosting ini rsync terbukti
+# dua kali bermasalah: pernah berakhir sukses tanpa menaruh file sama sekali,
+# dan pernah menghapus aset _next/static yang seharusnya dikecualikan —
+# itulah sebabnya sering ada laporan "style hilang" setelah deploy.
+# Tar over SSH murni mengekstrak (merge, tidak menghapus), jadi urutan
+# amannya bisa dijamin: aset build baru masuk lebih dulu, HTML ditukar
+# kemudian, dan aset generasi lama baru dibersihkan setelah >24 jam.
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: "true = rsync dry-run, tidak menulis ke server"
-        type: boolean
-        default: false
 
 concurrency:
   group: deploy-hosting-${{ github.ref }}
@@ -119,50 +122,16 @@ jobs:
       - name: Pastikan folder tujuan ada
         if: steps.cfg.outputs.enabled == 'true'
         run: |
-          set -euo pipefail
           ssh hosting "mkdir -p '$H_PATH' && test -d '$H_PATH'" \
             || { echo "::error::Gagal menyiapkan '$H_PATH'. Cek HOSTING_PATH & hak akses folder."; exit 1; }
 
-      # cPanel menyimpan file konfigurasi sendiri di dalam folder domain:
-      #   .htaccess  -> directive PHP cPanel (jangan dihapus)
-      #   .user.ini  -> setting PHP per-folder (jangan dihapus)
-      #   php.ini    -> salinan cPanel (jangan dihapus)
-      #   .well-known/ -> dipakai AutoSSL/acme-challenge, hapus = renewal SSL gagal
-      # Semuanya dikecualikan dari --delete supaya aman.
-      - name: Proteksi file cPanel
-        if: steps.cfg.outputs.enabled == 'true'
-        run: |
-          set -euo pipefail
-          cat > /tmp/rsync-filter <<'EOF'
-          protect .htaccess
-          protect .user.ini
-          protect php.ini
-          protect .well-known/
-          EOF
-          echo "filter dibuat:"
-          cat /tmp/rsync-filter
-
-      - name: rsync dry-run
-        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run == true
-        run: |
-          set -euo pipefail
-          rsync -azn --delete --stats \
-            --filter 'merge /tmp/rsync-filter' \
-            --exclude '.well-known/' \
-            out/ "hosting:$H_PATH/"
-
-      # === Rencana anti "style hilang" ===
-      # Aset _next/static ber-nama hash konten: tiap build ganti nama. Browser
-      # yang masih pegang HTML lama akan minta aset lama; kalau aset lama
-      # dihapus bersamaan HTML ditukar (rsync --delete polos), halaman mereka
-      # tampil tanpa style sampai refresh. Urutan amannya:
-      #  1) pasang header cache (.htaccess): HTML revalidasi tiap kali,
-      #     aset ber-hash aman di-cache setahun
-      #  2) unggah aset build baru lebih dulu TANPA menghapus yang lama
-      #  3) baru tukar HTML & sisanya (--delete, kecuali _next/static)
-      #  4) aset sisa generasi lama dihapus hanya jika berumur >24 jam
+      # === Urutan anti "style hilang" ===
+      # 1) Header cache: HTML selalu revalidasi, aset ber-hash cache setahun.
+      # 2) Aset _next/static build baru diunggah TANPA menghapus yang lama.
+      # 3) HTML & konten lain ditukar paling akhir.
+      # 4) Aset sisa generasi lama dihapus hanya jika berumur >24 jam.
       - name: Pasang header cache (.htaccess)
-        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        if: steps.cfg.outputs.enabled == 'true'
         run: |
           set -euo pipefail
           cat > /tmp/htaccess-cache <<'HTACCESS'
@@ -196,37 +165,40 @@ jobs:
             | ssh hosting "grep -q 'BEGIN mainweb-cache' '$H_PATH/.htaccess' 2>/dev/null || cat >> '$H_PATH/.htaccess'"
           ssh hosting "tail -3 '$H_PATH/.htaccess'"
 
-      # Aset baru masuk duluan; aset lama dibiarkan hidup. Aman karena nama
-      # file di-hash dari isinya: nama sama pasti isi sama.
-      # Transfer pakai tar over SSH: rsync di shared hosting terbukti bisa
-      # selesai tanpa pesan namun tidak menaruh file; tar tidak punya mode
-      # gagal-diam, dan langkah ini memverifikasi CSS-nya langsung.
+      # Langkah 2: aset baru masuk duluan, aset lama dibiarkan hidup. Aman
+      # karena nama file di-hash dari isinya: nama sama pasti isi sama.
       - name: Unggah aset _next/static lebih dulu
-        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        if: steps.cfg.outputs.enabled == 'true'
         run: |
           set -euo pipefail
-          CSS=$(grep -o '/_next/static/[^\"]*\.css' out/index.html | head -1)
+          CSS=$(grep -o '/_next/static/[^"]*\.css' out/index.html | head -1)
           [ -n "$CSS" ] || { echo "::error::out/index.html tidak merujuk CSS"; exit 1; }
           ssh hosting "mkdir -p '$H_PATH/_next/static'"
           tar -C out -cf - _next/static \
             | ssh hosting "cd '$H_PATH' && tar -xf -"
-          ssh hosting "[ -f '$H_PATH$CSS' ] || { echo ::error::\"aset \$CSS gagal terpasang\"; exit 1; }; echo \"aset ok: \$CSS ($(wc -c < '$H_PATH$CSS' | tr -d ' ') byte)\""
+          ssh hosting "test -f '$H_PATH$CSS'" \
+            || { echo "::error::aset $CSS gagal terpasang di hosting"; exit 1; }
+          echo "aset ok: $CSS"
 
-      - name: rsync out/ ke hosting (HTML paling akhir)
-        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+      # Langkah 3: konten (HTML, gambar, dsb). Ekstraksi tar mengganti file
+      # yang namanya sama dan TIDAK menghapus yang lain. HTML lama di server
+      # dihapus lebih dulu supaya rute yang sudah tidak ada tak tertinggal;
+      # ini tidak memengaruhi HTML yang masih tersimpan di cache browser,
+      # asetnya tetap tersedia selama masa tenggang.
+      # File cPanel (.htaccess, .user.ini, php.ini, .well-known/) tidak ada di
+      # out/ sehingga tidak pernah tersentuh.
+      - name: Tukar konten situs (HTML paling akhir)
+        if: steps.cfg.outputs.enabled == 'true'
         run: |
           set -euo pipefail
-          # _next/static dikecualikan: sudah diunggah di atas, dan TIDAK boleh
-          # ikut --delete agar HTML lama di cache browser masih menemukan
-          # asetnya selama masa tenggang.
-          rsync -az --delete --stats \
-            --exclude '/_next/static/' \
-            --filter 'merge /tmp/rsync-filter' \
-            --exclude '.well-known/' \
-            out/ "hosting:$H_PATH/"
+          ssh hosting "find '$H_PATH' -name '*.html' -not -path '*/.well-known/*' -delete 2>/dev/null || true"
+          tar -C out -cf - . --exclude='_next/static' \
+            | ssh hosting "cd '$H_PATH' && tar -xf -"
+          ssh hosting "test -f '$H_PATH/index.html'" \
+            || { echo "::error::index.html gagal terpasang"; exit 1; }
 
       - name: Pastikan file cPanel masih ada
-        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        if: steps.cfg.outputs.enabled == 'true'
         run: |
           set -euo pipefail
           ssh hosting "
@@ -239,7 +211,7 @@ jobs:
           "
 
       - name: Verifikasi
-        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        if: steps.cfg.outputs.enabled == 'true'
         run: |
           set -euo pipefail
           ssh hosting "ls -1 '$H_PATH' | head -20"
@@ -248,10 +220,11 @@ jobs:
             echo "### ✅ Ter-deploy ke \`$H_USER@$H_HOST:$H_PATH\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # Sisa aset generasi lama (tidak ada di build sekarang) dihapus hanya
-      # jika berumur >24 jam: masa tenggang bagi HTML lama di cache browser.
+      # Langkah 4: sisa aset generasi lama (tidak ada di build sekarang)
+      # dihapus hanya jika berumur >24 jam: masa tenggang bagi HTML lama di
+      # cache browser.
       - name: Bersihkan aset statis generasi lama
-        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        if: steps.cfg.outputs.enabled == 'true'
         run: |
           set -euo pipefail
           (cd out/_next/static && LC_ALL=C find . -type f | LC_ALL=C sort) > /tmp/aset-baru.txt
@@ -265,7 +238,7 @@ jobs:
       # tanpa style. Gagal di sini berarti deploy merah, bukan hijau lalu
       # situs rusak diam-diam.
       - name: Verifikasi CSS ter-serve
-        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        if: steps.cfg.outputs.enabled == 'true'
         run: |
           set -euo pipefail
           ssh hosting "css=\$(grep -o '/_next/static/[^\"]*\.css' '$H_PATH/index.html' | head -1); [ -n \"\$css\" ] || { echo '::error::index.html tidak merujuk CSS manapun'; exit 1; }; [ -f '$H_PATH\$css' ] || { echo \"::error::CSS \$css tidak ada di hosting, style akan hilang\"; exit 1; }; echo \"CSS ok: \$css\""
