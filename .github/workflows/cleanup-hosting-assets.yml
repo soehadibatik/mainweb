@@ -1,0 +1,201 @@
+name: Bersihkan aset hosting generasi lama
+
+# Pembersihan MANUAL, dijalankan sesekali lewat tab Actions ketika kuota
+# hosting mulai terpakai. Sengaja TIDAK dijalankan otomatis di akhir deploy:
+# di server ini langkah pembersih otomatis pernah memakan aset yang baru
+# saja terpasang (lihat komentar deploy-hosting.yml).
+#
+# Cara aman yang dipakai di sini:
+#  1. Build ulang di runner supaya daftar aset generasi SEKARANG akurat.
+#  2. Yang dianggap sisa = ada di server tapi tidak ada di build sekarang.
+#  3. Hanya sisa yang berumur >24 jam yang dihapus (masa tenggang HTML lama
+#     di cache browser).
+#  4. CSS yang dirujuk build sekarang TIDAK pernah ikut daftar hapus,
+#     apa pun hasil perhitungan.
+#  5. Default dry_run=true: hanya melaporkan daftar dan ukuran yang beads
+#     dihemat, tanpa menghapus. Jalankan sekali dengan true, periksa
+#     laporannya, lalu jalankan lagi dengan false.
+#  6. Setelah penghapusan, CSS live diverifikasi masih ter-serve publik;
+#     kalau tidak, job merah supaya kelihatan segera.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true = laporan saja tanpa menghapus"
+        type: boolean
+        default: true
+
+concurrency:
+  group: cleanup-hosting-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  H_HOST: ${{ vars.HOSTING_HOST }}
+  H_USER: ${{ vars.HOSTING_USER }}
+  H_PATH: ${{ vars.HOSTING_PATH }}
+  H_PORT: ${{ vars.HOSTING_PORT }}
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check hosting config
+        id: cfg
+        env:
+          KEY: ${{ secrets.HOSTING_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$H_HOST" ] || [ -z "$H_USER" ] || [ -z "$H_PATH" ] || [ -z "$KEY" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "### ⏭️ Pembersihan di-skip"
+              echo
+              echo "Konfigurasi belum lengkap (sama seperti deploy-hosting.yml)."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+
+      - name: Siapkan SSH
+        if: steps.cfg.outputs.enabled == 'true'
+        env:
+          KEY: ${{ secrets.HOSTING_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          {
+            echo "Host hosting"
+            echo "  HostName $H_HOST"
+            echo "  Port ${H_PORT:-64000}"
+            echo "  User $H_USER"
+            echo "  IdentityFile ~/.ssh/deploy_key"
+            echo "  IdentitiesOnly yes"
+            echo "  StrictHostKeyChecking accept-new"
+            echo "  ServerAliveInterval 30"
+          } > ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      # Build ulang: satu-satunya sumber kebenaran daftar aset generasi
+      # sekarang. Jangan pakai daftar dari cache atau perkiraan.
+      - uses: actions/setup-node@v4
+        if: steps.cfg.outputs.enabled == 'true'
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: npm ci
+        if: steps.cfg.outputs.enabled == 'true'
+        run: npm ci
+
+      - name: Tulis .env dari secrets
+        if: steps.cfg.outputs.enabled == 'true'
+        env:
+          API_KEY: ${{ secrets.BATIKSOEHADI_API_KEY }}
+        run: |
+          if [ -n "$API_KEY" ]; then
+            printf 'BATIKSOEHADI_API_KEY=%s\n' "$API_KEY" > .env
+          else
+            : > .env
+          fi
+
+      - name: npm run build
+        if: steps.cfg.outputs.enabled == 'true'
+        run: npm run build
+
+      - name: Tentukan CSS generasi sekarang
+        if: steps.cfg.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          CSS_REF=$(grep -o '/_next/static/[^"]*\.css' out/index.html | head -1)
+          [ -n "$CSS_REF" ] || { echo "::error::out/index.html tidak merujuk CSS manapun"; exit 1; }
+          echo "CSS_REF=$CSS_REF" >> "$GITHUB_ENV"
+          echo "CSS generasi sekarang (dilindungi): $CSS_REF"
+
+      # Daftar aset server lengkap dengan umur & ukuran, lalu saring:
+      # buang yang masih ada di build sekarang, buang yang masih muda
+      # (<24 jam), dan buang CSS generasi sekarang secara eksplisit.
+      - name: Hitung sisa aset generasi lama
+        if: steps.cfg.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          ssh hosting "test -d '$H_PATH/_next/static'" \
+            || { echo "::error::folder _next/static tidak ada di hosting"; exit 1; }
+
+          (cd out/_next/static && LC_ALL=C find . -type f | LC_ALL=C sort) > /tmp/aset-baru.txt
+
+          # Format: path<TAB>umur_detik<TAB>ukuran_byte
+          ssh hosting "cd '$H_PATH/_next/static' && find . -type f -printf '%p\t%T@\t%s\n' | LC_ALL=C sort" > /tmp/aset-server.txt
+
+          # Sisa = ada di server, tidak ada di build sekarang.
+          LC_ALL=C join -t $'\t' -j 1 /tmp/aset-server.txt \
+            <(LC_ALL=C sed 's|^|./|' /tmp/aset-baru.txt | LC_ALL=C sort) -v1 > /tmp/sisa-mentah.txt
+
+          # Ambil CSS_REF dari env (tanpa leading slash) lalu keluarkan dari
+          # daftar hapus, plus segala file berumur <24 jam.
+          PROTECTED="./${CSS_REF#/}"
+          awk -F'\t' -v prot="$PROTECTED" -v batas="$(date +%s)" '$2 + 86400 <= batas && $1 != prot' \
+            /tmp/sisa-mentah.txt > /tmp/sisa-hapus.txt
+
+          JUMLAH=$(wc -l < /tmp/sisa-hapus.txt | tr -d ' ')
+          UKURAN=$(awk -F'\t' '{s+=$3} END {printf "%.1f", s/1048576}' /tmp/sisa-hapus.txt)
+          echo "sisa kandidat hapus: $JUMLAH file, sekitar ${UKURAN} MB"
+          echo "JUMLAH=$JUMLAH" >> "$GITHUB_ENV"
+          echo "UKURAN=$UKURAN" >> "$GITHUB_ENV"
+
+          {
+            echo "### Kandidat aset generasi lama"
+            echo
+            echo "Total: $JUMLAH file, sekitar ${UKURAN} MB"
+            echo
+            if [ "$JUMLAH" -gt 0 ]; then
+              echo '```'
+              awk -F'\t' '{printf "%8.2f MB  %s\n", $3/1048576, $1}' /tmp/sisa-hapus.txt | head -40
+              [ "$JUMLAH" -gt 40 ] && echo "... dan $((JUMLAH - 40)) file lainnya"
+              echo '```'
+            else
+              echo "Tidak ada yang perlu dihapus."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Hapus sisa aset lama
+        if: steps.cfg.outputs.enabled == 'true' && inputs.dry_run != true
+        run: |
+          set -euo pipefail
+          if [ ! -s /tmp/sisa-hapus.txt ]; then
+            echo "Tidak ada yang dihapus."
+            exit 0
+          fi
+          # Hanya menyentuh bagian dalam _next/static; path relatif dari
+          # find dijamin tidak bisa keluar dari folder ini.
+          cut -f1 /tmp/sisa-hapus.txt \
+            | ssh hosting "cd '$H_PATH/_next/static' && xargs -d '\n' rm -f --"
+          SUDAH=$(ssh hosting "cd '$H_PATH/_next/static' && find . -type f | wc -l" | tr -d ' ')
+          echo "Penghapusan selesai. Sisa file di _next/static: $SUDAH"
+
+      # Gerbang penutup, sama seperti deploy: CSS generasi sekarang wajib
+      # masih ada di server DAN terbaca publik setelah pembersihan.
+      - name: Verifikasi CSS masih ter-serve
+        if: steps.cfg.outputs.enabled == 'true'
+        run: |
+          set -euo pipefail
+          ssh hosting "test -f '$H_PATH$CSS_REF'" \
+            || { echo "::error::CSS $CSS_REF hilang setelah pembersihan!"; exit 1; }
+          curl -fsSI "https://mainweb.id$CSS_REF" | grep -iE "HTTP/|content-type" \
+            || { echo "::error::CSS tidak terbaca publik setelah pembersihan!"; exit 1; }
+          {
+            echo
+            echo "### 🔒 CSS generasi sekarang aman: \`$CSS_REF\`"
+            if [ "${{ inputs.dry_run }}" = "true" ]; then
+              echo
+              echo "Mode DRY RUN: tidak ada file yang dihapus."
+              echo "Jalankan ulang workflow dengan \`dry_run = false\` untuk menghapus."
+            else
+              echo
+              echo "🧹 Dihapus: $JUMLAH file (sekitar ${UKURAN} MB)."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
