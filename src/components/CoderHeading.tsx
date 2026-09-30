@@ -19,6 +19,55 @@ const PHRASES = [
   "Tanpa template: setiap situs digambar dan ditulis khusus untuk Anda.",
 ];
 
+/*
+ * Kata yang dicetak gradasi 3 warna logo (brand-wordmark) di tiap kalimat.
+ * Satu-dua kata cukup: gradien di semua kata kehilangan penekanannya.
+ * Kata harus muncul persis di kalimatnya; kalau tidak ketemu, kata itu
+ * saja yang tidak bergradasi, animasi tetap aman.
+ */
+const GRADIENT_WORDS: string[][] = [
+  ["1,5 jt,"],
+  ["gratis."],
+  ["situs"],
+];
+
+type Segment = { text: string; grad: boolean };
+
+function segmentsOf(text: string, gradWords: string[]): Segment[] {
+  const segs: Segment[] = [];
+  let rest = text;
+  for (const w of gradWords) {
+    const i = rest.indexOf(w);
+    if (i === -1) continue;
+    if (i > 0) segs.push({ text: rest.slice(0, i), grad: false });
+    segs.push({ text: w, grad: true });
+    rest = rest.slice(i + w.length);
+  }
+  if (rest) segs.push({ text: rest, grad: false });
+  return segs;
+}
+
+/* Potongan yang sudah terketik, dengan kata gradien tetap bergradasi. */
+function TypedSegments({ segs, length }: { segs: Segment[]; length: number }) {
+  let left = length;
+  return (
+    <>
+      {segs.map((s, i) => {
+        if (left <= 0) return null;
+        const t = s.text.slice(0, left);
+        left -= s.text.length;
+        return s.grad ? (
+          <span key={i} className="brand-wordmark">
+            {t}
+          </span>
+        ) : (
+          <span key={i}>{t}</span>
+        );
+      })}
+    </>
+  );
+}
+
 /* Tempo santai: ketik pelan, tahan lama, hapus cepat, tarik napas. */
 const FIRST_TYPE_MS = 700; // jeda sebelum karakter pertama tiap kalimat
 const TYPE_TICK_MS = 85; // kecepatan ketik per karakter
@@ -82,10 +131,16 @@ export default function CoderHeading() {
 
   const text = PHRASES[phraseIndex];
 
-  // Reduced motion: satu kalimat statis, tanpa caret, tanpa sr-only ganda
+  // Reduced motion: satu kalimat statis penuh (dengan kata gradien),
+  // tanpa caret, tanpa sr-only ganda
   if (reduced) {
     return (
-      <span className="coder-line-block block">{PHRASES[0]}</span>
+      <span className="coder-line-block block">
+        <TypedSegments
+          segs={segmentsOf(PHRASES[0], GRADIENT_WORDS[0] ?? [])}
+          length={PHRASES[0].length}
+        />
+      </span>
     );
   }
 
@@ -94,11 +149,19 @@ export default function CoderHeading() {
       {/* Salinan tersembunyi kalimat terpanjang: mengunci tinggi baris agar
           konten di bawah tidak melompat tiap fase ketik/hapus */}
       <span className="coder-ghost" aria-hidden>
-        <span className="coder-prompt">~$</span> {PHRASES[0]}
+        <span className="coder-prompt">~$</span>{" "}
+        <TypedSegments
+          segs={segmentsOf(PHRASES[0], GRADIENT_WORDS[0] ?? [])}
+          length={PHRASES[0].length}
+        />
       </span>
       {/* Teks SEO lengkap ada di sr-only milik h1 di Hero; blok ini murni visual */}
       <span aria-hidden>
-        <span className="coder-prompt">~$</span> {text.slice(0, length)}
+        <span className="coder-prompt">~$</span>{" "}
+        <TypedSegments
+          segs={segmentsOf(text, GRADIENT_WORDS[phraseIndex] ?? [])}
+          length={length}
+        />
         <span className="coder-caret" />
       </span>
     </span>
