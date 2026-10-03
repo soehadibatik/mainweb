@@ -29,7 +29,7 @@ export default function FloatingWa() {
         className="group brand-gradient relative flex h-14 w-14 items-center gap-3 overflow-hidden rounded-full pl-[15px] pr-4 text-white shadow-[0_14px_30px_-14px_rgb(0_71_210/0.55)] ring-1 ring-ink-950/5 transition-all duration-200 hover:w-[184px] focus-visible:w-[184px] focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper focus-visible:outline-none"
       >
         <WaIcon />
-        <span className="max-w-0 overflow-hidden font-mono text-[11px] tracking-[0.16em] whitespace-nowrap uppercase opacity-0 transition-all duration-200 group-hover:max-w-[120px] group-hover:opacity-100 group-focus-visible:max-w-[120px] group-focus-visible:opacity-100">
+        <span className="max-w-0 overflow-hidden font-mono text-xs whitespace-nowrap opacity-0 transition-all duration-200 group-hover:max-w-[120px] group-hover:opacity-100 group-focus-visible:max-w-[120px] group-focus-visible:opacity-100">
           Chat WhatsApp
         </span>
       </a>

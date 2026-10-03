@@ -57,8 +57,14 @@ Aturan cepat yang paling sering dilanggar di project ini:
 - **Arrow (→ ↗) bukan default tiap tombol.** Pakai hanya saat memberi arah
   yang benar-benar berguna.
 
-Sebelum mulai kerja UI, tanyakan ke user: antislop dijalankan *saat mengerjakan*
-atau *audit setelah selesai*.
+**Keputusan tetap (perintah pemilik repo): antislop dijalankan saat mengerjakan,
+selalu, tanpa perlu ditanya lagi.** Audit ulang setelah selesai hanya pelengkap,
+bukan pengganti. Blok `antislop` yang digenerate ulang di bawah masih menyuruh
+bertanya; abaikan bagian itu, yang berlaku aturan ini.
+
+Jika `antislop.md` atau `skills/antislop-*/SKILL.md` tidak ada di repo, jangan
+berhenti: pakai daftar aturan cepat di atas sebagai standar minimum dan sebutkan
+dalam jawaban bahwa file skill-nya belum ada.
 
 <!-- antislop:start -->
 ## antislop

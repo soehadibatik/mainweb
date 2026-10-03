@@ -72,7 +72,6 @@ function TypedSegments({ segs, length }: { segs: Segment[]; length: number }) {
 const FIRST_TYPE_MS = 700; // jeda sebelum karakter pertama tiap kalimat
 const TYPE_TICK_MS = 85; // kecepatan ketik per karakter
 const HOLD_MS = 2800; // kalimat dibaca penonton sebelum dihapus
-const ERASE_TICK_MS = 22; // penghapusan lebih cepat dari ketik
 const REST_MS = 1200; // baris kosong sesaat sebelum siklus baru
 
 type Phase = "typing" | "hold" | "erasing" | "rest";
@@ -111,7 +110,10 @@ export default function CoderHeading() {
       t = setTimeout(() => setPhase("erasing"), HOLD_MS);
     } else if (phase === "erasing") {
       if (length > 0) {
-        t = setTimeout(() => setLength(length - 1), ERASE_TICK_MS);
+        // Hapus dengan tempo mempercepat: ringan di awal, cepat di akhir.
+        // Tempo rata bikin kalimat terlihat "dicabut" mendadak.
+        const tick = Math.round(14 + 26 * (length / full.length));
+        t = setTimeout(() => setLength(length - 1), tick);
       } else if (phraseIndex < PHRASES.length - 1) {
         setPhraseIndex(phraseIndex + 1);
         setPhase("typing");
@@ -162,7 +164,9 @@ export default function CoderHeading() {
           segs={segmentsOf(text, GRADIENT_WORDS[phraseIndex] ?? [])}
           length={length}
         />
-        <span className="coder-caret" />
+        <span
+          className={`coder-caret${phase === "typing" ? " is-typing" : ""}`}
+        />
       </span>
     </span>
   );

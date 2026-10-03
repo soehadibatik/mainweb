@@ -18,7 +18,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-paper/85 text-ink-950 backdrop-blur-md">
+    <header className="nav-enter fixed inset-x-0 top-0 z-50 border-b border-line bg-paper/85 text-ink-950 backdrop-blur-md">
       <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3" aria-label="mainweb.id, beranda">
           <Image
@@ -38,7 +38,7 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="font-mono text-[11px] tracking-[0.14em] text-ink-900/65 uppercase transition-colors hover:text-brand-600"
+              className="text-[13px] font-medium text-ink-900/70 transition-colors hover:text-brand-600"
             >
               {item.label}
             </Link>
@@ -50,7 +50,7 @@ export default function Navbar() {
             href={waLink("Halo mainweb.id, saya ingin konsultasi pembuatan website.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-brand-600 px-4 py-2 font-mono text-[11px] font-semibold tracking-[0.12em] text-white uppercase transition-colors hover:bg-brand-500"
+            className="btn btn-primary btn-sm"
           >
             Konsultasi
           </a>
@@ -80,7 +80,7 @@ export default function Navbar() {
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="flex items-center justify-between border-b border-line py-3 font-mono text-xs tracking-[0.14em] text-ink-900/70 uppercase transition-colors hover:text-brand-600"
+              className="flex items-center justify-between border-b border-line py-3 text-sm text-ink-900/75 transition-colors hover:text-brand-600"
             >
               {item.label}
             </Link>
@@ -89,7 +89,7 @@ export default function Navbar() {
             href={waLink("Halo mainweb.id, saya ingin konsultasi pembuatan website.")}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 block bg-brand-600 px-4 py-3 text-center font-mono text-xs font-semibold tracking-[0.12em] text-white uppercase"
+            className="btn btn-primary mt-4 w-full"
           >
             Konsultasi Gratis
           </a>

@@ -57,10 +57,10 @@ export default function PricingComparison({
       {/* Toggle paket */}
       <div className="mb-6 border border-line bg-white p-4 sm:p-5">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <span className="font-mono text-[11px] font-semibold tracking-[0.16em] text-ink-900 uppercase">
+          <span className="font-mono text-xs font-semibold text-ink-900">
             Tampilkan paket
           </span>
-          <span className="font-mono text-[10px] tracking-[0.12em] text-ink-900/40 uppercase">
+          <span className="font-mono text-[11px] text-ink-900/45">
             klik untuk sembunyikan / tampilkan
           </span>
         </div>
@@ -73,7 +73,7 @@ export default function PricingComparison({
                 type="button"
                 aria-pressed={on}
                 onClick={() => toggle(plan.id)}
-                className={`border px-3 py-1.5 font-mono text-[10px] font-semibold tracking-[0.12em] uppercase transition-all ${
+                className={`border px-3 py-1.5 font-mono text-xs font-semibold transition-all ${
                   on
                     ? plan.highlight
                       ? "border-brand-600 bg-brand-600 text-white"
@@ -89,26 +89,26 @@ export default function PricingComparison({
             <button
               type="button"
               onClick={() => setHidden(new Set())}
-              className="px-3 py-1.5 font-mono text-[10px] font-semibold tracking-[0.12em] text-brand-600 uppercase hover:underline"
+              className="px-3 py-1.5 font-mono text-xs font-semibold text-brand-600 hover:underline"
             >
-              ↺ Tampilkan semua
+              Tampilkan semua
             </button>
           )}
         </div>
-        <p className="mt-3 font-mono text-[10px] tracking-[0.12em] text-ink-900/40 uppercase">
+        <p className="mt-3 font-mono text-[11px] text-ink-900/45">
           Menampilkan {visiblePlans.length} dari {plans.length} paket
         </p>
       </div>
 
       {visiblePlans.length === 0 ? (
         <div className="border border-dashed border-ink-900/25 bg-white p-12 text-center">
-          <p className="font-mono text-xs tracking-[0.14em] text-ink-900/50 uppercase">
+          <p className="font-mono text-xs text-ink-900/55">
             Semua paket sedang disembunyikan
           </p>
           <button
             type="button"
             onClick={() => setHidden(new Set())}
-            className="mt-5 bg-brand-600 px-6 py-2.5 font-mono text-[11px] font-semibold tracking-[0.12em] text-white uppercase hover:bg-brand-700"
+            className="mt-5 inline-block bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700"
           >
             Tampilkan semua paket
           </button>
@@ -119,7 +119,7 @@ export default function PricingComparison({
             <thead>
               <tr>
                 <th className="sticky left-0 z-20 w-52 min-w-52 border-r border-b border-line bg-paper p-4 align-bottom">
-                  <span className="font-mono text-[10px] font-semibold tracking-[0.18em] text-ink-900/50 uppercase">
+                  <span className="font-mono text-xs font-semibold text-ink-900/55">
                     Fitur / Paket
                   </span>
                 </th>
@@ -131,17 +131,17 @@ export default function PricingComparison({
                     className={`relative border-b border-line p-4 text-center align-bottom transition-colors ${colBg(plan.id, plan.highlight ? highlightBase : undefined)}`}
                   >
                     {plan.highlight && (
-                      <span className="absolute top-2 right-2 bg-brand-600 px-1.5 py-0.5 font-mono text-[8px] font-bold tracking-[0.12em] text-white uppercase">
+                      <span className="absolute top-2 right-2 bg-brand-600 px-1.5 py-0.5 font-mono text-[9px] font-bold text-white">
                         Populer
                       </span>
                     )}
-                    <span className="font-mono text-[10px] font-bold tracking-[0.12em] text-ink-900 uppercase">
+                    <span className="font-mono text-xs font-bold text-ink-900">
                       {plan.name}
                     </span>
                     <p className="mt-1 font-mono text-lg font-semibold text-ink-950">
                       {plan.build}
                     </p>
-                    <p className="font-mono text-[9px] tracking-[0.12em] text-ink-900/35 uppercase">
+                    <p className="font-mono text-[10px] text-ink-900/45">
                       pembuatan
                     </p>
                   </th>
@@ -156,7 +156,7 @@ export default function PricingComparison({
                       colSpan={visiblePlans.length + 1}
                       className="border-b border-line bg-paper px-4 py-2.5"
                     >
-                      <span className="font-mono text-[10px] font-bold tracking-[0.18em] text-brand-700 uppercase">
+                      <span className="font-mono text-xs font-bold text-brand-700">
                         {section.title}
                       </span>
                     </td>
@@ -188,7 +188,7 @@ export default function PricingComparison({
               <tr>
                 <th
                   scope="row"
-                  className="sticky left-0 z-10 border-r border-line bg-white px-4 py-4 font-mono text-[10px] font-semibold tracking-[0.14em] text-ink-900/60 uppercase"
+                  className="sticky left-0 z-10 border-r border-line bg-white px-4 py-4 font-mono text-xs font-semibold text-ink-900/65"
                 >
                   Pesan
                 </th>
@@ -201,7 +201,7 @@ export default function PricingComparison({
                       href={waLink(`Halo mainweb.id, saya tertarik dengan paket ${plan.name} (${plan.build}).`)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`inline-block px-3 py-2 font-mono text-[10px] font-semibold tracking-[0.1em] uppercase transition-colors ${
+                      className={`inline-block px-3 py-2 text-sm font-semibold transition-colors ${
                         plan.highlight
                           ? "bg-brand-600 text-white hover:bg-brand-700"
                           : "border border-ink-900/25 text-ink-900 hover:bg-ink-950 hover:text-white"
@@ -211,9 +211,9 @@ export default function PricingComparison({
                     </a>
                     <Link
                       href={`/paket/${plan.id}`}
-                      className="mt-1.5 block font-mono text-[9px] tracking-[0.1em] text-ink-900/35 uppercase hover:text-brand-600"
+                      className="mt-1.5 block font-mono text-[10px] text-ink-900/45 hover:text-brand-600"
                     >
-                      Detail →
+                      Detail
                     </Link>
                   </td>
                 ))}

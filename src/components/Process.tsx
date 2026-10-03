@@ -1,10 +1,10 @@
 const steps = [
-  { title: "Konsultasi ide", desc: "Ceritakan tujuan bisnis Anda. Kami petakan kebutuhan, tanpa biaya." },
+  { title: "Konsultasi ide", desc: "Ceritakan tujuan bisnis Anda. Kami petakan kebutuhannya, tanpa biaya." },
   { title: "Paket & domain", desc: "Tentukan tingkatan paket dan nama domain yang paling menguntungkan." },
-  { title: "Pemesanan", desc: "Konfirmasi ruang lingkup dan pembayaran. Pengerjaan dijadwalkan." },
+  { title: "Pemesanan", desc: "Konfirmasi ruang lingkup dan pembayaran, lalu pengerjaan dijadwalkan." },
   { title: "Penyerahan konten", desc: "Kirim teks, foto, dan aset brand. Kami menatanya jadi halaman." },
-  { title: "Pengerjaan", desc: "Tim mengerjakan desain, kode, dan pengujian dalam satu alur." },
-  { title: "Peluncuran", desc: "Situs tayang dan langsung dipantau. Maintenance pun dimulai." },
+  { title: "Pengerjaan", desc: "Desain, kode, dan pengujian berjalan dalam satu alur." },
+  { title: "Peluncuran", desc: "Situs tayang, langsung dipantau, maintenance pun dimulai." },
 ];
 
 export default function Process() {
@@ -12,23 +12,30 @@ export default function Process() {
     <section id="proses" className="border-b border-line py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col justify-between gap-6 border-b border-line pb-10 lg:flex-row lg:items-end">
-          <div>
-            <p className="font-mono text-[11px] tracking-[0.22em] text-brand-600 uppercase">
-              Cara kerja
-            </p>
-            <h2 className="mt-4 font-display text-4xl font-black tracking-[-0.03em] text-ink-950 sm:text-5xl">
-              Dari konsultasi sampai peluncuran
-            </h2>
+          <div className="reveal-mask">
+            <div className="reveal reveal-blur">
+              <p className="eyebrow">
+                <span className="eyebrow-slash" aria-hidden>{"// "}</span>
+                Cara kerja
+              </p>
+              <h2 className="mt-4 max-w-3xl font-display text-4xl font-black tracking-[-0.03em] text-balance text-ink-950 sm:text-5xl">
+                Dari obrolan pertama sampai situs tayang.{" "}
+                <span className="text-ink-900/40">Enam langkah, satu alur.</span>
+              </h2>
+            </div>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-ink-900/60">
-            Prosesnya sama untuk paket Basic maupun Pro Max; yang berubah
-            hanya skalanya.
+          <p className="reveal reveal-d2 max-w-sm text-sm leading-relaxed text-ink-900/60">
+            Alurnya sama untuk paket Basic maupun Pro Max; yang berubah hanya
+            skalanya.
           </p>
         </div>
 
-        <ol className="grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="stagger grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-3">
           {steps.map((step) => (
-            <li key={step.title} className="group relative bg-paper p-8 transition-colors hover:bg-white">
+            <li
+              key={step.title}
+              className="group reveal relative bg-paper p-8 transition-colors hover:bg-white"
+            >
               <h3 className="font-display text-xl font-bold tracking-tight text-ink-950">
                 {step.title}
               </h3>

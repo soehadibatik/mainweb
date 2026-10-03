@@ -71,14 +71,14 @@ export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
       {chosen && (
         <p
           role="status"
-          className="fade-rise mt-4 font-mono text-[11px] tracking-[0.1em] text-ink-900/60 uppercase"
+          className="fade-rise mt-4 font-mono text-xs text-ink-900/60"
         >
           Kategori {chosen.name}: {chosen.plans.length} paket, mulai{" "}
           {chosen.plans[0]?.build}.{" "}
           <button
             type="button"
             onClick={() => setPicked(null)}
-            className="text-brand-600 uppercase hover:text-ink-950"
+            className="text-brand-600 underline-offset-4 hover:text-ink-950 hover:underline"
           >
             Hapus pilihan
           </button>

@@ -14,7 +14,7 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden bg-paper pt-14 text-ink-950">
       {/* Lapisan latar: grid drafting halus */}
-      <div aria-hidden className="bg-grid-light pointer-events-none absolute inset-0" />
+      <div aria-hidden className="bg-grid-light bg-grid-parallax pointer-events-none absolute inset-0" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Bidang biru — membelah kontainer dari 52% ke tepi kanan layar */}
@@ -60,7 +60,7 @@ export default function Hero() {
           <div className="order-first lg:order-none lg:col-span-5 lg:pr-6">
             <p
               className="fade-rise order-last max-w-[46ch] text-lg leading-relaxed font-light text-ink-900/70 lg:order-none"
-              style={{ animationDelay: "920ms" }}
+              style={{ animationDelay: "760ms" }}
             >
               Sembilan paket dengan semua biaya tertulis di muka, dari
               landing page dan company profile sampai toko online dan platform
@@ -69,7 +69,7 @@ export default function Hero() {
 
             <div
               className="fade-rise mt-8 flex flex-col gap-3 sm:flex-row"
-              style={{ animationDelay: "1020ms" }}
+              style={{ animationDelay: "880ms" }}
             >
               <a
                 href={waLink("Halo mainweb.id, saya ingin konsultasi gratis untuk website saya.")}
@@ -93,19 +93,19 @@ export default function Hero() {
             {/* Catatan dimensi — satu label terukur, cara kerja studio, bukan dekorasi mono */}
             <p
               className="fade-rise mt-8 hidden items-center gap-2.5 text-[13px] text-ink-900/70 sm:flex"
-              style={{ animationDelay: "1060ms" }}
+              style={{ animationDelay: "1000ms" }}
             >
               <svg width="34" height="8" viewBox="0 0 34 8" fill="none" aria-hidden className="shrink-0 text-brand-600">
                 <path d="M0.5 1v6M33.5 1v6M0.5 4h33" stroke="currentColor" strokeWidth="1" />
               </svg>
-              Dikerjakan tangan, diukur berulang: 9 tahap dari brief hingga rilis
+              Dikerjakan tangan, diukur berulang: 6 tahap dari brief hingga rilis
             </p>
 
             {/* Tabel ukuran versi kolom — mengisi kaki kolom kiri di desktop,
                 bukan menyisakan ruang kosong di bawah catatan dimensi */}
             <dl
               className="fade-rise relative mt-10 grid grid-cols-2 border-t border-ink-950/70 lg:mt-12 lg:grid-cols-1"
-              style={{ animationDelay: "1220ms" }}
+              style={{ animationDelay: "1120ms" }}
             >
               {stats.map((s) => (
                 <div
@@ -133,7 +133,7 @@ export default function Hero() {
 
           <div
             className="fade-rise relative z-10 order-3 lg:order-none lg:col-span-7 lg:col-start-6 lg:row-start-1 lg:-ml-4"
-            style={{ animationDelay: "1080ms" }}
+            style={{ animationDelay: "940ms" }}
           >
             {/* Nameplate — badge pendek di sudut, persis di atas tepi handle drag */}
             <span className="absolute -top-3.5 -left-3 z-20 flex items-center gap-1.5 bg-brand-600 px-2.5 py-1.5 text-[11px] font-semibold text-white lg:-left-5">

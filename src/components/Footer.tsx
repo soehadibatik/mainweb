@@ -26,10 +26,8 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-3">
-            <p className="font-mono text-[10px] tracking-[0.2em] text-ink-900/45 uppercase">
-              Indeks
-            </p>
-            <ul className="mt-5 space-y-3 font-mono text-xs tracking-[0.1em] uppercase">
+            <p className="font-mono text-xs text-ink-900/45">Indeks</p>
+            <ul className="mt-5 space-y-3 text-sm">
               <li><Link className="transition-colors hover:text-brand-600" href="/#keunggulan">Keunggulan</Link></li>
               <li><Link className="transition-colors hover:text-brand-600" href="/#paket">Tarif</Link></li>
               <li><Link className="transition-colors hover:text-brand-600" href="/#perbandingan">Perbandingan</Link></li>
@@ -41,10 +39,8 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-3">
-            <p className="font-mono text-[10px] tracking-[0.2em] text-ink-900/45 uppercase">
-              Kontak
-            </p>
-            <ul className="mt-5 space-y-3 font-mono text-xs tracking-[0.1em] uppercase">
+            <p className="font-mono text-xs text-ink-900/45">Kontak</p>
+            <ul className="mt-5 space-y-3 text-sm">
               <li>
                 <a
                   href={waLink()}
@@ -78,7 +74,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col justify-between gap-3 border-t border-line pt-6 font-mono text-[10px] tracking-[0.16em] text-ink-900/40 uppercase sm:flex-row">
+        <div className="mt-16 flex flex-col justify-between gap-3 border-t border-line pt-6 font-mono text-xs text-ink-900/45 sm:flex-row">
           <p>© {new Date().getFullYear()} mainweb.id, hak cipta dilindungi</p>
           <p className="flex gap-4">
             <Link className="transition-colors hover:text-brand-600" href="/kebijakan-privasi">
@@ -88,7 +84,7 @@ export default function Footer() {
               Syarat layanan
             </Link>
           </p>
-          <p>DOC. {new Date().getFullYear()} / dibuat di Indonesia</p>
+          <p>Dok. {new Date().getFullYear()} / dibuat di Indonesia</p>
         </div>
       </div>
     </footer>
