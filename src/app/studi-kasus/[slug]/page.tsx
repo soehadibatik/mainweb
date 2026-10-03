@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { caseStudies, getCaseStudy } from "@/lib/case-studies";
 import { getPlan } from "@/lib/catalog";
 import { site, waLink } from "@/lib/site";
+import { ogMeta } from "@/lib/og";
 import JsonLd from "@/components/JsonLd";
 import ClientLogo from "@/components/ClientLogo";
 
@@ -28,21 +29,14 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/studi-kasus/${study.slug}` },
-    openGraph: {
-      type: "article",
-      locale: "id_ID",
+    ...ogMeta({
+      title: `${title} | ${site.name}`,
+      description,
       url: `/studi-kasus/${study.slug}`,
-      siteName: site.name,
-      title: `${title} | ${site.name}`,
-      description,
-      images: [{ url: study.logo, width: study.logoW, height: study.logoH, alt: study.client }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${title} | ${site.name}`,
-      description,
-      images: [study.logo],
-    },
+      image: `/og/studi-kasus-${study.slug}.png`,
+      alt: `${study.client}: ${study.headline}`,
+      type: "article",
+    }),
   };
 }
 
@@ -93,7 +87,7 @@ export default async function CaseStudyPage({ params }: Params) {
 
       {/* Meta bar dokumen — konsisten dengan halaman lain */}
       <div className="border-b border-line pt-14">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] text-ink-900/50 sm:px-6 lg:px-8">
           <span>DOC · STUDI KASUS / {study.client.toUpperCase()}</span>
           <span className="hidden sm:block">
             <a
@@ -111,27 +105,29 @@ export default async function CaseStudyPage({ params }: Params) {
 
       {/* Header studi kasus */}
       <section className="relative overflow-hidden border-b border-line">
-        <div aria-hidden className="bg-grid-light pointer-events-none absolute inset-0" />
+        <div aria-hidden className="bg-grid-light bg-grid-parallax pointer-events-none absolute inset-0" />
         <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <Link
             href="/studi-kasus"
-            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase transition-colors hover:text-brand-600"
+            className="reveal inline-flex items-center gap-2 font-mono text-[11px] text-ink-900/50 transition-colors hover:text-brand-600"
           >
             ← Semua studi kasus
           </Link>
 
           <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-8">
-              <h1 className="max-w-2xl font-display text-[clamp(2rem,4.6vw,3.75rem)] leading-[1.02] font-black tracking-[-0.035em] text-balance text-ink-950">
-                {study.headline}
-              </h1>
-              <p className="mt-6 max-w-[58ch] text-lg leading-relaxed font-light text-ink-900/70">
+              <div className="reveal-mask">
+                <h1 className="reveal reveal-blur max-w-2xl font-display text-[clamp(2rem,4.6vw,3.75rem)] leading-[1.02] font-black tracking-[-0.035em] text-balance text-ink-950">
+                  {study.headline}
+                </h1>
+              </div>
+              <p className="reveal reveal-d2 mt-6 max-w-[58ch] text-lg leading-relaxed font-light text-ink-900/70">
                 {study.summary}
               </p>
             </div>
-            <div className="lg:col-span-4">
+            <div className="reveal reveal-d3 lg:col-span-4">
               <div className="border border-line bg-white p-6">
-                <p className="font-mono text-[10px] tracking-[0.18em] text-ink-900/45 uppercase">
+                <p className="font-mono text-[11px] text-ink-900/45">
                   Klien
                 </p>
                 <div className="mt-4 flex h-14 items-center">
@@ -147,7 +143,7 @@ export default async function CaseStudyPage({ params }: Params) {
                   href={`https://${study.domain}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-block font-mono text-[11px] tracking-[0.12em] text-brand-600 uppercase transition-colors hover:text-ink-950"
+                  className="mt-4 inline-block font-mono text-[11px] text-brand-600 transition-colors hover:text-ink-950"
                 >
                   Kunjungi {study.domain}
                 </a>
@@ -191,7 +187,7 @@ export default async function CaseStudyPage({ params }: Params) {
             <div className="space-y-10 lg:col-span-7 lg:col-start-6">
               {study.scope.map((group) => (
                 <div key={group.title}>
-                  <h3 className="border-b border-line pb-3 font-mono text-[11px] font-semibold tracking-[0.16em] text-brand-600 uppercase">
+                  <h3 className="border-b border-line pb-3 font-mono text-[11px] font-semibold text-brand-600">
                     {group.title}
                   </h3>
                   <ul className="mt-4 space-y-2.5">
@@ -219,7 +215,7 @@ export default async function CaseStudyPage({ params }: Params) {
             <div className="border border-ink-950 bg-paper">
               <div className="flex flex-col justify-between gap-6 p-7 sm:p-10 lg:flex-row lg:items-center">
                 <div className="max-w-xl">
-                  <p className="font-mono text-[10px] tracking-[0.2em] text-brand-600 uppercase">
+                  <p className="eyebrow"><span className="eyebrow-slash" aria-hidden>{"// "}</span>
                     Butuh yang serupa?
                   </p>
                   <h2 className="mt-3 font-display text-2xl font-black tracking-[-0.02em] text-ink-950 sm:text-3xl">
@@ -237,13 +233,13 @@ export default async function CaseStudyPage({ params }: Params) {
                     )}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-brand-600 px-6 py-3.5 text-center font-mono text-[11px] font-semibold tracking-[0.14em] text-white uppercase transition-colors hover:bg-brand-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+                    className="btn btn-primary"
                   >
                     Konsultasi via WhatsApp
                   </a>
                   <Link
                     href={`/paket/${plan.id}`}
-                    className="border border-ink-900/25 px-6 py-3.5 text-center font-mono text-[11px] tracking-[0.14em] text-ink-950 uppercase transition-colors hover:border-ink-950 hover:bg-ink-950 hover:text-white"
+                    className="btn btn-outline"
                   >
                     Detail paket {plan.name}
                   </Link>
@@ -257,7 +253,7 @@ export default async function CaseStudyPage({ params }: Params) {
       {/* Studi kasus lainnya */}
       <section className="py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-mono text-[11px] font-semibold tracking-[0.18em] text-ink-900/50 uppercase">
+          <h2 className="font-mono text-[11px] font-semibold text-ink-900/50">
             Studi kasus lainnya
           </h2>
           <ul className="mt-6 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
@@ -267,7 +263,7 @@ export default async function CaseStudyPage({ params }: Params) {
                   href={`/studi-kasus/${c.slug}`}
                   className="group flex h-full flex-col gap-3 p-6 transition-colors hover:bg-paper"
                 >
-                  <span className="font-mono text-[10px] tracking-[0.16em] text-ink-900/45 uppercase">
+                  <span className="font-mono text-[11px] text-ink-900/45">
                     {c.category}
                   </span>
                   <span className="font-display text-lg font-bold tracking-tight text-ink-950 transition-colors group-hover:text-brand-600">

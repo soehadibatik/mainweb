@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPlan, getPlans } from "@/lib/catalog";
 import { site, waLink } from "@/lib/site";
+import { ogMeta } from "@/lib/og";
 import JsonLd from "@/components/JsonLd";
 
 type Params = { params: Promise<{ id: string }> };
@@ -33,21 +34,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/paket/${plan.id}` },
-    openGraph: {
-      type: "website",
-      locale: "id_ID",
+    ...ogMeta({
+      title: `${title} | ${site.name}`,
+      description,
       url: `/paket/${plan.id}`,
-      siteName: site.name,
-      title: `${title} | ${site.name}`,
-      description,
-      images: [{ url: "/logo.png", width: 1670, height: 942, alt: site.name }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${title} | ${site.name}`,
-      description,
-      images: ["/logo.png"],
-    },
+      image: `/og/paket-${plan.id}.png`,
+      alt: `Paket ${plan.name} ${plan.build}: ${plan.tagline}`,
+    }),
   };
 }
 
@@ -82,7 +75,7 @@ export default async function PlanDetailPage({ params }: Params) {
       <JsonLd data={breadcrumb} />
       {/* Meta bar dokumen */}
       <div className="border-b border-line pt-14">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] text-ink-900/50 sm:px-6 lg:px-8">
           <span>
             DOC · LAMPIRAN PAKET / {plan.name.toUpperCase()}
           </span>
@@ -93,25 +86,29 @@ export default async function PlanDetailPage({ params }: Params) {
 
       {/* Header paket */}
       <section className="relative overflow-hidden border-b border-line">
-        <div aria-hidden className="bg-grid-light pointer-events-none absolute inset-0" />
+        <div aria-hidden className="bg-grid-light bg-grid-parallax pointer-events-none absolute inset-0" />
         <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <Link
             href="/#paket"
-            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase transition-colors hover:text-brand-600"
+            className="reveal inline-flex items-center gap-2 font-mono text-[11px] text-ink-900/50 transition-colors hover:text-brand-600"
           >
             ← Semua paket
           </Link>
 
           <div className="mt-10 grid gap-12 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-7">
-              <p className="font-mono text-[11px] tracking-[0.22em] text-brand-600 uppercase">
-                Paket {plan.name}
-              </p>
-              <h1 className="mt-5 max-w-2xl font-display text-[clamp(2.25rem,5vw,4rem)] leading-[1] font-black tracking-[-0.035em] text-ink-950 text-balance">
-                {plan.tagline}
-              </h1>
-              <p className="mt-7 max-w-[58ch] leading-relaxed text-ink-900/70">
-                <span className="font-mono text-[11px] font-semibold tracking-[0.16em] text-ink-900/50 uppercase">
+              <div className="reveal-mask">
+                <div className="reveal reveal-blur">
+                  <p className="eyebrow"><span className="eyebrow-slash" aria-hidden>{"// "}</span>
+                    Paket {plan.name}
+                  </p>
+                  <h1 className="mt-5 max-w-2xl font-display text-[clamp(2.25rem,5vw,4rem)] leading-[1] font-black tracking-[-0.035em] text-ink-950 text-balance">
+                    {plan.tagline}
+                  </h1>
+                </div>
+              </div>
+              <p className="reveal reveal-d2 mt-7 max-w-[58ch] leading-relaxed text-ink-900/70">
+                <span className="font-mono text-[11px] font-semibold text-ink-900/50">
                   Ideal untuk:{" "}
                 </span>
                 {plan.idealFor}
@@ -119,13 +116,13 @@ export default async function PlanDetailPage({ params }: Params) {
             </div>
 
             {/* Kartu harga */}
-            <div className="lg:col-span-5">
+            <div className="reveal reveal-d3 lg:col-span-5">
               <div className="border border-ink-900/12 bg-white shadow-[0_32px_64px_-32px_rgb(11_18_32/0.3)]">
-                <div className="flex items-center justify-between border-b border-line px-6 py-3 font-mono text-[10px] tracking-[0.16em] text-ink-900/45 uppercase">
+                <div className="flex items-center justify-between border-b border-line px-6 py-3 font-mono text-[11px] text-ink-900/45">
                   <span>RINGKASAN BIAYA</span>
                 </div>
                 <div className="p-6 sm:p-8">
-                  <p className="font-mono text-[10px] tracking-[0.16em] text-ink-900/45 uppercase">
+                  <p className="font-mono text-[11px] text-ink-900/45">
                     Biaya pembuatan
                   </p>
                   <p className="mt-2 font-mono text-5xl font-semibold tracking-tight text-ink-950">
@@ -134,11 +131,11 @@ export default async function PlanDetailPage({ params }: Params) {
 
                   <dl className="mt-7 space-y-3 border-t border-line pt-6 font-mono text-xs">
                     <div className="flex items-baseline justify-between gap-4">
-                      <dt className="tracking-[0.14em] text-ink-900/45 uppercase">Maintain</dt>
+                      <dt className="tracking-[0.14em] text-ink-900/45">Maintain</dt>
                       <dd className="font-semibold text-ink-950">{plan.maintain}</dd>
                     </div>
                     <div className="flex items-baseline justify-between gap-4">
-                      <dt className="tracking-[0.14em] text-ink-900/45 uppercase">Perpanjangan</dt>
+                      <dt className="tracking-[0.14em] text-ink-900/45">Perpanjangan</dt>
                       <dd className="font-semibold text-ink-950">
                         {plan.renewal ? `${plan.renewal}/th` : "Termasuk"}
                       </dd>
@@ -149,11 +146,11 @@ export default async function PlanDetailPage({ params }: Params) {
                     href={waLink(waMessage)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group mt-8 flex items-center justify-center gap-3 bg-brand-600 px-6 py-4 font-mono text-xs font-semibold tracking-[0.14em] text-white uppercase transition-colors hover:bg-brand-700"
+                    className="btn btn-primary mt-8 w-full"
                   >
                     Pesan paket {plan.short}
                   </a>
-                  <p className="mt-3 text-center font-mono text-[10px] tracking-[0.14em] text-ink-900/40 uppercase">
+                  <p className="mt-3 text-center font-mono text-[11px] text-ink-900/40">
                     Konsultasi gratis, tanpa komitmen
                   </p>
                 </div>
@@ -170,7 +167,7 @@ export default async function PlanDetailPage({ params }: Params) {
             <h2 className="font-display text-3xl font-black tracking-[-0.03em] text-ink-950 sm:text-4xl">
               Spesifikasi lengkap
             </h2>
-            <span className="font-mono text-[11px] tracking-[0.16em] text-ink-900/45 uppercase">
+            <span className="font-mono text-[11px] text-ink-900/45">
               {plan.featureGroups.reduce((n, g) => n + g.items.length, 0)} butir, 3 kategori
             </span>
           </div>
@@ -206,31 +203,31 @@ export default async function PlanDetailPage({ params }: Params) {
             {prev ? (
               <Link
                 href={`/paket/${prev.id}`}
-                className="group font-mono text-[11px] tracking-[0.14em] text-ink-900/55 uppercase transition-colors hover:text-brand-600"
+                className="group font-mono text-[11px] text-ink-900/55 transition-colors hover:text-brand-600"
               >
                 ← Sebelumnya: {prev.name}
               </Link>
             ) : (
-              <span className="font-mono text-[11px] tracking-[0.14em] text-ink-900/25 uppercase">
+              <span className="font-mono text-[11px] text-ink-900/25">
                 Awal daftar
               </span>
             )}
             {next ? (
               <Link
                 href={`/paket/${next.id}`}
-                className="group font-mono text-[11px] tracking-[0.14em] text-ink-900/55 uppercase transition-colors hover:text-brand-600 sm:text-right"
+                className="group font-mono text-[11px] text-ink-900/55 transition-colors hover:text-brand-600 sm:text-right"
               >
                 Selanjutnya: {next.name} →
               </Link>
             ) : (
-              <span className="font-mono text-[11px] tracking-[0.14em] text-ink-900/25 uppercase sm:text-right">
+              <span className="font-mono text-[11px] text-ink-900/25 sm:text-right">
                 Akhir daftar
               </span>
             )}
           </nav>
 
           <div className="mt-8">
-            <p className="font-mono text-[10px] font-semibold tracking-[0.2em] text-ink-900/45 uppercase">
+            <p className="font-mono text-[11px] font-semibold text-ink-900/45">
               Lihat paket lainnya
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -240,7 +237,7 @@ export default async function PlanDetailPage({ params }: Params) {
                   <Link
                     key={p.id}
                     href={`/paket/${p.id}`}
-                    className="border border-line bg-white px-3.5 py-2 font-mono text-[10px] font-semibold tracking-[0.12em] text-ink-900/70 uppercase transition-colors hover:border-brand-600 hover:text-brand-600"
+                    className="border border-line bg-white px-3.5 py-2 font-mono text-[11px] font-semibold text-ink-900/70 transition-colors hover:border-brand-600 hover:text-brand-600"
                   >
                     {p.name}
                   </Link>

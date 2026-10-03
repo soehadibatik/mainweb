@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
 import LegalShell from "@/components/LegalShell";
 import { site } from "@/lib/site";
+import { ogMeta } from "@/lib/og";
+
+const desc =
+  "Bagaimana mainweb.id menangani data pengunjung situs dan data klien: tanpa cookie pelacak, data klien hanya untuk pengerjaan proyek.";
 
 export const metadata: Metadata = {
   title: "Kebijakan Privasi",
-  description:
-    "Bagaimana mainweb.id menangani data pengunjung situs dan data klien: tanpa cookie pelacak, data klien hanya untuk pengerjaan proyek.",
+  description: desc,
   alternates: { canonical: "/kebijakan-privasi" },
+  ...ogMeta({
+    title: `Kebijakan Privasi | ${site.name}`,
+    description: desc,
+    url: "/kebijakan-privasi",
+    image: "/og/kebijakan-privasi.png",
+    alt: `Kebijakan Privasi ${site.name}: tanpa cookie pelacak, data klien hanya untuk pengerjaan proyek`,
+  }),
 };
 
 export default function KebijakanPrivasiPage() {

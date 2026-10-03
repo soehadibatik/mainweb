@@ -20,6 +20,18 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Gambar Open Graph
+
+Setiap halaman punya gambar bagikan sendiri (1200x630) di `public/og/`. Gambar itu dihasilkan oleh skrip, bukan diedit manual. Jalankan ulang setelah judul, harga, atau daftar klien berubah:
+
+```bash
+npm run og
+```
+
+Skripnya butuh Chrome atau Chromium; bila tidak terdeteksi otomatis, set `OG_BROWSER` ke path binarinya. Hasilnya di-commit bersama kode, jadi `next build` tidak membutuhkan browser.
+
+Beranda dan halaman yang belum punya gambar sendiri memakai gambar bawaan; URL-nya tercatat di `src/lib/og.ts`.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

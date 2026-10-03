@@ -1,12 +1,22 @@
 import type { Metadata } from "next";
 import LegalShell from "@/components/LegalShell";
 import { site } from "@/lib/site";
+import { ogMeta } from "@/lib/og";
+
+const desc =
+  "Syarat penggunaan situs mainweb.id dan ketentuan jasa pembuatan website: cakupan pekerjaan, pembayaran, revisi, dan keberlangsungan layanan.";
 
 export const metadata: Metadata = {
   title: "Syarat Layanan",
-  description:
-    "Syarat penggunaan situs mainweb.id dan ketentuan jasa pembuatan website: cakupan pekerjaan, pembayaran, revisi, dan keberlangsungan layanan.",
+  description: desc,
   alternates: { canonical: "/syarat-layanan" },
+  ...ogMeta({
+    title: `Syarat Layanan | ${site.name}`,
+    description: desc,
+    url: "/syarat-layanan",
+    image: "/og/syarat-layanan.png",
+    alt: `Syarat Layanan ${site.name}: cakupan pekerjaan, pembayaran, revisi, dan keberlangsungan layanan`,
+  }),
 };
 
 export default function SyaratLayananPage() {

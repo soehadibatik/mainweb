@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { caseStudies } from "@/lib/case-studies";
 import { site, waLink } from "@/lib/site";
+import { ogMeta } from "@/lib/og";
 import JsonLd from "@/components/JsonLd";
 import ClientLogo from "@/components/ClientLogo";
 
@@ -14,21 +15,13 @@ export const metadata: Metadata = {
   title: pageTitle,
   description: describe(),
   alternates: { canonical: "/studi-kasus" },
-  openGraph: {
-    type: "website",
-    locale: "id_ID",
+  ...ogMeta({
+    title: `${pageTitle} | ${site.name}`,
+    description: describe(),
     url: "/studi-kasus",
-    siteName: site.name,
-    title: `${pageTitle} | ${site.name}`,
-    description: describe(),
-    images: [{ url: "/logo.png", width: 1670, height: 942, alt: site.name }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${pageTitle} | ${site.name}`,
-    description: describe(),
-    images: ["/logo.png"],
-  },
+    image: "/og/studi-kasus.png",
+    alt: `Studi kasus website: ${caseStudies.length} proyek yang sudah kami rilis`,
+  }),
 };
 
 export default function StudiKasusIndex() {
@@ -57,7 +50,7 @@ export default function StudiKasusIndex() {
 
       {/* Meta bar dokumen — konsisten dengan halaman lain */}
       <div className="border-b border-line pt-14">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] text-ink-900/50 sm:px-6 lg:px-8">
           <span>DOC · STUDI KASUS</span>
           <span className="hidden sm:block">{caseStudies.length} PROYEK</span>
           <span className="text-brand-600">PUBLIK</span>
@@ -66,25 +59,27 @@ export default function StudiKasusIndex() {
 
       {/* Header */}
       <section className="relative overflow-hidden border-b border-line">
-        <div aria-hidden className="bg-grid-light pointer-events-none absolute inset-0" />
+        <div aria-hidden className="bg-grid-light bg-grid-parallax pointer-events-none absolute inset-0" />
         <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] text-ink-900/50 uppercase transition-colors hover:text-brand-600"
+            className="inline-flex items-center gap-2 font-mono text-[11px] text-ink-900/50 transition-colors hover:text-brand-600"
           >
             ← Beranda
           </Link>
 
           <div className="mt-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-            <div>
-              <p className="font-mono text-[11px] tracking-[0.22em] text-brand-600 uppercase">
-                Studi kasus
-              </p>
-              <h1 className="mt-5 max-w-3xl font-display text-[clamp(2.25rem,5vw,4rem)] leading-[1] font-black tracking-[-0.035em] text-balance text-ink-950">
-                Bagaimana website klien kami dibangun, dijabarkan apa adanya
-              </h1>
+            <div className="reveal-mask">
+              <div className="reveal reveal-blur">
+                <p className="eyebrow"><span className="eyebrow-slash" aria-hidden>{"// "}</span>
+                  Studi kasus
+                </p>
+                <h1 className="mt-5 max-w-3xl font-display text-[clamp(2.25rem,5vw,4rem)] leading-[1] font-black tracking-[-0.035em] text-balance text-ink-950">
+                  Bagaimana website klien kami dibangun, dijabarkan apa adanya
+                </h1>
+              </div>
             </div>
-            <p className="max-w-md text-sm leading-relaxed text-ink-900/60">
+            <p className="reveal reveal-d2 max-w-md text-sm leading-relaxed text-ink-900/60">
               Setiap studi kasus menjabarkan kebutuhan klien dan fitur yang
               benar-benar tayang di situsnya, ditutup rekomendasi paket untuk
               kebutuhan serupa. Daftar lengkap situs ada di{" "}
@@ -103,14 +98,14 @@ export default function StudiKasusIndex() {
       {/* Daftar studi kasus */}
       <section className="border-b border-line bg-white py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <ul className="grid gap-px border border-line bg-line lg:grid-cols-2">
+          <ul className="stagger grid gap-px border border-line bg-line lg:grid-cols-2">
             {caseStudies.map((c) => (
-              <li key={c.slug} className="bg-white">
+              <li key={c.slug} className="reveal bg-white">
                 <Link
                   href={`/studi-kasus/${c.slug}`}
                   className="group flex h-full flex-col gap-4 p-7 transition-colors hover:bg-paper sm:p-9"
                 >
-                  <span className="flex items-center justify-between gap-4 font-mono text-[10px] tracking-[0.16em] text-ink-900/45 uppercase">
+                  <span className="flex items-center justify-between gap-4 font-mono text-[11px] text-ink-900/45">
                     {c.category}
                     <span className="hidden sm:block">{c.domain}</span>
                   </span>
@@ -132,7 +127,7 @@ export default function StudiKasusIndex() {
                     {c.summary}
                   </span>
 
-                  <span className="mt-auto pt-2 font-mono text-[10px] tracking-[0.16em] text-brand-600 uppercase transition-colors group-hover:text-ink-950">
+                  <span className="mt-auto pt-2 font-mono text-[11px] text-brand-600 transition-colors group-hover:text-ink-950">
                     Baca studi kasus
                   </span>
                 </Link>
@@ -145,9 +140,9 @@ export default function StudiKasusIndex() {
       {/* CTA penutup */}
       <section className="py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-5 border border-ink-950 bg-paper p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <div className="reveal flex flex-col gap-5 border border-ink-950 bg-paper p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
             <div>
-              <p className="font-mono text-[11px] tracking-[0.22em] text-brand-600 uppercase">
+              <p className="eyebrow"><span className="eyebrow-slash" aria-hidden>{"// "}</span>
                 Proyek berikutnya
               </p>
               <p className="mt-2 font-display text-2xl font-black tracking-[-0.02em] text-ink-950 sm:text-3xl">
@@ -161,13 +156,13 @@ export default function StudiKasusIndex() {
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-brand-600 px-5 py-3 font-mono text-[11px] font-semibold tracking-[0.14em] text-white uppercase transition-colors hover:bg-brand-500"
+                className="btn btn-primary"
               >
                 Konsultasi gratis
               </a>
               <Link
                 href="/#paket"
-                className="border border-ink-900/25 px-5 py-3 font-mono text-[11px] tracking-[0.14em] text-ink-950 uppercase transition-colors hover:border-ink-950 hover:bg-ink-950 hover:text-white"
+                className="btn btn-outline"
               >
                 Lihat tarif
               </Link>
