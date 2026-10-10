@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 
+import type { TierId } from "@/lib/tiers";
+
 type Brief = { id: string; name: string; build: string; tagline: string };
-type TierBrief = { id: string; name: string; hint: string; plans: Brief[] };
+type TierBrief = { id: TierId; name: string; hint: string; plans: Brief[] };
 
 /*
  * Pertanyaan yang dijawab komponen ini: "bisnis saya masuk kategori mana?"
@@ -12,9 +14,9 @@ type TierBrief = { id: string; name: string; hint: string; plans: Brief[] };
  * komponen ini hanya alat bantu navigasi, bukan gerbang konten.
  */
 export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
-  const [picked, setPicked] = useState<string | null>(null);
+  const [picked, setPicked] = useState<TierId | null>(null);
 
-  const choose = (id: string) => {
+  const choose = (id: TierId) => {
     setPicked(id);
     const target = document.getElementById(`kategori-${id}`);
     if (!target) return;
@@ -32,8 +34,8 @@ export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
 
       <div
         role="group"
-        aria-label="Kategori berdasarkan kondisi bisnis"
-        className="mt-4 grid gap-3 sm:grid-cols-3"
+        aria-label="Pilih kategori berdasarkan kondisi bisnis Anda"
+        className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
       >
         {tiers.map((tier) => {
           const active = picked === tier.id;
@@ -62,6 +64,11 @@ export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
               </span>
               <span className="mt-1 block text-xs leading-relaxed text-ink-900/60">
                 {tier.hint}
+                {tier.id === "unicorn" && (
+                  <span className="block mt-0.5 text-[10px] leading-snug text-ink-900/45 uppercase tracking-wider">
+                    Sistem sebagai infrastruktur bisnis · 3 paket
+                  </span>
+                )}
               </span>
             </button>
           );

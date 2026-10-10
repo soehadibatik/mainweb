@@ -62,9 +62,10 @@ export default function Hero() {
               className="fade-rise order-last max-w-[46ch] text-lg leading-relaxed font-light text-ink-900/70 lg:order-none"
               style={{ animationDelay: "760ms" }}
             >
-              Sembilan paket dengan semua biaya tertulis di muka, dari
-              landing page dan company profile sampai toko online dan platform
-              enterprise. Konsultasi gratis, tanpa komitmen apa pun.
+              Dua belas paket dengan semua biaya tertulis di muka, dari
+              landing page dan company profile sampai platform enterprise.
+              Termasuk paket Unicorn untuk sistem yang berjalan sebagai
+              infrastruktur bisnis. Konsultasi gratis, tanpa komitmen apa pun.
             </p>
 
             <div
@@ -86,7 +87,7 @@ export default function Hero() {
                 href="#paket"
                 className="inline-flex min-h-11 items-center justify-center border border-ink-900/25 px-7 py-4 text-sm font-semibold text-ink-950 transition-colors hover:border-ink-950 hover:bg-ink-950 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-950"
               >
-                Lihat 9 harga paket
+                Lihat 12 harga paket
               </a>
             </div>
 

@@ -1,13 +1,15 @@
 import type { Plan } from "@/lib/plans";
 
 /*
- * Tiga kategori paket yang diurutkan menurut kondisi bisnis pembeli,
+ * Empat kategori paket yang diurutkan menurut kondisi bisnis pembeli,
  * bukan istilah teknis. Urutan planIds = urutan tampil di tiap kategori,
  * featured = paket yang ditonjolkan secara visual di kategorinya
  * (intermediate mengikuti data highlight di plans.ts).
  */
+export type TierId = "usaha" | "bisnis" | "perusahaan" | "unicorn";
+
 export type Tier = {
-  id: "usaha" | "bisnis" | "perusahaan";
+  id: TierId;
   name: string;
   hint: string;
   desc: string;
@@ -40,20 +42,36 @@ export const tiers: Tier[] = [
     planIds: ["proficient", "max", "pro-max"],
     featured: "max",
   },
+  {
+    id: "unicorn",
+    name: "Unicorn",
+    hint: "Sistem digital sebagai infrastruktur bisnis",
+    desc: "Untuk perusahaan yang mengoperasikan sistem digital sebagai tulang punggung: website yang terintegrasi dengan sistem internal, alur kerja, dan operasional skala besar.",
+    planIds: ["x", "y", "z"],
+    featured: "z",
+  },
 ];
 
 /**
- * "Rp 1,5 jt" menjadi "Rp1.500.000". Angka penuh lebih mudah dibaca
- * orang awam daripada singkatan jt. Hanya format yang berubah, bukan
- * nominalnya: harga tetap dibaca dari data paket agar tidak bisa beda
- * sumber. Bila format tak dikenali, teks asli dikembalikan apa adanya.
+ * "Rp 1,5 jt" menjadi "Rp1.500.000". "Rp 1 miliar" menjadi "Rp1.000.000.000".
+ * Angka penuh lebih mudah dibaca orang awam daripada singkatan jt/miliar.
+ * Hanya format yang berubah, bukan nominalnya: harga tetap dibaca dari data
+ * paket agar tidak bisa beda sumber. Bila format tak dikenali, teks asli
+ * dikembalikan apa adanya.
  */
 export function fullPrice(build: string): string {
-  const m = build.match(/Rp\s*([\d.,]+)\s*jt/i);
-  if (!m) return build;
-  const n = Number(m[1].replace(/\./g, "").replace(",", "."));
-  if (!Number.isFinite(n)) return build;
-  return `Rp${new Intl.NumberFormat("id-ID").format(Math.round(n * 1_000_000))}`;
+  // Konversi khusus dari format BO: "Rp 1000 jt" -> "Rp 1 miliar", dst.
+  const jtToMiliar = build.match(/Rp\s*([\d.,]+)\s*jt/i);
+  if (jtToMiliar) {
+    const n = Number(jtToMiliar[1].replace(/\./g, "").replace(",", "."));
+    if (Number.isFinite(n)) {
+      const inMiliar = n / 1000;
+      if (Number.isFinite(inMiliar) && inMiliar >= 1 && Number.isInteger(inMiliar)) {
+        return `Rp ${new Intl.NumberFormat("id-ID").format(inMiliar)} miliar`;
+      }
+    }
+  }
+  return build;
 }
 
 /** Susun plans mengikuti urutan planIds pada satu kategori. */

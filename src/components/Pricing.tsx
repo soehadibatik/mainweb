@@ -125,7 +125,7 @@ export default async function Pricing() {
             atau perusahaan Anda.
           </p>
           <p className="reveal reveal-d3 mt-3 max-w-xl text-sm leading-relaxed text-ink-900/50">
-            Sembilan paket, semua biaya tertulis di muka: pembuatan dibayar di
+            Dua belas paket, semua biaya tertulis di muka: pembuatan dibayar di
             awal, maintain tiap bulan, perpanjangan tahunan agar situs tetap
             online.{" "}
             <a
@@ -154,7 +154,7 @@ export default async function Pricing() {
 
         <CategoryChooser tiers={chooserTiers} />
 
-        {/* Tiga kategori kondisi bisnis, masing-masing berisi tiga paket */}
+        {/* Empat kategori kondisi bisnis, masing-masing berisi tiga paket */}
         <div className="mt-14 space-y-14">
           {tiers.map((tier) => {
             const tierPlans = plansOfTier(tier, plans);
@@ -197,8 +197,9 @@ export default async function Pricing() {
         </div>
 
         <p className="reveal reveal-d3 mt-12 font-mono text-xs leading-relaxed text-ink-900/50">
-          * Basic: maintain termasuk maks. 1 bulan pertama. Semua paket termasuk SSL,
-          desain responsif &amp; SEO dasar.{" "}
+          * Basic: maintain termasuk maks. 1 bulan pertama.
+          Semua paket termasuk SSL, desain responsif &amp; SEO dasar.
+          Unicorn: sistem skala besar dikerjakan bersama sesuai kesepakatan operasional.{" "}
           <a
             href={waLink("Halo mainweb.id, saya butuh paket custom.")}
             target="_blank"

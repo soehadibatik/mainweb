@@ -1,15 +1,52 @@
 import type { Metadata } from "next";
+import { existsSync } from "node:fs";
+import path from "node:path";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPlan, getPlans } from "@/lib/catalog";
 import { site, waLink } from "@/lib/site";
 import { ogMeta } from "@/lib/og";
 import JsonLd from "@/components/JsonLd";
+import { fullPrice } from "@/lib/tiers";
 
 type Params = { params: Promise<{ id: string }> };
 
+const PAGE_TITLES: Record<string, { title: string; ogTitle: string; desc: string; ogDesc: string }> = {
+  x: {
+    title: "Paket X — Sistem digital terstruktur untuk perusahaan",
+    ogTitle: "Paket X — Sistem digital terstruktur",
+    desc: "Paket X: sistem digital terstruktur untuk portal, dashboard, integrasi internal, dan alur kerja yang disesuaikan dengan operasional perusahaan Anda.",
+    ogDesc: "Paket X: sistem digital terstruktur untuk portal, dashboard, dan alur kerja perusahaan.",
+  },
+  y: {
+    title: "Paket Y — Website yang terhubung dengan sistem bisnis",
+    ogTitle: "Paket Y — Website terintegrasi dengan operasional",
+    desc: "Paket Y: website yang terhubung dengan aplikasi internal, integrasi pihak ketiga, dan alur kerja otomatis untuk perusahaan dengan kebutuhan lebih kompleks.",
+    ogDesc: "Paket Y: website terintegrasi dengan sistem dan operasional bisnis Anda.",
+  },
+  z: {
+    title: "Paket Z — Ekosistem digital menyeluruh untuk korporasi",
+    ogTitle: "Paket Z — Ekosistem digital perusahaan",
+    desc: "Paket Z: ekosistem digital menyeluruh untuk korporasi atau grup usaha yang mengoperasikan platform digital sebagai infrastruktur utama.",
+    ogDesc: "Paket Z: ekosistem digital menyeluruh untuk korporasi dan grup usaha.",
+  },
+};
+
+
+/**
+ * Gambar OG per paket ada sebagai berkas statis di public/og/. Paket yang
+ * belum punya berkasnya (mis. Unicorn X/Y/Z) jangan ditulis ke metadata —
+ * og:image yang 404 membuat kartu share rusak, lebih baik pakai gambar
+ * bawaan dari ogMeta.
+ */
+function ogImage(id: string): string | undefined {
+  const file = `/og/paket-${id}.png`;
+  return existsSync(path.join(process.cwd(), "public", file)) ? file : undefined;
+}
+
 // Static export: slug yang tidak dikenal harus 404, bukan dirender saat runtime.
 export const dynamicParams = false;
+export const revalidate = false;
 
 export async function generateStaticParams() {
   const plans = await getPlans();
@@ -21,28 +58,33 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const plan = await getPlan(id);
   if (!plan) return {};
 
-  const title = `Paket ${plan.name}: ${plan.build}`;
-  const full = `Paket ${plan.name}. ${plan.tagline} Biaya pembuatan ${plan.build}, maintain ${plan.maintain}${
-    plan.renewal ? `, perpanjangan ${plan.renewal}/th` : ""
-  }.`;
-  const description =
-    full.length <= 160
-      ? full
-      : `Paket ${plan.name}. ${plan.tagline} Lihat spesifikasi, biaya, dan maintain lengkap.`;
+  const t = PAGE_TITLES[id];
+  const title = t
+    ? t.title
+    : `Paket ${plan.name}: ${plan.build}`;
+  const description = t
+    ? t.desc
+    : `Paket ${plan.name}. ${plan.tagline} Lihat spesifikasi dan biaya yang tertulis di muka.`;
+  const description_withoutTagline = t
+    ? t.ogDesc
+    : `Paket ${plan.name}: ${plan.build}. Lihat spesifikasi dan biaya yang tertulis di muka.`;
 
   return {
     title,
     description,
     alternates: { canonical: `/paket/${plan.id}` },
     ...ogMeta({
-      title: `${title} | ${site.name}`,
-      description,
       url: `/paket/${plan.id}`,
-      image: `/og/paket-${plan.id}.png`,
+      title: t && t.ogTitle
+        ? `${t.ogTitle} | ${site.name}`
+        : `${title} | ${site.name}`,
+      description: t ? t.ogDesc : description_withoutTagline,
+      image: ogImage(plan.id),
       alt: `Paket ${plan.name} ${plan.build}: ${plan.tagline}`,
     }),
   };
 }
+
 
 export default async function PlanDetailPage({ params }: Params) {
   const { id } = await params;
@@ -54,7 +96,7 @@ export default async function PlanDetailPage({ params }: Params) {
   const prev = idx > 0 ? plans[idx - 1] : null;
   const next = idx < plans.length - 1 ? plans[idx + 1] : null;
 
-  const waMessage = `Halo ${site.name}, saya tertarik dengan paket ${plan.name} (${plan.build}). Bisa info lebih lanjut?`;
+  const waMessage = `Halo ${site.name}, saya melihat paket ${plan.name} (${fullPrice(plan.build)}). Boleh jelaskan lebih detail?`;
 
   const breadcrumb = {
     "@context": "https://schema.org",
@@ -126,18 +168,18 @@ export default async function PlanDetailPage({ params }: Params) {
                     Biaya pembuatan
                   </p>
                   <p className="mt-2 font-mono text-5xl font-semibold tracking-tight text-ink-950">
-                    {plan.build}
+                    {fullPrice(plan.build)}
                   </p>
 
                   <dl className="mt-7 space-y-3 border-t border-line pt-6 font-mono text-xs">
                     <div className="flex items-baseline justify-between gap-4">
                       <dt className="tracking-[0.14em] text-ink-900/45">Maintain</dt>
-                      <dd className="font-semibold text-ink-950">{plan.maintain}</dd>
+                      <dd className="font-semibold text-ink-950">{fullPrice(plan.maintain)}</dd>
                     </div>
                     <div className="flex items-baseline justify-between gap-4">
                       <dt className="tracking-[0.14em] text-ink-900/45">Perpanjangan</dt>
                       <dd className="font-semibold text-ink-950">
-                        {plan.renewal ? `${plan.renewal}/th` : "Termasuk"}
+                        {plan.renewal ? `${fullPrice(plan.renewal)}/th` : "Termasuk"}
                       </dd>
                     </div>
                   </dl>
@@ -168,7 +210,7 @@ export default async function PlanDetailPage({ params }: Params) {
               Spesifikasi lengkap
             </h2>
             <span className="font-mono text-[11px] text-ink-900/45">
-              {plan.featureGroups.reduce((n, g) => n + g.items.length, 0)} butir, 3 kategori
+              {plan.featureGroups.reduce((n, g) => n + g.items.length, 0)} butir, {plan.featureGroups.length} kategori
             </span>
           </div>
 
@@ -239,7 +281,7 @@ export default async function PlanDetailPage({ params }: Params) {
                     href={`/paket/${p.id}`}
                     className="border border-line bg-white px-3.5 py-2 font-mono text-[11px] font-semibold text-ink-900/70 transition-colors hover:border-brand-600 hover:text-brand-600"
                   >
-                    {p.name}
+                    {p.name} · {fullPrice(p.build)}
                   </Link>
                 ))}
             </div>

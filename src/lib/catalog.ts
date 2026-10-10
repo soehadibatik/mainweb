@@ -1,6 +1,6 @@
 import { clients as seedClients, featured as seedFeatured, groups as seedGroups, type Client } from "@/lib/clients";
 import { comparisonSections as seedComparison, type CompareSection } from "@/lib/comparison";
-import { plans as seedPlans, type Plan } from "@/lib/plans";
+import { plans as seedPlans, type Plan } from "./plans";
 
 /**
  * Sumber data katalog: back office (bo-mainweb) lewat /api/public/site.
@@ -39,7 +39,15 @@ async function load(): Promise<Payload | null> {
 
 export async function getPlans(): Promise<Plan[]> {
   const remote = (await load())?.plans;
-  return remote && remote.length > 0 ? remote : seedPlans;
+  if (!remote || remote.length === 0) return seedPlans;
+
+  const byId = new Map(remote.map((p) => [p.id, p]));
+  const merged: Plan[] = [];
+  for (const seed of seedPlans) {
+    merged.push(byId.get(seed.id) ?? seed);
+  }
+  const extra = remote.filter((p) => !seedPlans.some((s) => s.id === p.id));
+  return merged.concat(extra);
 }
 
 export async function getPlan(id: string): Promise<Plan | undefined> {
@@ -48,7 +56,14 @@ export async function getPlan(id: string): Promise<Plan | undefined> {
 
 export async function getComparison(): Promise<CompareSection[]> {
   const remote = (await load())?.comparison;
-  return remote && remote.length > 0 ? remote : seedComparison;
+  if (!remote || remote.length === 0) return seedComparison;
+  const byId = new Map(remote.map((s) => [s.title, s]));
+  const merged: CompareSection[] = [];
+  for (const seed of seedComparison) {
+    merged.push(byId.get(seed.title) ?? seed);
+  }
+  const extra = remote.filter((s) => !seedComparison.some((x) => x.title === s.title));
+  return merged.concat(extra);
 }
 
 const GROUP_LABEL: Record<NonNullable<RemoteClient["group"]>, string> = {
