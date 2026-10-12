@@ -108,8 +108,15 @@ jobs:
             : > .env
           fi
 
+      # BO_URL mengarah ke API publik BO (bo-mainweb) supaya build mengambil
+      # data paket & perbandingan terbaru dari database, bukan seed lokal.
+      # Diatur lewat repo Variable BO_URL (contoh: http://116.212.73.64:3003).
+      # Bila kosong / BO tidak terjangkau saat build, catalog.ts otomatis
+      # fallback ke seed lokal sehingga deploy tidak pernah gagal karena BO.
       - name: npm run build
         if: steps.cfg.outputs.enabled == 'true'
+        env:
+          BO_URL: ${{ vars.BO_URL }}
         run: npm run build
 
       - name: Validasi out/
