@@ -3,7 +3,7 @@ export const site = {
   tagline: "Jasa Pembuatan Website Profesional",
   url: "https://mainweb.id",
   description:
-    "Jasa pembuatan & pengembangan website profesional. 9 tingkatan paket, dari landing page sampai platform enterprise, dengan harga yang tertulis di muka.",
+    "Jasa pembuatan & pengembangan website profesional. 15 paket, dari landing page sampai sistem skala miliaran, dengan harga yang tertulis di muka.",
   contact: {
     whatsapp: "6281234561663",
     whatsappDisplay: "+62 812-3456-1663",

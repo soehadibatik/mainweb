@@ -1,10 +1,13 @@
 import type { Plan } from "@/lib/plans";
 
 /*
- * Lima kategori paket yang diurutkan menurut kondisi bisnis pembeli,
- * bukan istilah teknis. Urutan planIds = urutan tampil di tiap kategori,
- * featured = paket yang ditonjolkan secara visual di kategorinya
- * (intermediate mengikuti data highlight di plans.ts).
+ * Lima kategori paket, diurutkan dari yang termahal ke termahal:
+ * Unicorn (Rp 20–100 miliar) → Startup (Rp 1–3 miliar) → Perwujudan
+ * (Rp 50–100 jt) → UMKM (Rp 10–30 jt) → Babad Alas (Rp 1,5–5 jt).
+ * Nama tampil (name) berbeda dari id: id dipakai sebagai jangkar
+ * `kategori-{id}` dan di CategoryChooser, jadi jangan diubah sembarangan.
+ * Urutan planIds = urutan tampil di tiap kategori (termahal dulu);
+ * featured = paket yang ditonjolkan secara visual di kategorinya.
  */
 export type TierId = "usaha" | "bisnis" | "perusahaan" | "startup" | "unicorn";
 
@@ -19,44 +22,44 @@ export type Tier = {
 
 export const tiers: Tier[] = [
   {
-    id: "usaha",
-    name: "Usaha",
-    hint: "Baru mulai atau usaha sederhana",
-    desc: "Untuk usaha yang baru mulai atau membutuhkan kehadiran profesional di internet.",
-    planIds: ["basic", "beginner", "elementary"],
-    featured: "elementary",
-  },
-  {
-    id: "bisnis",
-    name: "Bisnis",
-    hint: "Sudah berjalan, butuh lebih lengkap",
-    desc: "Untuk bisnis yang sudah berjalan dan membutuhkan website yang lebih lengkap.",
-    planIds: ["light", "intermediate", "advance"],
-    featured: "intermediate",
-  },
-  {
-    id: "perusahaan",
-    name: "Perusahaan",
-    hint: "Kebutuhan website dan sistem yang kompleks",
-    desc: "Untuk perusahaan yang membutuhkan website, platform, atau sistem digital dengan kebutuhan lebih kompleks.",
-    planIds: ["proficient", "max", "pro-max"],
-    featured: "max",
+    id: "unicorn",
+    name: "Unicorn",
+    hint: "Sistem digital sebagai infrastruktur bisnis",
+    desc: "Untuk perusahaan yang mengoperasikan sistem digital sebagai tulang punggung: website yang terintegrasi dengan sistem internal, alur kerja, dan operasional skala besar.",
+    planIds: ["z", "y", "x"],
+    featured: "z",
   },
   {
     id: "startup",
     name: "Startup",
     hint: "Startup berpendanaan yang butuh sistem pertama",
     desc: "Untuk startup yang baru punya pendanaan atau pengguna aktif, dan butuh sistem pertama yang rapi — website produk, akun pengguna, dashboard, hingga platform siap skala.",
-    planIds: ["beta", "theta", "alpha"],
+    planIds: ["alpha", "theta", "beta"],
     featured: "alpha",
   },
   {
-    id: "unicorn",
-    name: "Unicorn",
-    hint: "Sistem digital sebagai infrastruktur bisnis",
-    desc: "Untuk perusahaan yang mengoperasikan sistem digital sebagai tulang punggung: website yang terintegrasi dengan sistem internal, alur kerja, dan operasional skala besar.",
-    planIds: ["x", "y", "z"],
-    featured: "z",
+    id: "perusahaan",
+    name: "Perwujudan",
+    hint: "Kebutuhan website dan sistem yang kompleks",
+    desc: "Untuk perusahaan yang membutuhkan website, platform, atau sistem digital dengan kebutuhan lebih kompleks.",
+    planIds: ["pro-max", "max", "proficient"],
+    featured: "max",
+  },
+  {
+    id: "bisnis",
+    name: "UMKM",
+    hint: "Sudah berjalan, butuh lebih lengkap",
+    desc: "Untuk bisnis yang sudah berjalan dan membutuhkan website yang lebih lengkap.",
+    planIds: ["advance", "intermediate", "light"],
+    featured: "intermediate",
+  },
+  {
+    id: "usaha",
+    name: "Babad Alas",
+    hint: "Baru mulai atau usaha sederhana",
+    desc: "Untuk usaha yang baru mulai atau membutuhkan kehadiran profesional di internet.",
+    planIds: ["elementary", "beginner", "basic"],
+    featured: "elementary",
   },
 ];
 

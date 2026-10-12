@@ -22,7 +22,10 @@ export type Plan = {
   };
 };
 
-export const plans: Plan[] = [
+// Sumber tetap dalam urutan logis (Basic → Alpha). Urutan tampil — kartu,
+// kolom perbandingan, prioritas render — ditentukan DISPLAY_ORDER di bawah,
+// dari paket termahal ke termahal: Unicorn Z/Y/X lalu Startup Alpha/Theta/Beta.
+const plansSource: Plan[] = [
   {
     id: "basic",
     name: "Basic",
@@ -482,9 +485,9 @@ export const plans: Plan[] = [
     short: "X",
     tagline:
       "Portal, dashboard, dan alur kerja yang disusun sesuai operasional Anda.",
-    build: "Rp 1 miliar",
-    maintain: "Rp 100 jt",
-    renewal: "Rp 200 jt",
+    build: "Rp 20 miliar",
+    maintain: "Rp 2 miliar",
+    renewal: "Rp 4 miliar",
     idealFor:
       "Perusahaan yang mengandalkan portal, dashboard, atau alur kerja internal dengan skala di luar jangkauan website standar.",
     featureGroups: [
@@ -529,9 +532,9 @@ export const plans: Plan[] = [
     short: "Y",
     tagline:
       "Website yang terhubung langsung dengan sistem dan operasional bisnis Anda.",
-    build: "Rp 2 miliar",
-    maintain: "Rp 200 jt",
-    renewal: "Rp 400 jt",
+    build: "Rp 50 miliar",
+    maintain: "Rp 5 miliar",
+    renewal: "Rp 10 miliar",
     idealFor:
       "Perusahaan yang website-nya harus menyatu dengan aplikasi internal, tools pihak ketiga, dan alur kerja otomatis.",
     featureGroups: [
@@ -575,9 +578,9 @@ export const plans: Plan[] = [
     short: "Z",
     tagline:
       "Website, aplikasi internal, dan alur kerja lintas unit dalam satu ekosistem.",
-    build: "Rp 3 miliar",
-    maintain: "Rp 300 jt",
-    renewal: "Rp 600 jt",
+    build: "Rp 100 miliar",
+    maintain: "Rp 10 miliar",
+    renewal: "Rp 20 miliar",
     idealFor:
       "Korporasi atau grup usaha yang menjalankan banyak sistem sekaligus dan membutuhkannya saling terhubung, dikerjakan bersama account manager berdedikasi.",
     featureGroups: [
@@ -778,6 +781,22 @@ export const plans: Plan[] = [
   },
 ];
 
+/**
+ * Urutan tampil halaman: paling mahal dulu, lalu menurun. Kategori
+ * (Unicorn → Startup → Perwujudan → UMKM → Babad Alas) mengikuti harga tertinggi
+ * di tiap kategori, sehingga Z (Rp 100 miliar) tampil paling atas.
+ */
+const DISPLAY_ORDER = [
+  "z", "y", "x",           // Unicorn — 100 / 50 / 20 miliar
+  "alpha", "theta", "beta", // Startup — 3 / 2 / 1 miliar
+  "pro-max", "max", "proficient", // Perwujudan — 100 / 75 / 50 jt
+  "advance", "intermediate", "light",      // UMKM — 30 / 20 / 10 jt
+  "elementary", "beginner", "basic", // Babad Alas — 5 / 3 / 1,5 jt
+];
+
+export const plans: Plan[] = DISPLAY_ORDER.map(
+  (id) => plansSource.find((p) => p.id === id)!,
+);
 
 export function getPlan(id: string): Plan | undefined {
   return plans.find((p) => p.id === id);
