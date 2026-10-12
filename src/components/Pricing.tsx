@@ -125,7 +125,7 @@ export default async function Pricing() {
             atau perusahaan Anda.
           </p>
           <p className="reveal reveal-d3 mt-3 max-w-xl text-sm leading-relaxed text-ink-900/50">
-            Dua belas paket, semua biaya tertulis di muka: pembuatan dibayar di
+            Lima belas paket, semua biaya tertulis di muka: pembuatan dibayar di
             awal, maintain tiap bulan, perpanjangan tahunan agar situs tetap
             online.{" "}
             <a
@@ -154,7 +154,7 @@ export default async function Pricing() {
 
         <CategoryChooser tiers={chooserTiers} />
 
-        {/* Empat kategori kondisi bisnis, masing-masing berisi tiga paket */}
+        {/* Lima kategori kondisi bisnis, masing-masing berisi tiga paket */}
         <div className="mt-14 space-y-14">
           {tiers.map((tier) => {
             const tierPlans = plansOfTier(tier, plans);

@@ -62,9 +62,10 @@ export default function Hero() {
               className="fade-rise order-last max-w-[46ch] text-lg leading-relaxed font-light text-ink-900/70 lg:order-none"
               style={{ animationDelay: "760ms" }}
             >
-              Dua belas paket dengan semua biaya tertulis di muka, dari
+              Lima belas paket dengan semua biaya tertulis di muka, dari
               landing page dan company profile sampai platform enterprise.
-              Termasuk paket Unicorn untuk sistem yang berjalan sebagai
+              Termasuk paket Startup untuk startup berpendanaan dan paket
+              Unicorn untuk sistem yang berjalan sebagai
               infrastruktur bisnis. Konsultasi gratis, tanpa komitmen apa pun.
             </p>
 

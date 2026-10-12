@@ -617,6 +617,165 @@ export const plans: Plan[] = [
       cta: "border-violet-200 text-violet-700 hover:border-violet-300 hover:bg-violet-50",
     },
   },
+  // Startup — 3 paket untuk startup berpendanaan: Beta / Theta / Alpha
+  // Harga & maintain/renewal mengikuti aturan 10%/bln & 20%/th dari harga build.
+  {
+    id: "beta",
+    name: "Beta",
+    short: "Beta",
+    tagline: "Sistem pertama yang serius: website produk, akun pengguna, dan dashboard inti.",
+    build: "Rp 1 miliar",
+    maintain: "Rp 100 jt",
+    renewal: "Rp 200 jt",
+    idealFor:
+      "Startup yang baru punya pendanaan atau pengguna aktif, dan butuh sistem pertama yang rapi — bukan sekadar landing page.",
+    featureGroups: [
+      {
+        title: "Desain & Halaman",
+        items: [
+          "Website produk & halaman onboarding yang mengikuti alur pengguna",
+          "Dashboard inti: data pengguna, aktivitas, dan metrik utama dalam satu layar",
+          "Sistem akun & login pengguna (daftar, masuk, profil)",
+          "Katalog atau daftar isi (produk, program, layanan) yang bisa dikelola sendiri",
+          "Blog sederhana untuk pengumuman & update",
+          "Konten bisa diubah tim tanpa menyentuh kode",
+          "Revisi desain selama pengerjaan sesuai kesepakatan",
+        ],
+      },
+      {
+        title: "Teknis & Performa",
+        items: [
+          "Basis teknologi siap tumbuh — tidak perlu dibuang saat pengguna naik",
+          "Integrasi awal: payment, email, atau tools yang dipakai tim",
+          "Multi-bahasa bila diperlukan",
+          "SSL certificate (https) & keamanan dasar: firewall, anti-spam",
+          "Analytics & penjejakan funnel — dari mana pengguna datang dan di mana berhenti",
+          "Backup otomatis rutin",
+          "Monitoring dasar — gangguan diketahui lebih awal",
+          "Terhubung ke domain & email startup Anda",
+        ],
+      },
+      {
+        title: "Dukungan & Operasi",
+        items: [
+          "Pemetaan kebutuhan dulu — alur kerja dibedah sebelum kode ditulis",
+          "Maintenance berkala sesuai periode yang disepakati",
+          "Panduan pengelolaan sistem untuk tim kecil",
+          "Dukungan via WhatsApp jam kerja",
+          "Penyesuaian kecil selama pengerjaan sesuai kesepakatan",
+        ],
+      },
+    ],
+    accent: {
+      bar: "from-lime-400 to-lime-600",
+      chip: "bg-lime-100 text-lime-700",
+      price: "text-lime-700",
+      cta: "border-lime-200 text-lime-700 hover:border-lime-300 hover:bg-lime-50",
+    },
+  },
+  {
+    id: "theta",
+    name: "Theta",
+    short: "Theta",
+    tagline: "Produk digital yang terhubung: website, aplikasi, dan otomasi tim.",
+    build: "Rp 2 miliar",
+    maintain: "Rp 200 jt",
+    renewal: "Rp 400 jt",
+    idealFor:
+      "Startup yang produknya sudah dipakai banyak orang dan butuh website, aplikasi, serta alur kerja saling terhubung.",
+    featureGroups: [
+      {
+        title: "Desain & Halaman",
+        items: [
+          "Website produk, blog, dan halaman kampanye yang terhubung dengan aplikasi",
+          "Dashboard produk & bisnis dengan metrik real-time",
+          "Multi-peran untuk tim: admin, editor, dan operator dengan hak akses berbeda",
+          "Sistem akun pengguna dengan alur onboarding dan notifikasi",
+          "Katalog, program, atau konten yang dikelola lintas tim",
+          "Revisi desain selama pengerjaan sesuai kesepakatan",
+        ],
+      },
+      {
+        title: "Teknis & Performa",
+        items: [
+          "Integrasi payment gateway & tools pihak ketiga (WhatsApp API, Google Workspace, dsb)",
+          "Multi-bahasa bila diperlukan",
+          "Performa dioptimasi — tetap cepat saat pengguna bertambah",
+          "SSL certificate (https), firewall & anti-spam",
+          "Analytics, funnel, dan penjejakan konversi",
+          "Backup otomatis mingguan",
+          "Monitoring uptime & performa — gangguan diketahui lebih awal",
+        ],
+      },
+      {
+        title: "Dukungan & Operasi",
+        items: [
+          "Maintenance & update konten untuk kebutuhan wajar",
+          "Dukungan teknis prioritas via WhatsApp",
+          "Panduan & training singkat untuk tim",
+          "Penyesuaian kebutuhan yang berubah selama pengerjaan",
+        ],
+      },
+    ],
+    accent: {
+      bar: "from-indigo-400 to-indigo-600",
+      chip: "bg-indigo-100 text-indigo-700",
+      price: "text-indigo-700",
+      cta: "border-indigo-200 text-indigo-700 hover:border-indigo-300 hover:bg-indigo-50",
+    },
+  },
+  {
+    id: "alpha",
+    name: "Alpha",
+    short: "Alpha",
+    tagline: "Platform startup siap skala: banyak modul, tim, dan integrasi dalam satu kendali.",
+    build: "Rp 3 miliar",
+    maintain: "Rp 300 jt",
+    renewal: "Rp 600 jt",
+    idealFor:
+      "Startup yang naik kelas: butuh platform dengan banyak modul, peran tim, dan integrasi lintas sistem.",
+    featureGroups: [
+      {
+        title: "Desain & Halaman",
+        items: [
+          "Platform multi-modul: portal pengguna, admin, dan operasi dalam satu ekosistem",
+          "Dashboard eksekutif & operasional dengan data real-time",
+          "Sistem peran & izin untuk tiap tim — siapa boleh melihat dan mengubah apa",
+          "Halaman kampanye & program yang bisa diluncurkan berkala",
+          "Katalog & konten lintas tim yang bisa dikelola sendiri",
+          "Blog & halaman artikel untuk pengumuman",
+          "Revisi desain selama pengerjaan sesuai kesepakatan",
+        ],
+      },
+      {
+        title: "Teknis & Performa",
+        items: [
+          "Arsitektur siap skala — tumbuh tanpa bangun ulang dari awal",
+          "Integrasi lintas sistem: payment, logistik, ERP & API mitra",
+          "Multi-bahasa bila diperlukan",
+          "Enkripsi data & audit keamanan berkala",
+          "Backup otomatis harian dengan prosedur pemulihan",
+          "Monitoring uptime & performa 24/7",
+          "Rilis teruji — perubahan tidak menumbangkan yang sudah berjalan",
+        ],
+      },
+      {
+        title: "Dukungan & Operasi",
+        items: [
+          "Maintenance & update konten sesuai kebutuhan",
+          "Dukungan teknis prioritas dengan review berkala bersama tim",
+          "Training tim internal agar bisa mengelola sendiri",
+          "Penyesuaian kebutuhan yang berubah selama pengerjaan",
+        ],
+      },
+    ],
+    accent: {
+      bar: "from-pink-400 to-pink-600",
+      chip: "bg-pink-100 text-pink-700",
+      price: "text-pink-700",
+      cta: "border-pink-200 text-pink-700 hover:border-pink-300 hover:bg-pink-50",
+    },
+  },
 ];
 
 

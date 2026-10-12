@@ -1,12 +1,12 @@
 import type { Plan } from "@/lib/plans";
 
 /*
- * Empat kategori paket yang diurutkan menurut kondisi bisnis pembeli,
+ * Lima kategori paket yang diurutkan menurut kondisi bisnis pembeli,
  * bukan istilah teknis. Urutan planIds = urutan tampil di tiap kategori,
  * featured = paket yang ditonjolkan secara visual di kategorinya
  * (intermediate mengikuti data highlight di plans.ts).
  */
-export type TierId = "usaha" | "bisnis" | "perusahaan" | "unicorn";
+export type TierId = "usaha" | "bisnis" | "perusahaan" | "startup" | "unicorn";
 
 export type Tier = {
   id: TierId;
@@ -41,6 +41,14 @@ export const tiers: Tier[] = [
     desc: "Untuk perusahaan yang membutuhkan website, platform, atau sistem digital dengan kebutuhan lebih kompleks.",
     planIds: ["proficient", "max", "pro-max"],
     featured: "max",
+  },
+  {
+    id: "startup",
+    name: "Startup",
+    hint: "Startup berpendanaan yang butuh sistem pertama",
+    desc: "Untuk startup yang baru punya pendanaan atau pengguna aktif, dan butuh sistem pertama yang rapi — website produk, akun pengguna, dashboard, hingga platform siap skala.",
+    planIds: ["beta", "theta", "alpha"],
+    featured: "alpha",
   },
   {
     id: "unicorn",

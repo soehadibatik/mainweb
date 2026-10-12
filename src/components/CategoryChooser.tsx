@@ -35,7 +35,7 @@ export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
       <div
         role="group"
         aria-label="Pilih kategori berdasarkan kondisi bisnis Anda"
-        className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+        className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5"
       >
         {tiers.map((tier) => {
           const active = picked === tier.id;
