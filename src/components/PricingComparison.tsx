@@ -5,32 +5,43 @@ import Link from "next/link";
 import type { CompareSection, CompareValue } from "@/lib/comparison";
 import type { Plan } from "@/lib/plans";
 import { waLink } from "@/lib/site";
+import { ui } from "@/lib/i18n/ui";
+import { tPrice } from "@/lib/i18n/price";
+import {
+  tComparisonLabel,
+  tComparisonSectionTitle,
+  tComparisonValue,
+} from "@/lib/i18n/content";
+import { localizePath, type Locale } from "@/lib/i18n/config";
 
-function Cell({ value }: { value: CompareValue }) {
+function Cell({ value, label }: { value: CompareValue; label: string }) {
   if (value === true) {
     return (
-      <span aria-label="termasuk" className="font-mono text-sm font-semibold text-brand-600">
+      <span aria-label={label} className="font-mono text-sm font-semibold text-brand-600">
         ✓
       </span>
     );
   }
   if (value === false) {
     return (
-      <span aria-label="tidak termasuk" className="font-mono text-sm text-ink-900/20">
+      <span aria-label={label} className="font-mono text-sm text-ink-900/20">
         ✕
       </span>
     );
   }
-  return <span className="font-mono text-xs text-ink-900/75">{value}</span>;
+  return <span className="font-mono text-xs text-ink-900/75">{String(value)}</span>;
 }
 
 export default function PricingComparison({
   plans,
   sections,
+  lang,
 }: {
   plans: Plan[];
   sections: CompareSection[];
+  lang: Locale;
 }) {
+  const t = ui[lang];
   const [activeCol, setActiveCol] = useState<string | null>(null);
   const [hidden, setHidden] = useState<Set<string>>(new Set());
 
@@ -54,15 +65,10 @@ export default function PricingComparison({
 
   return (
     <div>
-      {/* Toggle paket */}
       <div className="mb-6 border border-line bg-white p-4 sm:p-5">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <span className="font-mono text-xs font-semibold text-ink-900">
-            Tampilkan paket
-          </span>
-          <span className="font-mono text-[11px] text-ink-900/45">
-            klik untuk sembunyikan / tampilkan
-          </span>
+          <span className="font-mono text-xs font-semibold text-ink-900">{t.comparison.showPlans}</span>
+          <span className="font-mono text-[11px] text-ink-900/45">{t.comparison.clickHint}</span>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {plans.map((plan) => {
@@ -91,26 +97,24 @@ export default function PricingComparison({
               onClick={() => setHidden(new Set())}
               className="px-3 py-1.5 font-mono text-xs font-semibold text-brand-600 hover:underline"
             >
-              Tampilkan semua
+              {t.comparison.showAll}
             </button>
           )}
         </div>
         <p className="mt-3 font-mono text-[11px] text-ink-900/45">
-          Menampilkan {visiblePlans.length} dari {plans.length} paket
+          {t.comparison.showing(visiblePlans.length, plans.length)}
         </p>
       </div>
 
       {visiblePlans.length === 0 ? (
         <div className="border border-dashed border-ink-900/25 bg-white p-12 text-center">
-          <p className="font-mono text-xs text-ink-900/55">
-            Semua paket sedang disembunyikan
-          </p>
+          <p className="font-mono text-xs text-ink-900/55">{t.comparison.allHidden}</p>
           <button
             type="button"
             onClick={() => setHidden(new Set())}
             className="mt-5 inline-block bg-brand-600 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-700"
           >
-            Tampilkan semua paket
+            {t.comparison.showAllPlans}
           </button>
         </div>
       ) : (
@@ -120,7 +124,7 @@ export default function PricingComparison({
               <tr>
                 <th className="sticky left-0 z-20 w-52 min-w-52 border-r border-b border-line bg-paper p-4 align-bottom">
                   <span className="font-mono text-xs font-semibold text-ink-900/55">
-                    Fitur / Paket
+                    {t.comparison.featurePerPlan}
                   </span>
                 </th>
                 {visiblePlans.map((plan) => (
@@ -132,32 +136,23 @@ export default function PricingComparison({
                   >
                     {plan.highlight && (
                       <span className="absolute top-2 right-2 bg-brand-600 px-1.5 py-0.5 font-mono text-[9px] font-bold text-white">
-                        Populer
+                        {t.comparison.popular}
                       </span>
                     )}
-                    <span className="font-mono text-xs font-bold text-ink-900">
-                      {plan.name}
-                    </span>
-                    <p className="mt-1 font-mono text-lg font-semibold text-ink-950">
-                      {plan.build}
-                    </p>
-                    <p className="font-mono text-[10px] text-ink-900/45">
-                      pembuatan
-                    </p>
+                    <span className="font-mono text-xs font-bold text-ink-900">{plan.name}</span>
+                    <p className="mt-1 font-mono text-lg font-semibold text-ink-950">{tPrice(lang, plan.build)}</p>
+                    <p className="font-mono text-[10px] text-ink-900/45">{t.comparison.build}</p>
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {sections.map((section) => (
+              {sections.map((section, sectionIndex) => (
                 <Fragment key={section.title}>
                   <tr>
-                    <td
-                      colSpan={visiblePlans.length + 1}
-                      className="border-b border-line bg-paper px-4 py-2.5"
-                    >
+                    <td colSpan={visiblePlans.length + 1} className="border-b border-line bg-paper px-4 py-2.5">
                       <span className="font-mono text-xs font-bold text-brand-700">
-                        {section.title}
+                        {tComparisonSectionTitle(lang, sectionIndex, section.title)}
                       </span>
                     </td>
                   </tr>
@@ -167,7 +162,7 @@ export default function PricingComparison({
                         scope="row"
                         className="sticky left-0 z-10 border-r border-b border-line bg-white px-4 py-3 text-xs font-medium text-ink-900/75"
                       >
-                        {row.label}
+                        {tComparisonLabel(lang, row.label)}
                       </th>
                       {visiblePlans.map((plan) => (
                         <td
@@ -176,7 +171,14 @@ export default function PricingComparison({
                           onMouseLeave={() => setActiveCol(null)}
                           className={`border-b border-line px-3 py-3 text-center transition-colors ${colBg(plan.id, plan.highlight ? highlightBase : undefined)}`}
                         >
-                          <Cell value={row.values[plan.id]} />
+                          <Cell
+                            value={tComparisonValue(lang, row.values[plan.id]) as CompareValue}
+                            label={
+                              row.values[plan.id] === true
+                                ? t.comparison.included
+                                : t.comparison.notIncluded
+                            }
+                          />
                         </td>
                       ))}
                     </tr>
@@ -184,13 +186,12 @@ export default function PricingComparison({
                 </Fragment>
               ))}
 
-              {/* Baris CTA */}
               <tr>
                 <th
                   scope="row"
                   className="sticky left-0 z-10 border-r border-line bg-white px-4 py-4 font-mono text-xs font-semibold text-ink-900/65"
                 >
-                  Pesan
+                  {t.comparison.order}
                 </th>
                 {visiblePlans.map((plan) => (
                   <td
@@ -198,7 +199,7 @@ export default function PricingComparison({
                     className={`border-t-2 border-t-ink-950 p-3 text-center ${colBg(plan.id, plan.highlight ? highlightBase : undefined)}`}
                   >
                     <a
-                      href={waLink(`Halo mainweb.id, saya tertarik dengan paket ${plan.name} (${plan.build}).`)}
+                      href={waLink(t.comparison.orderWaMessage(plan.name, plan.build))}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`inline-block px-3 py-2 text-sm font-semibold transition-colors ${
@@ -207,13 +208,13 @@ export default function PricingComparison({
                           : "border border-ink-900/25 text-ink-900 hover:bg-ink-950 hover:text-white"
                       }`}
                     >
-                      Pesan
+                      {t.comparison.orderShort}
                     </a>
                     <Link
-                      href={`/paket/${plan.id}`}
+                      href={localizePath(lang, `/paket/${plan.id}`)}
                       className="mt-1.5 block font-mono text-[10px] text-ink-900/45 hover:text-brand-600"
                     >
-                      Detail
+                      {t.comparison.detail}
                     </Link>
                   </td>
                 ))}
@@ -224,15 +225,14 @@ export default function PricingComparison({
       )}
 
       <p className="mt-4 font-mono text-[11px] leading-relaxed text-ink-900/50">
-        * Maintain paket Basic termasuk hingga 1 bulan pertama. Spesifikasi dapat
-        disesuaikan;{" "}
+        {t.comparison.footnote}{" "}
         <a
-          href={waLink("Halo mainweb.id, saya butuh paket custom.")}
+          href={waLink(t.pricing.customCta)}
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold text-brand-600 hover:underline"
         >
-          konsultasikan gratis
+          {t.comparison.consultFree}
         </a>
         .
       </p>

@@ -1,9 +1,8 @@
 "use client";
 
 import { waLink } from "@/lib/site";
-
-const MESSAGE =
-  "Halo mainweb.id, saya mau konsultasi soal pembuatan website.";
+import { ui } from "@/lib/i18n/ui";
+import type { Locale } from "@/lib/i18n/config";
 
 function WaIcon() {
   return (
@@ -18,11 +17,13 @@ function WaIcon() {
  * Warna diambil dari logo (gradasi biru tua ke sky ke violet); label muncul
  * saat hover/fokus, bukan berulang sendiri.
  */
-export default function FloatingWa() {
+export default function FloatingWa({ lang }: { lang: Locale }) {
+  const t = ui[lang];
+
   return (
     <div className="fixed right-4 bottom-5 z-50 sm:right-7 sm:bottom-8">
       <a
-        href={waLink(MESSAGE)}
+        href={waLink(t.nav.waFloating)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat WhatsApp mainweb.id"

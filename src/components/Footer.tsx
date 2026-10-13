@@ -1,8 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { site, waLink } from "@/lib/site";
+import { ui } from "@/lib/i18n/ui";
+import { localizePath, type Locale } from "@/lib/i18n/config";
 
-export default function Footer() {
+export default function Footer({ lang }: { lang: Locale }) {
+  const t = ui[lang];
+  const links = t.footer.links.map((l) => ({
+    ...l,
+    href: localizePath(lang, l.href),
+  }));
+
   return (
     <footer className="border-t border-line bg-paper text-ink-900/65">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
@@ -11,35 +19,34 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <Image
                 src="/logo.png"
-                alt="mainweb.id"
+                alt={site.name}
                 width={160}
                 height={90}
                 className="h-10 w-auto"
               />
               <span className="h-3.5 w-px bg-ink-900/15" aria-hidden />
-              <span className="brand-wordmark font-display text-[18px] leading-none font-black tracking-[-0.045em]">MainWeb</span>
+              <span className="brand-wordmark font-display text-[18px] leading-none font-black tracking-[-0.045em]">
+                {t.brand.wordmark}
+              </span>
             </div>
-            <p className="mt-5 max-w-sm text-sm leading-relaxed">
-              Jasa pembuatan &amp; pengembangan website profesional untuk
-              bisnis Anda.
-            </p>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed">{t.footer.tagline}</p>
           </div>
 
           <div className="md:col-span-3">
-            <p className="font-mono text-xs text-ink-900/45">Indeks</p>
+            <p className="font-mono text-xs text-ink-900/45">{t.footer.index}</p>
             <ul className="mt-5 space-y-3 text-sm">
-              <li><Link className="transition-colors hover:text-brand-600" href="/#keunggulan">Keunggulan</Link></li>
-              <li><Link className="transition-colors hover:text-brand-600" href="/#paket">Tarif</Link></li>
-              <li><Link className="transition-colors hover:text-brand-600" href="/#perbandingan">Perbandingan</Link></li>
-              <li><Link className="transition-colors hover:text-brand-600" href="/#proses">Cara kerja</Link></li>
-              <li><Link className="transition-colors hover:text-brand-600" href="/klien">Klien</Link></li>
-              <li><Link className="transition-colors hover:text-brand-600" href="/studi-kasus">Studi kasus</Link></li>
-              <li><Link className="transition-colors hover:text-brand-600" href="/#faq">FAQ</Link></li>
+              {links.map((l) => (
+                <li key={l.href + l.label}>
+                  <Link className="transition-colors hover:text-brand-600" href={l.href}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="md:col-span-3">
-            <p className="font-mono text-xs text-ink-900/45">Kontak</p>
+            <p className="font-mono text-xs text-ink-900/45">{t.footer.kontak}</p>
             <ul className="mt-5 space-y-3 text-sm">
               <li>
                 <a
@@ -75,16 +82,26 @@ export default function Footer() {
         </div>
 
         <div className="mt-16 flex flex-col justify-between gap-3 border-t border-line pt-6 font-mono text-xs text-ink-900/45 sm:flex-row">
-          <p>© {new Date().getFullYear()} mainweb.id, hak cipta dilindungi</p>
+          <p>
+            © {new Date().getFullYear()} {site.name}, {t.footer.copyright}
+          </p>
           <p className="flex gap-4">
-            <Link className="transition-colors hover:text-brand-600" href="/kebijakan-privasi">
-              Kebijakan privasi
+            <Link
+              className="transition-colors hover:text-brand-600"
+              href={localizePath(lang, "/kebijakan-privasi")}
+            >
+              {t.footer.privacy}
             </Link>
-            <Link className="transition-colors hover:text-brand-600" href="/syarat-layanan">
-              Syarat layanan
+            <Link
+              className="transition-colors hover:text-brand-600"
+              href={localizePath(lang, "/syarat-layanan")}
+            >
+              {t.footer.terms}
             </Link>
           </p>
-          <p>Dok. {new Date().getFullYear()} / dibuat di Indonesia</p>
+          <p>
+            Doc. {new Date().getFullYear()} / {t.footer.doc}
+          </p>
         </div>
       </div>
     </footer>

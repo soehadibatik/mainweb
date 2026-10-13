@@ -4,15 +4,28 @@ import type { Plan } from "@/lib/plans";
 import { tiers, plansOfTier, fullPrice } from "@/lib/tiers";
 import { waLink } from "@/lib/site";
 import CategoryChooser from "@/components/CategoryChooser";
-
-const included = ["SSL (https)", "Desain responsif", "SEO dasar", "Google Analytics"];
+import { ui } from "@/lib/i18n/ui";
+import { tierText } from "@/lib/i18n/content";
+import { tPrice } from "@/lib/i18n/price";
+import { localizePlans } from "@/lib/i18n/plans-text";
+import { localizePath, type Locale } from "@/lib/i18n/config";
 
 /*
- * Hierarchy kartu mengikuti alur keputusan pembeli awam:
- * nama paket, lalu harga (elemen terbesar setelah nama), deskripsi singkat,
- * biaya lanjutan, baru CTA. Detail fitur penuh tinggal di halaman paket.
+ * Kartu paket mengikuti alur keputusan pembeli awam: nama paket, lalu harga
+ * (elemen terbesar setelah nama), deskripsi singkat, biaya lanjutan, baru
+ * CTA. Detail fitur penuh tinggal di halaman paket.
  */
-function PlanCard({ plan, featured }: { plan: Plan; featured: boolean }) {
+function PlanCard({
+  plan,
+  featured,
+  lang,
+}: {
+  plan: Plan;
+  featured: boolean;
+  lang: Locale;
+}) {
+  const t = ui[lang];
+
   return (
     <article
       id={`paket-${plan.id}`}
@@ -28,7 +41,7 @@ function PlanCard({ plan, featured }: { plan: Plan; featured: boolean }) {
         </h4>
         {plan.highlight && (
           <span className="bg-brand-600 px-2 py-0.5 font-mono text-[10px] font-semibold text-white">
-            Populer
+            {t.pricing.popular}
           </span>
         )}
       </div>
@@ -41,10 +54,10 @@ function PlanCard({ plan, featured }: { plan: Plan; featured: boolean }) {
             : "text-2xl text-ink-950 sm:text-3xl"
         }`}
       >
-        {fullPrice(plan.build)}
+        {tPrice(lang, fullPrice(plan.build))}
       </p>
       <p className="mt-1 font-mono text-[11px] text-ink-900/50">
-        biaya pembuatan
+        {t.pricing.buildCost}
       </p>
 
       <p className="mt-3 text-sm leading-relaxed text-ink-900/60">
@@ -54,53 +67,55 @@ function PlanCard({ plan, featured }: { plan: Plan; featured: boolean }) {
       {/* Biaya lanjutan tetap terbaca di kartu, bukan tersembunyi di detail */}
       <dl className="mt-4 space-y-1 border-t border-line pt-3 font-mono text-[11px]">
         <div className="flex items-baseline justify-between gap-3">
-          <dt className="text-ink-900/50">Maintain</dt>
+          <dt className="text-ink-900/50">{t.pricing.maintain}</dt>
           <dd className="font-semibold text-ink-900">
-            {plan.maintain}
-            {plan.renewal ? "/bln" : ""}
+            {tPrice(lang, plan.maintain)}
+            {plan.renewal ? t.pricing.perMonth : ""}
           </dd>
         </div>
         <div className="flex items-baseline justify-between gap-3">
-          <dt className="text-ink-900/50">Perpanjangan</dt>
+          <dt className="text-ink-900/50">{t.pricing.renewal}</dt>
           <dd className="font-semibold text-ink-900">
-            {plan.renewal ? `${plan.renewal}/th` : "Termasuk"}
+            {plan.renewal
+              ? `${tPrice(lang, plan.renewal)}${t.pricing.perYear}`
+              : t.pricing.includedShort}
           </dd>
         </div>
       </dl>
 
       <div className="mt-auto flex flex-col gap-2 pt-5 sm:flex-row">
         <a
-          href={waLink(
-            `Halo mainweb.id, saya tertarik dengan paket ${plan.name} (${fullPrice(plan.build)}).`,
-          )}
+          href={waLink(t.pricing.orderWaMessage(plan.name, plan.build))}
           target="_blank"
           rel="noopener noreferrer"
           className={`btn btn-sm flex-1 ${featured ? "btn-primary" : "btn-outline"}`}
         >
-          Pesan via WhatsApp
+          {t.pricing.orderWa}
         </a>
         <Link
-          href={`/paket/${plan.id}`}
+          href={localizePath(lang, `/paket/${plan.id}`)}
           className="btn btn-sm flex-1 border border-ink-900/20 text-ink-900/70 hover:border-ink-900/60 hover:text-ink-950"
         >
-          Fitur lengkap
+          {t.pricing.fullFeatures}
         </Link>
       </div>
     </article>
   );
 }
 
-export default async function Pricing() {
-  const plans = await getPlans();
+export default async function Pricing({ lang }: { lang: Locale }) {
+  const t = ui[lang];
+  const plans = localizePlans(lang, await getPlans());
 
+  // Nama & hint kategori memakai teks per-locale (tierText), bukan data tiers.
   const chooserTiers = tiers.map((tier) => ({
     id: tier.id,
-    name: tier.name,
-    hint: tier.hint,
+    name: tierText[lang][tier.id].name,
+    hint: tierText[lang][tier.id].hint,
     plans: plansOfTier(tier, plans).map(({ id, name, build, tagline }) => ({
       id,
       name,
-      build,
+      build: tPrice(lang, build),
       tagline,
     })),
   }));
@@ -113,26 +128,23 @@ export default async function Pricing() {
             <div className="reveal reveal-blur">
               <p className="eyebrow">
                 <span className="eyebrow-slash" aria-hidden>{"// "}</span>
-                Tarif
+                {t.pricing.eyebrow}
               </p>
               <h2 className="mt-4 max-w-2xl font-display text-4xl font-black tracking-[-0.03em] text-balance sm:text-5xl">
-                Pilih website sesuai kebutuhan bisnis Anda
+                {t.pricing.heading}
               </h2>
             </div>
           </div>
           <p className="reveal reveal-d2 mt-4 max-w-xl text-base leading-relaxed text-ink-900/65">
-            Tidak perlu memahami teknologi. Pilih berdasarkan kondisi usaha
-            atau perusahaan Anda.
+            {t.pricing.intro}
           </p>
           <p className="reveal reveal-d3 mt-3 max-w-xl text-sm leading-relaxed text-ink-900/50">
-            Lima belas paket, semua biaya tertulis di muka: pembuatan dibayar di
-            awal, maintain tiap bulan, perpanjangan tahunan agar situs tetap
-            online.{" "}
+            {t.pricing.note}{" "}
             <a
               href="#perbandingan"
               className="font-medium text-brand-600 underline-offset-4 hover:text-ink-950 hover:underline"
             >
-              Bandingkan semua paket
+              {t.pricing.compareAll}
             </a>
           </p>
         </div>
@@ -140,9 +152,9 @@ export default async function Pricing() {
         {/* Termasuk di semua paket */}
         <div className="reveal reveal-d2 mt-8 flex flex-wrap items-center gap-2">
           <span className="mr-1 font-mono text-xs text-ink-900/50">
-            Termasuk semua paket:
+            {t.pricing.includedLabel}
           </span>
-          {included.map((item) => (
+          {t.pricing.included.map((item) => (
             <span
               key={item}
               className="border border-line bg-paper px-3 py-1.5 font-mono text-xs text-ink-900/70"
@@ -152,12 +164,13 @@ export default async function Pricing() {
           ))}
         </div>
 
-        <CategoryChooser tiers={chooserTiers} />
+        <CategoryChooser tiers={chooserTiers} lang={lang} />
 
         {/* Lima kategori kondisi bisnis, masing-masing berisi tiga paket */}
         <div className="mt-14 space-y-14">
           {tiers.map((tier) => {
             const tierPlans = plansOfTier(tier, plans);
+            const tt = tierText[lang][tier.id];
             return (
               <section
                 key={tier.id}
@@ -171,14 +184,14 @@ export default async function Pricing() {
                       id={`kategori-${tier.id}-judul`}
                       className="font-display text-2xl font-black tracking-tight sm:text-3xl"
                     >
-                      {tier.name}
+                      {tt.name}
                     </h3>
                     <p className="mt-1 font-mono text-xs text-brand-600">
-                      {tier.hint}
+                      {tt.hint}
                     </p>
                   </div>
                   <p className="text-sm leading-relaxed text-ink-900/60 sm:col-span-7">
-                    {tier.desc}
+                    {tt.desc}
                   </p>
                 </div>
 
@@ -188,6 +201,7 @@ export default async function Pricing() {
                       key={plan.id}
                       plan={plan}
                       featured={plan.id === tier.featured}
+                      lang={lang}
                     />
                   ))}
                 </div>
@@ -197,16 +211,14 @@ export default async function Pricing() {
         </div>
 
         <p className="reveal reveal-d3 mt-12 font-mono text-xs leading-relaxed text-ink-900/50">
-          * Basic: maintain termasuk maks. 1 bulan pertama.
-          Semua paket termasuk SSL, desain responsif &amp; SEO dasar.
-          Unicorn: sistem skala besar dikerjakan bersama sesuai kesepakatan operasional.{" "}
+          {t.pricing.footnote}{" "}
           <a
-            href={waLink("Halo mainweb.id, saya butuh paket custom.")}
+            href={waLink(t.pricing.customCta)}
             target="_blank"
             rel="noopener noreferrer"
             className="text-brand-600 underline-offset-4 hover:text-ink-950 hover:underline"
           >
-            Butuh custom? Konsultasi gratis
+            {t.pricing.customCta}
           </a>
         </p>
       </div>

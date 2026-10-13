@@ -22,6 +22,8 @@ type OgInput = {
   image?: string;
   alt?: string;
   type?: "website" | "article";
+  /** Locale OpenGraph (id_ID / en_US). Default id_ID. */
+  locale?: string;
 };
 
 /**
@@ -37,6 +39,7 @@ export function ogMeta({
   image,
   alt,
   type = "website",
+  locale = "id_ID",
 }: OgInput): Pick<Metadata, "openGraph" | "twitter"> {
   const src = image ?? OG_FALLBACK_IMAGE;
   const label = alt ?? `${site.name} | ${site.tagline}`;
@@ -44,7 +47,7 @@ export function ogMeta({
   return {
     openGraph: {
       type,
-      locale: "id_ID",
+      locale,
       url,
       siteName: site.name,
       title,

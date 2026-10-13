@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Locale } from "@/lib/i18n/config";
 
 /*
  * Judul ala terminal: diketik karakter per karakter, ditahan agar sempat
@@ -9,27 +10,28 @@ import { useEffect, useState } from "react";
  * santai dan tetap hormat prefers-reduced-motion (fallback: teks statis).
  *
  * SSR dan render awal menampilkan kalimat pertama SECARA PENUH: pembaca
- * tanpa JS (atau yang hydration-nya telat) tetap membaca headline lengkap,
- * bukan baris kosong dengan caret menyala. Siklus ketik baru mulai setelah
- * fase hold pertama, jadi tidak ada kilatan teks hilang saat hydration.
+ * tanpa JS (atau yang hydration-nya telat) tetap membaca headline lengkap.
  */
-const PHRASES = [
-  "Jasa pembuatan website profesional, mulai Rp 1,5 jt, harga tertulis di muka.",
-  "Ceritakan usaha Anda lewat WhatsApp, konsultasinya gratis.",
-  "Tanpa template: setiap situs digambar dan ditulis khusus untuk Anda.",
-];
+type Phrases = { phrases: string[]; gradient: string[][] };
 
-/*
- * Kata yang dicetak gradasi 3 warna logo (brand-wordmark) di tiap kalimat.
- * Satu-dua kata cukup: gradien di semua kata kehilangan penekanannya.
- * Kata harus muncul persis di kalimatnya; kalau tidak ketemu, kata itu
- * saja yang tidak bergradasi, animasi tetap aman.
- */
-const GRADIENT_WORDS: string[][] = [
-  ["1,5 jt,"],
-  ["gratis."],
-  ["situs"],
-];
+const COPY: Record<Locale, Phrases> = {
+  id: {
+    phrases: [
+      "Jasa pembuatan website profesional, mulai Rp 1,5 jt, harga tertulis di muka.",
+      "Ceritakan usaha Anda lewat WhatsApp, konsultasinya gratis.",
+      "Tanpa template: setiap situs digambar dan ditulis khusus untuk Anda.",
+    ],
+    gradient: [["1,5 jt,"], ["gratis."], ["situs"]],
+  },
+  en: {
+    phrases: [
+      "Professional website services, from Rp 1.5M, costs stated up front.",
+      "Tell us about your business on WhatsApp — the consultation is free.",
+      "No templates: every site is drawn and written just for you.",
+    ],
+    gradient: [["Rp 1.5M,"], ["free."], ["site"]],
+  },
+};
 
 type Segment = { text: string; grad: boolean };
 
@@ -47,7 +49,6 @@ function segmentsOf(text: string, gradWords: string[]): Segment[] {
   return segs;
 }
 
-/* Potongan yang sudah terketik, dengan kata gradien tetap bergradasi. */
 function TypedSegments({ segs, length }: { segs: Segment[]; length: number }) {
   let left = length;
   return (
@@ -68,18 +69,17 @@ function TypedSegments({ segs, length }: { segs: Segment[]; length: number }) {
   );
 }
 
-/* Tempo santai: ketik pelan, tahan lama, hapus cepat, tarik napas. */
-const FIRST_TYPE_MS = 700; // jeda sebelum karakter pertama tiap kalimat
-const TYPE_TICK_MS = 85; // kecepatan ketik per karakter
-const HOLD_MS = 2800; // kalimat dibaca penonton sebelum dihapus
-const REST_MS = 1200; // baris kosong sesaat sebelum siklus baru
+const FIRST_TYPE_MS = 700;
+const TYPE_TICK_MS = 85;
+const HOLD_MS = 2800;
+const REST_MS = 1200;
 
 type Phase = "typing" | "hold" | "erasing" | "rest";
 
-export default function CoderHeading() {
-  // Mulai dari kalimat pertama penuh (fase hold): identik dengan SSR.
+export default function CoderHeading({ lang }: { lang: Locale }) {
+  const { phrases, gradient } = COPY[lang];
   const [phraseIndex, setPhraseIndex] = useState(0);
-  const [length, setLength] = useState(PHRASES[0].length);
+  const [length, setLength] = useState(phrases[0].length);
   const [phase, setPhase] = useState<Phase>("hold");
   const [reduced, setReduced] = useState(false);
 
@@ -94,7 +94,7 @@ export default function CoderHeading() {
   useEffect(() => {
     if (reduced) return;
 
-    const full = PHRASES[phraseIndex];
+    const full = phrases[phraseIndex];
     let t: ReturnType<typeof setTimeout>;
 
     if (phase === "typing") {
@@ -110,15 +110,12 @@ export default function CoderHeading() {
       t = setTimeout(() => setPhase("erasing"), HOLD_MS);
     } else if (phase === "erasing") {
       if (length > 0) {
-        // Hapus dengan tempo mempercepat: ringan di awal, cepat di akhir.
-        // Tempo rata bikin kalimat terlihat "dicabut" mendadak.
         const tick = Math.round(14 + 26 * (length / full.length));
         t = setTimeout(() => setLength(length - 1), tick);
-      } else if (phraseIndex < PHRASES.length - 1) {
+      } else if (phraseIndex < phrases.length - 1) {
         setPhraseIndex(phraseIndex + 1);
         setPhase("typing");
       } else {
-        // satu putaran penuh selesai: rehat, lalu ulangi dari awal
         setPhase("rest");
       }
     } else {
@@ -129,18 +126,16 @@ export default function CoderHeading() {
     }
 
     return () => clearTimeout(t);
-  }, [reduced, phase, phraseIndex, length]);
+  }, [reduced, phase, phraseIndex, length, phrases]);
 
-  const text = PHRASES[phraseIndex];
+  const text = phrases[phraseIndex];
 
-  // Reduced motion: satu kalimat statis penuh (dengan kata gradien),
-  // tanpa caret, tanpa sr-only ganda
   if (reduced) {
     return (
       <span className="coder-line-block block">
         <TypedSegments
-          segs={segmentsOf(PHRASES[0], GRADIENT_WORDS[0] ?? [])}
-          length={PHRASES[0].length}
+          segs={segmentsOf(phrases[0], gradient[0] ?? [])}
+          length={phrases[0].length}
         />
       </span>
     );
@@ -148,25 +143,20 @@ export default function CoderHeading() {
 
   return (
     <span className="coder-line-block block">
-      {/* Salinan tersembunyi kalimat terpanjang: mengunci tinggi baris agar
-          konten di bawah tidak melompat tiap fase ketik/hapus */}
       <span className="coder-ghost" aria-hidden>
         <span className="coder-prompt">~$</span>{" "}
         <TypedSegments
-          segs={segmentsOf(PHRASES[0], GRADIENT_WORDS[0] ?? [])}
-          length={PHRASES[0].length}
+          segs={segmentsOf(phrases[0], gradient[0] ?? [])}
+          length={phrases[0].length}
         />
       </span>
-      {/* Teks SEO lengkap ada di sr-only milik h1 di Hero; blok ini murni visual */}
       <span aria-hidden>
         <span className="coder-prompt">~$</span>{" "}
         <TypedSegments
-          segs={segmentsOf(text, GRADIENT_WORDS[phraseIndex] ?? [])}
+          segs={segmentsOf(text, gradient[phraseIndex] ?? [])}
           length={length}
         />
-        <span
-          className={`coder-caret${phase === "typing" ? " is-typing" : ""}`}
-        />
+        <span className={`coder-caret${phase === "typing" ? " is-typing" : ""}`} />
       </span>
     </span>
   );

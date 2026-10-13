@@ -1,6 +1,7 @@
 import { clients as seedClients, featured as seedFeatured, groups as seedGroups, type Client } from "@/lib/clients";
 import { comparisonSections as seedComparison, type CompareSection } from "@/lib/comparison";
 import { plans as seedPlans, type Plan } from "./plans";
+import type { Locale } from "@/lib/i18n/config";
 
 /**
  * Sumber data katalog: back office (bo-mainweb) lewat /api/public/site.
@@ -66,23 +67,40 @@ export async function getComparison(): Promise<CompareSection[]> {
   return merged.concat(extra);
 }
 
-const GROUP_LABEL: Record<NonNullable<RemoteClient["group"]>, string> = {
-  unggulan: "Unggulan",
-  ekosistem: "Ekosistem batik",
-  lainnya: "Proyek lain",
+const GROUP_LABEL: Record<Locale, Record<NonNullable<RemoteClient["group"]>, string>> = {
+  id: {
+    unggulan: "Unggulan",
+    ekosistem: "Ekosistem batik",
+    lainnya: "Proyek lain",
+  },
+  en: {
+    unggulan: "Featured",
+    ekosistem: "Batik ecosystem",
+    lainnya: "Other projects",
+  },
 };
 
 /** Logo dihosting BO (URL absolut) tidak bisa lewat next/image optimizer. */
 export const isRemoteLogo = (logo: string) => /^https?:\/\//.test(logo);
 
-export async function getClients(): Promise<{
+export async function getClients(
+  lang: Locale = "id",
+): Promise<{
   clients: Client[];
   featured: Client[];
   groups: { id: string; label: string; items: Client[] }[];
 }> {
+  const labels = GROUP_LABEL[lang];
   const remote = (await load())?.clients;
   if (!remote || remote.length === 0) {
-    return { clients: seedClients, featured: seedFeatured, groups: seedGroups };
+    return {
+      clients: seedClients,
+      featured: seedFeatured,
+      groups: seedGroups.map((g) => ({
+        ...g,
+        label: labels[g.id as NonNullable<RemoteClient["group"]>] ?? g.label,
+      })),
+    };
   }
 
   const bare = remote.map(({ group: _group, ...client }) => {
@@ -97,7 +115,7 @@ export async function getClients(): Promise<{
     clients: bare,
     featured: pick("unggulan"),
     groups: (["unggulan", "ekosistem", "lainnya"] as const)
-      .map((id) => ({ id, label: GROUP_LABEL[id], items: pick(id) }))
+      .map((id) => ({ id, label: labels[id], items: pick(id) }))
       .filter((g) => g.items.length > 0),
   };
 }

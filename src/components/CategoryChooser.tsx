@@ -1,20 +1,22 @@
 "use client";
 
 import { useState } from "react";
-
 import type { TierId } from "@/lib/tiers";
+import { ui } from "@/lib/i18n/ui";
+import type { Locale } from "@/lib/i18n/config";
 
 type Brief = { id: string; name: string; build: string; tagline: string };
 type TierBrief = { id: TierId; name: string; hint: string; plans: Brief[] };
 
-/*
- * Pertanyaan yang dijawab komponen ini: "bisnis saya masuk kategori mana?"
- * Klik salah satu kategori melompatkan halaman ke kelompok paketnya.
- * Kartu paket tetap dirender server-side (terbaca crawler & tanpa JS);
- * komponen ini hanya alat bantu navigasi, bukan gerbang konten.
- */
-export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
+export default function CategoryChooser({
+  tiers,
+  lang = "id",
+}: {
+  tiers: TierBrief[];
+  lang?: Locale;
+}) {
   const [picked, setPicked] = useState<TierId | null>(null);
+  const t = ui[lang];
 
   const choose = (id: TierId) => {
     setPicked(id);
@@ -24,17 +26,15 @@ export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
     target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   };
 
-  const chosen = tiers.find((t) => t.id === picked);
+  const chosen = tiers.find((x) => x.id === picked);
 
   return (
     <div className="mt-10">
-      <p className="font-display text-lg font-bold tracking-tight">
-        Bisnis saya masuk kategori mana?
-      </p>
+      <p className="font-display text-lg font-bold tracking-tight">{t.chooser.question}</p>
 
       <div
         role="group"
-        aria-label="Pilih kategori berdasarkan kondisi bisnis Anda"
+        aria-label={t.chooser.groupLabel}
         className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5"
       >
         {tiers.map((tier) => {
@@ -55,10 +55,7 @@ export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
                 <span className="font-display text-lg font-black tracking-tight text-ink-950">
                   {tier.name}
                 </span>
-                <span
-                  aria-hidden
-                  className={`font-mono text-sm ${active ? "text-brand-600" : "text-ink-900/35"}`}
-                >
+                <span aria-hidden className={`font-mono text-sm ${active ? "text-brand-600" : "text-ink-900/35"}`}>
                   ↓
                 </span>
               </span>
@@ -66,7 +63,7 @@ export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
                 {tier.hint}
                 {tier.id === "unicorn" && (
                   <span className="block mt-0.5 text-[10px] leading-snug text-ink-900/45 uppercase tracking-wider">
-                    Sistem sebagai infrastruktur bisnis · 3 paket
+                    {t.chooser.unicornNote}
                   </span>
                 )}
               </span>
@@ -76,18 +73,14 @@ export default function CategoryChooser({ tiers }: { tiers: TierBrief[] }) {
       </div>
 
       {chosen && (
-        <p
-          role="status"
-          className="fade-rise mt-4 font-mono text-xs text-ink-900/60"
-        >
-          Kategori {chosen.name}: {chosen.plans.length} paket, mulai{" "}
-          {chosen.plans[0]?.build}.{" "}
+        <p role="status" className="fade-rise mt-4 font-mono text-xs text-ink-900/60">
+          {t.chooser.status(chosen.name, chosen.plans.length, chosen.plans[0]?.build ?? "")}{" "}
           <button
             type="button"
             onClick={() => setPicked(null)}
             className="text-brand-600 underline-offset-4 hover:text-ink-950 hover:underline"
           >
-            Hapus pilihan
+            {t.chooser.clear}
           </button>
         </p>
       )}
