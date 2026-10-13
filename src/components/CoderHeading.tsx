@@ -50,21 +50,30 @@ function segmentsOf(text: string, gradWords: string[]): Segment[] {
 }
 
 function TypedSegments({ segs, length }: { segs: Segment[]; length: number }) {
-  let left = length;
+  // Potong daftar segmen secara immutable: helper murni tanpa mutasi binding
+  // apa pun selama render (React Compiler melarang reassign saat render).
+  const visible = segs.reduce<{ out: Segment[]; left: number }>(
+    (acc, s) => {
+      if (acc.left <= 0) return acc;
+      return {
+        out: [...acc.out, { text: s.text.slice(0, acc.left), grad: s.grad }],
+        left: acc.left - s.text.length,
+      };
+    },
+    { out: [], left: length },
+  ).out;
+
   return (
     <>
-      {segs.map((s, i) => {
-        if (left <= 0) return null;
-        const t = s.text.slice(0, left);
-        left -= s.text.length;
-        return s.grad ? (
+      {visible.map((s, i) =>
+        s.grad ? (
           <span key={i} className="brand-wordmark">
-            {t}
+            {s.text}
           </span>
         ) : (
-          <span key={i}>{t}</span>
-        );
-      })}
+          <span key={i}>{s.text}</span>
+        ),
+      )}
     </>
   );
 }
@@ -104,7 +113,11 @@ export default function CoderHeading({ lang }: { lang: Locale }) {
           length === 0 ? FIRST_TYPE_MS : TYPE_TICK_MS,
         );
       } else {
-        setPhase("hold");
+        // Transisi fase tidak dipanggil sinkron dari dalam effect: React
+        // Compiler melarang setState langsung di effect (cascading render).
+        // setTimeout 0 tetap memindahkan fase pada siklus berikutnya tanpa
+        // jeda yang terlihat.
+        t = setTimeout(() => setPhase("hold"), 0);
       }
     } else if (phase === "hold") {
       t = setTimeout(() => setPhase("erasing"), HOLD_MS);
@@ -113,10 +126,12 @@ export default function CoderHeading({ lang }: { lang: Locale }) {
         const tick = Math.round(14 + 26 * (length / full.length));
         t = setTimeout(() => setLength(length - 1), tick);
       } else if (phraseIndex < phrases.length - 1) {
-        setPhraseIndex(phraseIndex + 1);
-        setPhase("typing");
+        t = setTimeout(() => {
+          setPhraseIndex(phraseIndex + 1);
+          setPhase("typing");
+        }, 0);
       } else {
-        setPhase("rest");
+        t = setTimeout(() => setPhase("rest"), 0);
       }
     } else {
       t = setTimeout(() => {
