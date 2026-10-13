@@ -275,7 +275,7 @@ const en: PageStrings = {
   site: {
     tagline: "Professional Website Services",
     description:
-      "Professional website building & development services. 15 packages, from landing pages to billion-rupiah systems, with costs stated up front.",
+      "Professional website design & development services. 15 packages, from landing pages to billion-rupiah systems, with costs stated up front.",
     keywords: [
       "website development services",
       "professional web developer",
@@ -340,7 +340,7 @@ const en: PageStrings = {
     status: "PUBLIC",
     backHome: "← Home",
     eyebrow: "Case studies",
-    heading: "How our clients' websites are built, laid out exactly as they are",
+    heading: "How our clients' websites are built, explained exactly as they are",
     introBefore:
       "Each case study lays out the client's needs and the features that are actually live on their site, ending with a package recommendation for similar needs. The full site list is on the ",
     introLink: "clients page",
@@ -380,7 +380,7 @@ const en: PageStrings = {
       `Package ${name}: ${tagline} See the specifications and costs stated up front.`,
     metaDescNoTagline: (name, build) =>
       `Package ${name}: ${build}. See the specifications and costs stated up front.`,
-    docLabel: (name) => `DOC · PACKAGE ANNEX / ${name.toUpperCase()}`,
+    docLabel: (name) => `DOC · PACKAGE SHEET / ${name.toUpperCase()}`,
     docPaket: (name) => `PACKAGE ${name.toUpperCase()}`,
     active: "ACTIVE",
     backAll: "← All packages",

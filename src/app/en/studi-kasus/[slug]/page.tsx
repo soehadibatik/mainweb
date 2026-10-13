@@ -28,7 +28,7 @@ export async function generateMetadata({
     pathname: `/studi-kasus/${study.slug}`,
     title: p.metaTitle(study.client, study.category),
     description: study.summary,
-    image: `/og/studi-kasus-${study.slug}.png`,
+    image: `/og/en/studi-kasus-${study.slug}.png`,
     alt: `${study.client}: ${study.headline}`,
     type: "article",
   });

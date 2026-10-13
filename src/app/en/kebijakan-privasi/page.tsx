@@ -7,7 +7,7 @@ export const metadata = pageMetadata({
   pathname: "/kebijakan-privasi",
   title: pages.en.legal.privacyTitle,
   description: pages.en.legal.privacyDesc,
-  image: "/og/kebijakan-privasi.png",
+  image: "/og/en/kebijakan-privasi.png",
   alt: pages.en.legal.privacyAlt,
 });
 

@@ -17,9 +17,11 @@ export async function generateStaticParams() {
   return plans.map((plan) => ({ id: plan.id }));
 }
 
-/** Gambar OG per paket ada sebagai berkas statis di public/og/. */
+/** Gambar OG per paket versi Inggris ada sebagai berkas statis di
+ * public/og/en/. Paket yang datang dari BO tapi belum punya kartu jatuh
+ * ke gambar bawaan. */
 function ogImage(id: string): string | undefined {
-  const file = `/og/paket-${id}.png`;
+  const file = `/og/en/paket-${id}.png`;
   return existsSync(path.join(process.cwd(), "public", file)) ? file : undefined;
 }
 

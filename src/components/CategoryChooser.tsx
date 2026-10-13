@@ -74,7 +74,12 @@ export default function CategoryChooser({
 
       {chosen && (
         <p role="status" className="fade-rise mt-4 font-mono text-xs text-ink-900/60">
-          {t.chooser.status(chosen.name, chosen.plans.length, chosen.plans[0]?.build ?? "")}{" "}
+          {/* plans diurutkan termahal dulu; "mulai" = harga termurah. */}
+          {t.chooser.status(
+            chosen.name,
+            chosen.plans.length,
+            chosen.plans[chosen.plans.length - 1]?.build ?? "",
+          )}{" "}
           <button
             type="button"
             onClick={() => setPicked(null)}

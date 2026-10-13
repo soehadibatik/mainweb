@@ -7,7 +7,7 @@ export const metadata = pageMetadata({
   pathname: "/syarat-layanan",
   title: pages.en.legal.termsTitle,
   description: pages.en.legal.termsDesc,
-  image: "/og/syarat-layanan.png",
+  image: "/og/en/syarat-layanan.png",
   alt: pages.en.legal.termsAlt,
 });
 

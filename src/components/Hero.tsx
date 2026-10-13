@@ -103,7 +103,7 @@ export default function Hero({ lang }: { lang: Locale }) {
               </svg>
               {t.hero.responsiveBadge}
             </span>
-            <ViewportDemo />
+            <ViewportDemo lang={lang} />
           </div>
         </div>
       </div>

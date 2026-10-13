@@ -12,7 +12,7 @@ export async function generateMetadata() {
     pathname: "/klien",
     title: p.metaTitle,
     description: p.metaDesc(clients.length),
-    image: "/og/klien.png",
+    image: "/og/en/klien.png",
     alt: p.ogAlt(clients.length),
   });
 }

@@ -11,7 +11,7 @@ export function generateMetadata() {
     pathname: "/studi-kasus",
     title: p.metaTitle,
     description: p.metaDesc(caseStudies.length),
-    image: "/og/studi-kasus.png",
+    image: "/og/en/studi-kasus.png",
     alt: p.ogAlt(caseStudies.length),
   });
 }

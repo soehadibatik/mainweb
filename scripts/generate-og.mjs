@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /**
- * Generator gambar Open Graph 1200x630 untuk tiap halaman.
+ * Generator gambar Open Graph 1200x630 untuk tiap halaman, dua bahasa.
  *
  *   node scripts/generate-og.mjs        (atau: npm run og)
  *
- * Hasilnya ditulis ke public/og/*.png dan di-commit bersama kode, jadi
- * `next build` tidak perlu generator ini. Jalankan ulang bila judul, harga,
- * atau daftar klien berubah.
+ * Kartu Indonesia ditulis ke public/og/*.png dan kartu Inggris ke
+ * public/og/en/*.png; keduanya di-commit bersama kode, jadi `next build`
+ * tidak perlu generator ini. Jalankan ulang bila judul, harga, atau daftar
+ * klien berubah.
  *
  * Kenapa Chrome dan bukan ImageResponse: font situs semuanya .woff2, sedangkan
  * satori (di balik next/og) menolak wOF2. Chrome memakai font yang sama
@@ -14,6 +15,10 @@
  *
  * Semua font dan logo di-embed sebagai base64, sehingga render deterministik:
  * tanpa jaringan, tanpa server, tanpa dependensi npm tambahan.
+ *
+ * Sumber teks: kartu ID memakai data mentah (Indonesia sebagai sumber
+ * kebenaran); kartu EN memakai localizePlan/localizeCaseStudy + tPrice,
+ * sama persis dengan yang dipakai halaman EN di situs.
  */
 import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
@@ -25,6 +30,9 @@ import { plans } from "../src/lib/plans.ts";
 import { tiers } from "../src/lib/tiers.ts";
 import { caseStudies } from "../src/lib/case-studies.ts";
 import { clients, featured } from "../src/lib/clients.ts";
+import { localizePlan } from "../src/lib/i18n/plans-text.ts";
+import { localizeCaseStudy } from "../src/lib/i18n/case-studies-text.ts";
+import { tPrice } from "../src/lib/i18n/price.ts";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(root, "public", "og");
@@ -50,9 +58,15 @@ const imageUrl = (p) => {
  * Isi panel kanan (mockup browser) per jenis halaman
  * ------------------------------------------------------------------ */
 
-function paketScreen(plan) {
-  const rows = [["maintain", plan.maintain]];
-  if (plan.renewal) rows.push(["perpanjangan", `${plan.renewal}/th`]);
+function paketScreen(plan, loc) {
+  const en = loc === "en";
+  const rows = [[en ? "maintenance" : "maintain", tPrice(loc, plan.maintain)]];
+  if (plan.renewal) {
+    rows.push([
+      en ? "renewal" : "perpanjangan",
+      en ? `${tPrice(loc, plan.renewal)}/yr` : `${plan.renewal}/th`,
+    ]);
+  }
 
   return `<div class="pad">
       ${rows
@@ -63,15 +77,16 @@ function paketScreen(plan) {
         )
         .join("")}
       <div class="hr"></div>
-      <div class="key">spesifikasi</div>
+      <div class="key">${en ? "specifications" : "spesifikasi"}</div>
       <div class="pills">${plan.featureGroups.map((g) => `<span class="pill">${g.title}</span>`).join("")}</div>
       <div class="hr"></div>
-      <div class="key">ideal untuk</div>
+      <div class="key">${en ? "ideal for" : "ideal untuk"}</div>
       <div class="note" data-fit="15,4">${plan.idealFor}</div>
     </div>`;
 }
 
-function klienScreen() {
+function klienScreen(loc) {
+  const en = loc === "en";
   return `<div class="pad">
       <div class="lgrid">
         ${featured
@@ -81,27 +96,30 @@ function klienScreen() {
           )
           .join("")}
       </div>
-      <div class="more">+ ${clients.length - featured.length} situs lainnya</div>
+      <div class="more">+ ${en ? "more sites" : "situs lainnya"} (${
+        clients.length - featured.length
+      })</div>
     </div>`;
 }
 
-function studiesScreen() {
+function studiesScreen(loc) {
   return `<div class="pad rows">
       ${caseStudies
-        .map(
-          (s) =>
-            `<div class="row"><span class="rn">${s.client}</span><span class="rc">${s.category}</span></div>`
-        )
+        .map((s) => {
+          const c = localizeCaseStudy(loc, s);
+          return `<div class="row"><span class="rn">${c.client}</span><span class="rc">${c.category}</span></div>`;
+        })
         .join("")}
     </div>`;
 }
 
-function studyScreen(study, plan) {
+function studyScreen(study, plan, loc) {
+  const en = loc === "en";
   return `<div class="pad center">
       <div class="logo-box"><img src="${imageUrl(study.logo)}" alt="${study.client}"></div>
       <div class="dom">${study.domain}</div>
       <div class="hr"></div>
-      <div class="key">paket rekomendasi</div>
+      <div class="key">${en ? "recommended package" : "paket rekomendasi"}</div>
       <div class="val sm">${plan ? plan.name : ""}</div>
       <div class="note" data-fit="15,3">${plan ? plan.tagline : ""}</div>
     </div>`;
@@ -121,73 +139,140 @@ function docScreen() {
 }
 
 /* ------------------------------------------------------------------ *
- * Daftar kartu
+ * Daftar kartu per locale
  * ------------------------------------------------------------------ */
+
+/** Kartu statis didefinisikan per locale; `file` sama, dipisah folder out. */
+const STATIC_CARDS = {
+  id: [
+    {
+      file: "klien.png",
+      eyebrow: `Portofolio · ${clients.length} situs tayang`,
+      titleTop: "Portofolio situs",
+      titleBottom: "yang sudah tayang",
+      sub: "Dari company profile dan toko online sampai dashboard internal.",
+      url: "mainweb.id/klien",
+      screen: () => klienScreen("id"),
+    },
+    {
+      file: "studi-kasus.png",
+      eyebrow: `Studi kasus · ${caseStudies.length} proyek`,
+      titleTop: "Proyek nyata",
+      titleBottom: "yang sudah kami rilis",
+      sub: "Komunitas dengan toko, katalog B2B batik, toko grosir, sampai sistem internal.",
+      url: "mainweb.id/studi-kasus",
+      screen: () => studiesScreen("id"),
+    },
+    {
+      file: "syarat-layanan.png",
+      eyebrow: "Dokumen resmi · mainweb.id",
+      titleTop: "Syarat Layanan",
+      titleBottom: "Jasa pembuatan website",
+      sub: "Syarat penggunaan situs dan ketentuan jasa: cakupan pekerjaan, pembayaran, revisi, dan keberlangsungan layanan.",
+      url: "mainweb.id/syarat-layanan",
+      screen: () => docScreen(),
+    },
+    {
+      file: "kebijakan-privasi.png",
+      eyebrow: "Dokumen resmi · mainweb.id",
+      titleTop: "Kebijakan Privasi",
+      titleBottom: "Situs mainweb.id",
+      sub: "Cara situs ini menangani data pengunjung dan data klien: tanpa cookie pelacak, data klien hanya untuk pengerjaan proyek.",
+      url: "mainweb.id/kebijakan-privasi",
+      screen: () => docScreen(),
+    },
+  ],
+  en: [
+    {
+      file: "home.png",
+      eyebrow: "Website services · 15 packages",
+      titleTop: "Professional website",
+      titleBottom: "services, from Rp 1.5M",
+      sub: "Every cost stated up front. Free consultation via WhatsApp, no commitment.",
+      url: "mainweb.id/en",
+      screen: () => klienScreen("en"),
+    },
+    {
+      file: "klien.png",
+      eyebrow: `Portfolio · ${clients.length} live sites`,
+      titleTop: "Client websites",
+      titleBottom: "we've already launched",
+      sub: "From company profiles and online stores to internal dashboards.",
+      url: "mainweb.id/en/klien",
+      screen: () => klienScreen("en"),
+    },
+    {
+      file: "studi-kasus.png",
+      eyebrow: `Case studies · ${caseStudies.length} projects`,
+      titleTop: "Real projects",
+      titleBottom: "we've already shipped",
+      sub: "A community with a store, a B2B batik catalog, a wholesale shop, up to an internal system.",
+      url: "mainweb.id/en/studi-kasus",
+      screen: () => studiesScreen("en"),
+    },
+    {
+      file: "syarat-layanan.png",
+      eyebrow: "Official document · mainweb.id",
+      titleTop: "Terms of Service",
+      titleBottom: "for website services",
+      sub: "Terms of using the site and the terms of our services: scope, payment, revisions, and service continuity.",
+      url: "mainweb.id/en/syarat-layanan",
+      screen: () => docScreen(),
+    },
+    {
+      file: "kebijakan-privasi.png",
+      eyebrow: "Official document · mainweb.id",
+      titleTop: "Privacy Policy",
+      titleBottom: "of mainweb.id",
+      sub: "How this site handles visitor and client data: no tracking cookies, client data used only for project work.",
+      url: "mainweb.id/en/kebijakan-privasi",
+      screen: () => docScreen(),
+    },
+  ],
+};
 
 const planById = new Map(plans.map((p) => [p.id, p]));
 
-const cards = [
-  {
-    file: "klien.png",
-    eyebrow: `Portofolio · ${clients.length} situs tayang`,
-    titleTop: "Portofolio situs",
-    titleBottom: "yang sudah tayang",
-    sub: "Dari company profile dan toko online sampai dashboard internal.",
-    url: "mainweb.id/klien",
-    screen: klienScreen(),
-  },
-  {
-    file: "studi-kasus.png",
-    eyebrow: `Studi kasus · ${caseStudies.length} proyek`,
-    titleTop: "Proyek nyata",
-    titleBottom: "yang sudah kami rilis",
-    sub: "Komunitas dengan toko, katalog B2B batik, toko grosir, sampai sistem internal.",
-    url: "mainweb.id/studi-kasus",
-    screen: studiesScreen(),
-  },
-  {
-    file: "syarat-layanan.png",
-    eyebrow: "Dokumen resmi · mainweb.id",
-    titleTop: "Syarat Layanan",
-    titleBottom: "Jasa pembuatan website",
-    sub: "Syarat penggunaan situs dan ketentuan jasa: cakupan pekerjaan, pembayaran, revisi, dan keberlangsungan layanan.",
-    url: "mainweb.id/syarat-layanan",
-    screen: docScreen(),
-  },
-  {
-    file: "kebijakan-privasi.png",
-    eyebrow: "Dokumen resmi · mainweb.id",
-    titleTop: "Kebijakan Privasi",
-    titleBottom: "Situs mainweb.id",
-    sub: "Cara situs ini menangani data pengunjung dan data klien: tanpa cookie pelacak, data klien hanya untuk pengerjaan proyek.",
-    url: "mainweb.id/kebijakan-privasi",
-    screen: docScreen(),
-  },
-];
+function buildCards(loc) {
+  const en = loc === "en";
+  const cards = STATIC_CARDS[loc].map((c) => ({ ...c, screen: c.screen() }));
 
-for (const plan of plans) {
-  const tier = tiers.find((t) => t.planIds.includes(plan.id));
-  cards.push({
-    file: `paket-${plan.id}.png`,
-    eyebrow: `Paket · kategori ${tier ? tier.name : ""}`,
-    titleTop: `Paket ${plan.name}`,
-    titleBottom: plan.build,
-    sub: plan.tagline,
-    url: `mainweb.id/paket/${plan.id}`,
-    screen: paketScreen(plan),
-  });
-}
+  for (const raw of plans) {
+    const plan = localizePlan(loc, raw);
+    const tier = tiers.find((t) => t.planIds.includes(plan.id));
+    const build = tPrice(loc, plan.build);
+    cards.push({
+      file: `paket-${plan.id}.png`,
+      eyebrow: en
+        ? `Package · ${tier ? tier.name : ""} tier`
+        : `Paket · kategori ${tier ? tier.name : ""}`,
+      titleTop: en ? `Package ${plan.name}` : `Paket ${plan.name}`,
+      titleBottom: build,
+      sub: plan.tagline,
+      url: en ? `mainweb.id/en/paket/${plan.id}` : `mainweb.id/paket/${plan.id}`,
+      screen: paketScreen(plan, loc),
+    });
+  }
 
-for (const study of caseStudies) {
-  cards.push({
-    file: `studi-kasus-${study.slug}.png`,
-    eyebrow: `Studi kasus · ${study.category}`,
-    titleTop: "Studi kasus",
-    titleBottom: study.client,
-    sub: study.headline,
-    url: `mainweb.id/studi-kasus/${study.slug}`,
-    screen: studyScreen(study, planById.get(study.planId)),
-  });
+  for (const raw of caseStudies) {
+    const study = localizeCaseStudy(loc, raw);
+    const plan = localizePlan(loc, planById.get(study.planId) ?? study.planId);
+    cards.push({
+      file: `studi-kasus-${study.slug}.png`,
+      eyebrow: en
+        ? `Case study · ${study.category}`
+        : `Studi kasus · ${study.category}`,
+      titleTop: en ? "Case study" : "Studi kasus",
+      titleBottom: study.client,
+      sub: study.headline,
+      url: en
+        ? `mainweb.id/en/studi-kasus/${study.slug}`
+        : `mainweb.id/studi-kasus/${study.slug}`,
+      screen: studyScreen(study, typeof plan === "object" ? plan : null, loc),
+    });
+  }
+
+  return cards;
 }
 
 /* ------------------------------------------------------------------ *
@@ -322,9 +407,9 @@ const fitScript = `
 })();
 `;
 
-function html(c) {
+function html(c, loc) {
   return `<!doctype html>
-<html lang="id">
+<html lang="${loc}">
 <head><meta charset="utf-8"><style>${fonts}${css}</style></head>
 <body>
 <div class="card">
@@ -375,7 +460,7 @@ function findBrowser() {
     }
   }
   throw new Error(
-    "Chrome/Chromium tidak ditemukan. Set OG_BROWSER ke path binarinya, misal:\n" +
+    "Chrome/Chromium tidak ditemukan. Set OG_BROWSER ke path binarinya, misal:\\n" +
       "  OG_BROWSER=\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" npm run og"
   );
 }
@@ -389,6 +474,8 @@ const browser = findBrowser();
 console.log(`browser: ${browser}`);
 
 mkdirSync(OUT, { recursive: true });
+const outEn = join(OUT, "en");
+mkdirSync(outEn, { recursive: true });
 const work = join(tmpdir(), "mainweb-og");
 rmSync(work, { recursive: true, force: true });
 mkdirSync(work, { recursive: true });
@@ -406,49 +493,57 @@ const chromeArgs = [
   "--virtual-time-budget=8000",
 ];
 
-for (const c of cards) {
-  const page = join(work, c.file.replace(/\.png$/, ".html"));
-  const out = join(OUT, c.file);
-  writeFileSync(page, html(c));
+for (const loc of ["id", "en"]) {
+  const cards = buildCards(loc);
+  const outDir = loc === "en" ? outEn : OUT;
+  console.log(`\n=== ${loc.toUpperCase()} (${cards.length} kartu) ===`);
 
-  // Baca DOM setelah skrip fit jalan: 'ok' berarti tidak ada yang meluber.
-  // maxBuffer dinaikkan karena DOM di sini membawa font & logo base64 (~1,3 MB).
-  let fit = "tak terukur";
-  try {
-    const dom = execFileSync(browser, [...chromeArgs, "--dump-dom", "file://" + page], {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-      maxBuffer: 64 * 1024 * 1024,
-    });
-    fit = /<meta name="fit" content="([^"]*)"/.exec(dom)?.[1] ?? "tak terukur";
-  } catch (e) {
-    console.error(String(e.message || e).slice(0, 300));
-    if (e.stderr) console.error(String(e.stderr).slice(0, 400));
-    process.exit(1);
+  for (const c of cards) {
+    const page = join(work, `${loc}-${c.file.replace(/\.png$/, ".html")}`);
+    const out = join(outDir, c.file);
+    writeFileSync(page, html(c, loc));
+
+    // Baca DOM setelah skrip fit jalan: 'ok' berarti tidak ada yang meluber.
+    // maxBuffer dinaikkan karena DOM di sini membawa font & logo base64 (~1,3 MB).
+    let fit = "tak terukur";
+    try {
+      const dom = execFileSync(browser, [...chromeArgs, "--dump-dom", "file://" + page], {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        maxBuffer: 64 * 1024 * 1024,
+      });
+      fit = /<meta name="fit" content="([^"]*)"/.exec(dom)?.[1] ?? "tak terukur";
+    } catch (e) {
+      console.error(String(e.message || e).slice(0, 300));
+      if (e.stderr) console.error(String(e.stderr).slice(0, 400));
+      process.exit(1);
+    }
+
+    try {
+      execFileSync(browser, [...chromeArgs, "--screenshot=" + out, "file://" + page], {
+        stdio: ["ignore", "ignore", "pipe"],
+        maxBuffer: 64 * 1024 * 1024,
+      });
+    } catch (e) {
+      // Chrome menulis pesan sokong (display, task policy) ke stderr; tampilkan
+      // hanya kalau render-nya benar-benar gagal.
+      console.error(String(e.message || e).slice(0, 300));
+      if (e.stderr) console.error(String(e.stderr).slice(0, 400));
+      process.exit(1);
+    }
+
+    const buf = readFileSync(out);
+    const { w, h } = pngSize(buf);
+    const ok = w === W && h === H && fit === "ok";
+    if (!ok) failed++;
+    const rel = loc === "en" ? `en/${c.file}` : c.file;
+    console.log(
+      `${ok ? "ok  " : "GAGAL"}  ${rel.padEnd(36)} ${w}x${h}  ` +
+        `${String(Math.round(buf.length / 1024)).padStart(3)} KB  fit=${fit}`
+    );
   }
-
-  try {
-    execFileSync(browser, [...chromeArgs, "--screenshot=" + out, "file://" + page], {
-      stdio: ["ignore", "ignore", "pipe"],
-      maxBuffer: 64 * 1024 * 1024,
-    });
-  } catch (e) {
-    // Chrome menulis pesan sokong (display, task policy) ke stderr; tampilkan
-    // hanya kalau render-nya benar-benar gagal.
-    console.error(String(e.message || e).slice(0, 300));
-    if (e.stderr) console.error(String(e.stderr).slice(0, 400));
-    process.exit(1);
-  }
-
-  const buf = readFileSync(out);
-  const { w, h } = pngSize(buf);
-  const ok = w === W && h === H && fit === "ok";
-  if (!ok) failed++;
-  console.log(
-    `${ok ? "ok  " : "GAGAL"}  ${c.file.padEnd(34)} ${w}x${h}  ` +
-      `${String(Math.round(buf.length / 1024)).padStart(3)} KB  fit=${fit}`
-  );
 }
 
-console.log(`\n${cards.length} gambar -> public/og/  (gagal: ${failed})`);
+const total = buildCards("id").length + buildCards("en").length;
+console.log(`\n${total} gambar -> public/og/ + public/og/en/  (gagal: ${failed})`);
 process.exit(failed ? 1 : 0);

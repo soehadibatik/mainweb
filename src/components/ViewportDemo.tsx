@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import type { Locale } from "@/lib/i18n/config";
 
 const MIN_W = 320;
 const MAX_W = 920;
@@ -25,16 +26,311 @@ const h = (minPx: number, prefCqw: number, maxPx: number) => ({
   height: `clamp(${minPx}px, ${prefCqw}cqw, ${maxPx}px)`,
 });
 
+/* ------------------------------------------------------------------ *
+ * Teks tiap mockup per locale. Struktur & ukuran JSX identik di kedua
+ * bahasa; hanya kata yang berganti supaya skala (cqw) tidak berubah
+ * saat frame diseret.
+ * ------------------------------------------------------------------ */
+
+type DemoCopy = {
+  resort: {
+    alt: string;
+    nav: [string, string, string];
+    cta: string;
+    loc: string;
+    title: [string, string];
+    desc: string;
+    price: string;
+    pricePer: string;
+    chips: string[];
+    booking: [string, string][];
+    book: string;
+    villas: { name: string; meta: string; price: string; g: string }[];
+  };
+  fintech: {
+    greeting: string;
+    balanceLabel: string;
+    balance: string;
+    actions: string[];
+    weekTitle: string;
+    weekVal: string;
+    trxTitle: string;
+    seeAll: string;
+    days: string[];
+    trx: [string, string, string, string][];
+  };
+  gym: {
+    title: [string, string];
+    desc: string;
+    today: string;
+    count: string;
+    classes: [string, string, string][];
+    price: string;
+    per: string;
+    note: string;
+    cta: string;
+  };
+  catering: {
+    nav: [string, string, string];
+    cta: string;
+    title: [string, string];
+    desc: string;
+    menu: [string, string][];
+    packs: {
+      name: string;
+      price: string;
+      per: string;
+      tag: string | null;
+      hi: boolean;
+    }[];
+  };
+  wedding: {
+    alt: string;
+    title: string;
+    desc: string;
+    date: string;
+    packs: { nama: string; tamu: string; harga: string }[];
+    steps: [string, string][];
+    quote: string;
+    quoteBy: string;
+    cta: string;
+  };
+  ui: {
+    play: string;
+    concepts: string;
+    conceptsNote: string;
+    widthLabel: string;
+    pxText: (px: number, bp: string) => string;
+  };
+  themes: { key: string; pill: string; domain: string }[];
+};
+
+const COPY: Record<Locale, DemoCopy> = {
+  id: {
+    resort: {
+      alt: "Vila kayu di tepi danau pegunungan",
+      nav: ["Vila", "Fasilitas", "Tawangmangu"],
+      cta: "Reservasi",
+      loc: "Tawangmangu · 900 mdpl",
+      title: ["Pagi di atas kabut,", "hening sepanjang hari."],
+      desc:
+        "Enam vila kayu di tepi hutan pinus. Sarapan dari dapur resor, disajikan di beranda masing-masing.",
+      price: "Rp 850rb",
+      pricePer: "/ malam · sarapan termasuk",
+      chips: ["Vila kayu", "Tepi hutan pinus", "Sarapan di beranda"],
+      booking: [
+        ["Check-in", "Kam, 12 Des"],
+        ["Check-out", "Min, 15 Des"],
+        ["Tamu", "2 dewasa"],
+      ],
+      book: "Cek ketersediaan",
+      villas: [
+        { name: "Vila Kayu", meta: "2 kamar · 42 m²", price: "Rp 1,2jt", g: "linear-gradient(165deg,#E7D3B0,#B98D5C)" },
+        { name: "Suite Batu", meta: "1 kamar · 30 m²", price: "Rp 950rb", g: "linear-gradient(165deg,#DDE3D3,#9FAF92)" },
+      ],
+    },
+    fintech: {
+      greeting: "Selamat pagi,",
+      balanceLabel: "Saldo utama",
+      balance: "Rp 12.480.500",
+      actions: ["Transfer", "Top up", "Tagihan", "QRIS"],
+      weekTitle: "Pengeluaran minggu ini",
+      weekVal: "Rp 1.284rb",
+      trxTitle: "Transaksi terakhir",
+      seeAll: "Lihat semua",
+      days: ["S", "S", "R", "K", "J", "S", "M"],
+      trx: [
+        ["Kopi Toko Kopi", "Hari ini, 07.41", "-Rp 24.000", "K"],
+        ["Gaji freelance", "Kemarin", "+Rp 2.750.000", "G"],
+        ["Token listrik", "Sen, 09.12", "-Rp 120.000", "T"],
+      ],
+    },
+    gym: {
+      title: ["Kuat. Kencang.", "Konsisten."],
+      desc: "Kelas berpelatih, kap 12 orang, dibina sampai target tercapai. Bukan sekadar tembok cermin.",
+      today: "Jadwal hari ini",
+      count: "4 kelas",
+      classes: [
+        ["06.00", "Bodyweight Camp", "Pemula"],
+        ["09.30", "HIIT 45", "Semua level"],
+        ["17.30", "Strength Club", "Lanjutan"],
+        ["19.00", "Mobility & Stretch", "Semua level"],
+      ],
+      price: "Rp 299rb",
+      per: "/ bulan · semua kelas",
+      note: "Tanpa kontrak. Kelas pertama gratis.",
+      cta: "Amankan tempat",
+    },
+    catering: {
+      nav: ["Menu", "Paket", "Cara kerja"],
+      cta: "Mulai langganan",
+      title: ["Makan sehat,", "enam hari seminggu."],
+      desc: "Gizi seimbang oleh ahli gizi, dimasak pagi itu juga, diantar sebelum jam 07.00.",
+      menu: [
+        ["Sen", "Nasi merah, ayam kecap"],
+        ["Sel", "Bubur protein jagung"],
+        ["Rab", "Mie shirataki lada"],
+        ["Kam", "Nasi tim ayam jamur"],
+        ["Jum", "Quinoa tempe panggang"],
+        ["Sab", "Pumpkin soup roti gandum"],
+      ],
+      packs: [
+        { name: "Reguler", price: "Rp 450rb", per: "/ minggu · 12 makan", tag: null, hi: false },
+        { name: "Protein+", price: "Rp 525rb", per: "/ minggu · 12 makan", tag: "Terlaris", hi: true },
+      ],
+    },
+    wedding: {
+      alt: "Gerbang bunga pernikahan outdoor saat sore",
+      title: "Hari besar yang tenang, dirancang sampai detail terkecil.",
+      desc: "Setiap pernikahan kami rancang dari nol bersama kedua mempelai, bukan paket jadi.",
+      date: "Minggu, 14 Juni 2027 · Tawangmangu",
+      packs: [
+        { nama: "Intimate", tamu: "20 tamu", harga: "Rp 45jt" },
+        { nama: "Signature", tamu: "60 tamu", harga: "Rp 85jt" },
+        { nama: "Grand", tamu: "200+ tamu", harga: "Rp 160jt" },
+      ],
+      steps: [
+        ["Konsultasi", "Ceritakan konsep dan keduanya kami dengar baik-baik."],
+        ["Rencana", "Venue, vendor, dan jadwal kami rangkai satu per satu."],
+        ["Hari-H", "Tim kami berjaga. Anda cukup datang dan menikmati."],
+      ],
+      quote: "“Kami cukup datang. Semua berjalan rapi, semua terasa kami.”",
+      quoteBy: "Tirza & Bagas · Juni 2026",
+      cta: "Jadwalkan konsultasi",
+    },
+    ui: {
+      play: "Putar demo",
+      concepts: "Contoh konsep desain",
+      conceptsNote: "Konsep desain ilustratif, bukan situs klien nyata.",
+      widthLabel: "Lebar viewport demo",
+      pxText: (px, bp) => `${px} piksel, mode ${bp}`,
+    },
+    themes: [
+      { key: "resort", pill: "Resor vila", domain: "sedasa.id" },
+      { key: "fintech", pill: "Dompet digital", domain: "arus.id" },
+      { key: "gym", pill: "Studio fitness", domain: "kencang.fit" },
+      { key: "katering", pill: "Katering sehat", domain: "dapurnawa.id" },
+      { key: "wedding", pill: "Wedding organizer", domain: "arunika.id" },
+    ],
+  },
+  en: {
+    resort: {
+      alt: "Wooden villa by a mountain lake",
+      nav: ["Villas", "Facilities", "Tawangmangu"],
+      cta: "Book now",
+      loc: "Tawangmangu · 900 masl",
+      title: ["Mornings above the mist,", "quiet all day long."],
+      desc: "Six wooden villas at the edge of a pine forest. Breakfast from the resort kitchen, served on your own porch.",
+      price: "Rp 850K",
+      pricePer: "/ night · breakfast included",
+      chips: ["Wooden villa", "Pine forest edge", "Breakfast on the porch"],
+      booking: [
+        ["Check-in", "Thu, 12 Dec"],
+        ["Check-out", "Sun, 15 Dec"],
+        ["Guests", "2 adults"],
+      ],
+      book: "Check availability",
+      villas: [
+        { name: "Wooden Villa", meta: "2 rooms · 42 m²", price: "Rp 1.2M", g: "linear-gradient(165deg,#E7D3B0,#B98D5C)" },
+        { name: "Stone Suite", meta: "1 room · 30 m²", price: "Rp 950K", g: "linear-gradient(165deg,#DDE3D3,#9FAF92)" },
+      ],
+    },
+    fintech: {
+      greeting: "Good morning,",
+      balanceLabel: "Main balance",
+      balance: "Rp 12,480,500",
+      actions: ["Transfer", "Top up", "Bills", "QRIS"],
+      weekTitle: "Spending this week",
+      weekVal: "Rp 1,284K",
+      trxTitle: "Recent transactions",
+      seeAll: "See all",
+      days: ["M", "T", "W", "T", "F", "S", "S"],
+      trx: [
+        ["Toko Kopi Coffee", "Today, 07:41", "-Rp 24,000", "K"],
+        ["Freelance payment", "Yesterday", "+Rp 2,750,000", "G"],
+        ["Electricity top-up", "Mon, 09:12", "-Rp 120,000", "T"],
+      ],
+    },
+    gym: {
+      title: ["Strong. Fast.", "Consistent."],
+      desc: "Coach-led classes, capped at 12, guided until you hit your target. Not just a wall of mirrors.",
+      today: "Today's schedule",
+      count: "4 classes",
+      classes: [
+        ["06.00", "Bodyweight Camp", "Beginner"],
+        ["09.30", "HIIT 45", "All levels"],
+        ["17.30", "Strength Club", "Advanced"],
+        ["19.00", "Mobility & Stretch", "All levels"],
+      ],
+      price: "Rp 299K",
+      per: "/ month · every class",
+      note: "No contract. First class is free.",
+      cta: "Claim your spot",
+    },
+    catering: {
+      nav: ["Menu", "Plans", "How it works"],
+      cta: "Start a plan",
+      title: ["Eat well,", "six days a week."],
+      desc: "Balanced meals by a nutritionist, cooked that same morning, delivered before 7 a.m.",
+      menu: [
+        ["Mon", "Brown rice, soy-braised chicken"],
+        ["Tue", "Corn protein porridge"],
+        ["Wed", "Pepper shirataki noodles"],
+        ["Thu", "Chicken & mushroom rice"],
+        ["Fri", "Quinoa & roasted tempe"],
+        ["Sat", "Pumpkin soup, wholemeal bread"],
+      ],
+      packs: [
+        { name: "Regular", price: "Rp 450K", per: "/ week · 12 meals", tag: null, hi: false },
+        { name: "Protein+", price: "Rp 525K", per: "/ week · 12 meals", tag: "Best seller", hi: true },
+      ],
+    },
+    wedding: {
+      alt: "Outdoor wedding flower arch at dusk",
+      title: "A calm big day, designed down to the smallest detail.",
+      desc: "Every wedding is designed from scratch with the couple — never an off-the-shelf package.",
+      date: "Sunday, 14 June 2027 · Tawangmangu",
+      packs: [
+        { nama: "Intimate", tamu: "20 guests", harga: "Rp 45M" },
+        { nama: "Signature", tamu: "60 guests", harga: "Rp 85M" },
+        { nama: "Grand", tamu: "200+ guests", harga: "Rp 160M" },
+      ],
+      steps: [
+        ["Consultation", "Tell us your concept — we listen closely to both of you."],
+        ["Planning", "Venue, vendors, and schedule, arranged one by one."],
+        ["The day", "Our team is on standby. You just show up and enjoy."],
+      ],
+      quote: "“We just showed up. Everything ran smoothly, everything felt like us.”",
+      quoteBy: "Tirza & Bagas · June 2026",
+      cta: "Book a consultation",
+    },
+    ui: {
+      play: "Play demo",
+      concepts: "Design concept examples",
+      conceptsNote: "Illustrative design concepts, not real client sites.",
+      widthLabel: "Demo viewport width",
+      pxText: (px, bp) => `${px} pixels, ${bp} mode`,
+    },
+    themes: [
+      { key: "resort", pill: "Villa resort", domain: "sedasa.id" },
+      { key: "fintech", pill: "Digital wallet", domain: "arus.id" },
+      { key: "gym", pill: "Fitness studio", domain: "kencang.fit" },
+      { key: "katering", pill: "Healthy catering", domain: "dapurnawa.id" },
+      { key: "wedding", pill: "Wedding planner", domain: "arunika.id" },
+    ],
+  },
+};
+
 /* ── 1. Sedasa Resort — villa pegunungan: gerbang lengkung + widget booking ── */
 
 /** Foto hero resor: vila kayu di tepi air pegunungan. Sumber Unsplash
  * (lisensi bebas dipakai), load lazy, skala mengikuti lebar frame. */
-function SedasaHero() {
+function SedasaHero({ lang }: { lang: Locale }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=900&q=70"
-      alt="Vila kayu di tepi danau pegunungan"
+      alt={COPY[lang].resort.alt}
       loading="lazy"
       decoding="async"
       className="w-full object-cover"
@@ -45,9 +341,8 @@ function SedasaHero() {
       }}
     />
   );
-}
-
-function MiniSedasa() {
+}function MiniSedasa({ lang }: { lang: Locale }) {
+  const c = COPY[lang].resort;
   return (
     <div className="bg-[#FBF7EE] text-[#22301F]" style={{ minHeight: "100%" }}>
       {/* Nav tenang */}
@@ -56,39 +351,39 @@ function MiniSedasa() {
           Sedasa
         </span>
         <span className="hidden gap-5 text-[clamp(0.58rem,1.6cqw,0.74rem)] font-medium text-[#22301F]/60 @min-[512px]:flex">
-          <span>Vila</span>
-          <span>Fasilitas</span>
-          <span>Tawangmangu</span>
+          <span>{c.nav[0]}</span>
+          <span>{c.nav[1]}</span>
+
+          <span>{c.nav[2]}</span>
         </span>
         <span className="bg-[#A8833B] px-[clamp(7px,2cqw,12px)] py-[clamp(3px,0.9cqw,6px)] text-[clamp(0.55rem,1.55cqw,0.72rem)] font-semibold tracking-wide text-white">
-          Reservasi
+          {c.cta}
         </span>
       </div>
 
       {/* Foto pemandangan full-width — jualan pertama */}
       <div className="px-[clamp(12px,3.4cqw,22px)] pt-[clamp(10px,2.6cqw,20px)]">
-        <SedasaHero />
+        <SedasaHero lang={lang} />
       </div>
 
       {/* Teks di bawah pemandangan */}
       <div className="px-[clamp(12px,3.4cqw,22px)] py-[clamp(8px,2.2cqw,18px)]">
         <p className="text-[clamp(0.55rem,1.55cqw,0.7rem)] font-medium tracking-[0.16em] text-[#A8833B] uppercase">
-          Tawangmangu · 900 mdpl
+          {c.loc}
         </p>
         <p className="mt-[clamp(4px,1.2cqw,9px)] font-display text-[clamp(1.4rem,5.4cqw,2.5rem)] leading-[1.03] font-semibold tracking-tight">
-          Pagi di atas kabut,
+          {c.title[0]}
           <br />
-          hening sepanjang hari.
+          {c.title[1]}
         </p>
         <p className="mt-[clamp(4px,1.3cqw,9px)] text-[clamp(0.6rem,1.7cqw,0.78rem)] leading-relaxed text-[#22301F]/60">
-          Enam vila kayu di tepi hutan pinus. Sarapan dari dapur resor,
-          disajikan di beranda masing-masing.
+          {c.desc}
         </p>
         <p className="mt-[clamp(5px,1.6cqw,12px)] text-[clamp(0.64rem,1.85cqw,0.85rem)] font-semibold text-[#A8833B]">
-          Rp 850rb <span className="font-normal text-[#22301F]/50">/ malam · sarapan termasuk</span>
+          {c.price} <span className="font-normal text-[#22301F]/50">{c.pricePer}</span>
         </p>
         <div className="mt-[clamp(5px,1.5cqw,11px)] flex flex-wrap gap-[clamp(4px,1.1cqw,7px)]">
-          {["Vila kayu", "Tepi hutan pinus", "Sarapan di beranda"].map((chip) => (
+          {c.chips.map((chip) => (
             <span
               key={chip}
               className="border border-[#22301F]/15 px-[clamp(5px,1.4cqw,9px)] py-[clamp(2px,0.6cqw,5px)] text-[clamp(0.5rem,1.45cqw,0.66rem)] font-medium text-[#22301F]/65"
@@ -101,27 +396,20 @@ function MiniSedasa() {
 
       {/* Widget booking — baris sel seperti situs resor nyata */}
       <div className="mx-[clamp(12px,3.4cqw,22px)] mb-[clamp(10px,2.6cqw,18px)] flex items-stretch divide-x divide-[#22301F]/12 border border-[#22301F]/15 bg-white @max-[420px]:grid @max-[420px]:grid-cols-2 @max-[420px]:divide-x-0">
-        {[
-          ["Check-in", "Kam, 12 Des"],
-          ["Check-out", "Min, 15 Des"],
-          ["Tamu", "2 dewasa"],
-        ].map(([k, v]) => (
+        {c.booking.map(([k, v]) => (
           <div key={k} className="min-w-0 flex-1 px-[clamp(8px,2.2cqw,16px)] py-[clamp(6px,1.7cqw,12px)] @max-[420px]:border-b @max-[420px]:border-[#22301F]/10">
             <p className="text-[clamp(0.5rem,1.45cqw,0.66rem)] font-medium tracking-wide text-[#22301F]/45 uppercase">{k}</p>
             <p className="mt-0.5 truncate text-[clamp(0.6rem,1.75cqw,0.8rem)] font-semibold tabular-nums">{v}</p>
           </div>
         ))}
         <div className="flex items-center bg-[#22301F] px-[clamp(10px,2.6cqw,20px)] @max-[420px]:col-span-2 @max-[420px]:justify-center">
-          <span className="text-[clamp(0.6rem,1.75cqw,0.8rem)] font-semibold text-[#FBF7EE]">Cek ketersediaan</span>
+          <span className="text-[clamp(0.6rem,1.75cqw,0.8rem)] font-semibold text-[#FBF7EE]">{c.book}</span>
         </div>
       </div>
 
       {/* Pilihan vila — dua kartu foto gradient */}
       <div className="grid grid-cols-2 gap-[clamp(6px,1.8cqw,12px)] px-[clamp(12px,3.4cqw,22px)] pb-[clamp(12px,3cqw,22px)]">
-        {[
-          { name: "Vila Kayu", meta: "2 kamar · 42 m²", price: "Rp 1,2jt", g: "linear-gradient(165deg,#E7D3B0,#B98D5C)" },
-          { name: "Suite Batu", meta: "1 kamar · 30 m²", price: "Rp 950rb", g: "linear-gradient(165deg,#DDE3D3,#9FAF92)" },
-        ].map((r) => (
+        {c.villas.map((r) => (
           <div key={r.name} className="border border-[#22301F]/12 bg-white">
             <div style={{ ...h(52, 14, 104), background: r.g }} />
             <div className="flex items-center justify-between gap-2 px-[clamp(7px,1.9cqw,13px)] py-[clamp(5px,1.4cqw,10px)]">
@@ -140,20 +428,16 @@ function MiniSedasa() {
 
 /* ── 2. Arus — dompet digital: dashboard app murni UI ─────────────── */
 
-function MiniArus() {
-  const trx: [string, string, string, string][] = [
-    ["Kopi Toko Kopi", "Hari ini, 07.41", "-Rp 24.000", "K"],
-    ["Gaji freelance", "Kemarin", "+Rp 2.750.000", "G"],
-    ["Token listrik", "Sen, 09.12", "-Rp 120.000", "T"],
-  ];
+function MiniArus({ lang }: { lang: Locale }) {
+  const c = COPY[lang].fintech;
   const bars = [34, 52, 28, 66, 45, 88, 30];
-  const hari = ["S", "S", "R", "K", "J", "S", "M"];
+  const { trx, days: hari } = c;
   return (
     <div className="bg-[#12172B] text-[#EEF0FA]" style={{ minHeight: "100%" }}>
       {/* Header app */}
       <div className="flex items-center justify-between px-[clamp(12px,3.4cqw,22px)] py-[clamp(8px,2.2cqw,15px)]">
         <div>
-          <p className="text-[clamp(0.55rem,1.55cqw,0.7rem)] text-[#EEF0FA]/55">Selamat pagi,</p>
+          <p className="text-[clamp(0.55rem,1.55cqw,0.7rem)] text-[#EEF0FA]/55">{c.greeting}</p>
           <p className="text-[clamp(0.72rem,2.1cqw,0.95rem)] font-bold">Dana Prasetya</p>
         </div>
         <span className="flex h-[clamp(20px,5.5cqw,34px)] w-[clamp(20px,5.5cqw,34px)] items-center justify-center rounded-full bg-[#4F46E5] text-[clamp(0.55rem,1.6cqw,0.78rem)] font-bold text-white">
@@ -166,14 +450,14 @@ function MiniArus() {
         style={{ background: "linear-gradient(135deg,#4F46E5 0%,#7C3AED 60%,#9333EA 100%)" }}
       >
         <div className="flex items-center justify-between">
-          <p className="text-[clamp(0.52rem,1.5cqw,0.68rem)] font-medium text-white/70">Saldo utama</p>
+          <p className="text-[clamp(0.52rem,1.5cqw,0.68rem)] font-medium text-white/70">{c.balanceLabel}</p>
           <p className="font-display text-[clamp(0.52rem,1.5cqw,0.68rem)] font-bold tracking-widest text-white/70 tabular-nums">•••• 4821</p>
         </div>
         <p className="mt-[clamp(4px,1.3cqw,10px)] font-display text-[clamp(1.3rem,4.6cqw,2.1rem)] leading-none font-black tabular-nums">
-          Rp 12.480.500
+          {c.balance}
         </p>
         <div className="mt-[clamp(6px,1.8cqw,14px)] flex gap-1.5">
-          {["Transfer", "Top up", "Tagihan", "QRIS"].map((a) => (
+          {c.actions.map((a) => (
             <span key={a} className="rounded-full bg-white/15 px-[clamp(6px,1.8cqw,12px)] py-[clamp(2px,0.8cqw,6px)] text-[clamp(0.5rem,1.45cqw,0.66rem)] font-semibold">
               {a}
             </span>
@@ -184,8 +468,8 @@ function MiniArus() {
       {/* Grafik pengeluaran mingguan */}
       <div className="mx-[clamp(12px,3.4cqw,22px)] mt-[clamp(8px,2.2cqw,16px)] rounded-[clamp(8px,2.2cqw,16px)] bg-[#1A2040] p-[clamp(9px,2.5cqw,18px)]">
         <div className="flex items-center justify-between">
-          <p className="text-[clamp(0.58rem,1.65cqw,0.76rem)] font-bold">Pengeluaran minggu ini</p>
-          <p className="text-[clamp(0.55rem,1.55cqw,0.72rem)] font-semibold text-[#A5B4FC] tabular-nums">Rp 1.284rb</p>
+          <p className="text-[clamp(0.58rem,1.65cqw,0.76rem)] font-bold">{c.weekTitle}</p>
+          <p className="text-[clamp(0.55rem,1.55cqw,0.72rem)] font-semibold text-[#A5B4FC] tabular-nums">{c.weekVal}</p>
         </div>
         <div className="mt-[clamp(6px,1.8cqw,14px)] flex items-end justify-between gap-[clamp(3px,1cqw,8px)]" style={{ ...h(34, 9, 64) }}>
           {bars.map((v, i) => (
@@ -205,8 +489,8 @@ function MiniArus() {
       {/* Transaksi terakhir */}
       <div className="mx-[clamp(12px,3.4cqw,22px)] mt-[clamp(8px,2.2cqw,16px)] mb-[clamp(12px,3cqw,22px)] rounded-[clamp(8px,2.2cqw,16px)] bg-[#1A2040] p-[clamp(9px,2.5cqw,18px)]">
         <div className="flex items-center justify-between">
-          <p className="text-[clamp(0.58rem,1.65cqw,0.76rem)] font-bold">Transaksi terakhir</p>
-          <p className="text-[clamp(0.52rem,1.5cqw,0.68rem)] font-semibold text-[#A5B4FC]">Lihat semua</p>
+          <p className="text-[clamp(0.58rem,1.65cqw,0.76rem)] font-bold">{c.trxTitle}</p>
+          <p className="text-[clamp(0.52rem,1.5cqw,0.68rem)] font-semibold text-[#A5B4FC]">{c.seeAll}</p>
         </div>
         <div className="mt-1 divide-y divide-white/10">
           {trx.map(([name, time, amount, initial]) => (
@@ -231,13 +515,9 @@ function MiniArus() {
 
 /* ── 3. Studio Kencang — gym: poster gelap, jadwal, satu aksen lime ── */
 
-function MiniKencang() {
-  const kelas: [string, string, string][] = [
-    ["06.00", "Bodyweight Camp", "Pemula"],
-    ["09.30", "HIIT 45", "Semua level"],
-    ["17.30", "Strength Club", "Lanjutan"],
-    ["19.00", "Mobility & Stretch", "Semua level"],
-  ];
+function MiniKencang({ lang }: { lang: Locale }) {
+  const c = COPY[lang].gym;
+  const kelas = c.classes;
   return (
     <div className="bg-[#0D0D0C] text-[#F2F2EE]" style={{ minHeight: "100%" }}>
       {/* Top bar */}
@@ -251,13 +531,12 @@ function MiniKencang() {
       {/* Poster headline */}
       <div className="px-[clamp(12px,3.4cqw,22px)] pt-[clamp(10px,2.8cqw,22px)] pb-[clamp(8px,2.2cqw,18px)]">
         <p className="font-display text-[clamp(1.7rem,7.2cqw,3.4rem)] leading-[0.92] font-black uppercase tracking-tight">
-          Kuat. Kencang.
+          {c.title[0]}
           <br />
-          <span className="text-[#FF6B35]">Konsisten.</span>
+          <span className="text-[#FF6B35]">{c.title[1]}</span>
         </p>
         <p className="mt-[clamp(6px,1.8cqw,14px)] max-w-[36ch] text-[clamp(0.6rem,1.7cqw,0.8rem)] leading-relaxed text-white/55">
-          Kelas berpelatih, kap 12 orang, dibina sampai target tercapai.
-          Bukan sekadar tembok cermin.
+          {c.desc}
         </p>
       </div>
 
@@ -265,9 +544,9 @@ function MiniKencang() {
       <div className="px-[clamp(12px,3.4cqw,22px)]">
         <div className="flex items-center justify-between border-b border-white/10 pb-1.5">
           <p className="text-[clamp(0.52rem,1.5cqw,0.68rem)] font-bold tracking-[0.14em] text-white/40 uppercase">
-            Jadwal hari ini
+            {c.today}
           </p>
-          <p className="text-[clamp(0.52rem,1.5cqw,0.68rem)] font-semibold text-[#FF6B35]">4 kelas</p>
+          <p className="text-[clamp(0.52rem,1.5cqw,0.68rem)] font-semibold text-[#FF6B35]">{c.count}</p>
         </div>                        <div className="space-y-[clamp(3px,1cqw,8px)]">
                           {kelas.map(([jam, nama, level]) => (
                             <div key={nama} className="flex items-center justify-between gap-2 rounded-[clamp(3px,0.9cqw,7px)] bg-white/[0.05] px-[clamp(6px,1.6cqw,12px)] py-[clamp(5px,1.5cqw,11px)]">
@@ -285,12 +564,12 @@ function MiniKencang() {
       <div className="flex items-center justify-between gap-3 px-[clamp(12px,3.4cqw,22px)] py-[clamp(10px,2.8cqw,22px)] @max-[420px]:flex-col @max-[420px]:items-start">
         <div>
           <p className="font-display text-[clamp(0.85rem,2.5cqw,1.15rem)] font-black">
-            Rp 299rb <span className="font-medium text-white/50">/ bulan · semua kelas</span>
+            {c.price} <span className="font-medium text-white/50">{c.per}</span>
           </p>
-          <p className="mt-0.5 text-[clamp(0.5rem,1.45cqw,0.66rem)] text-white/45">Tanpa kontrak. Kelas pertama gratis.</p>
+          <p className="mt-0.5 text-[clamp(0.5rem,1.45cqw,0.66rem)] text-white/45">{c.note}</p>
         </div>
         <span className="shrink-0 bg-[#FF6B35] px-[clamp(10px,2.8cqw,18px)] py-[clamp(5px,1.6cqw,11px)] text-center text-[clamp(0.6rem,1.75cqw,0.8rem)] font-black uppercase text-[#0D0D0C] @max-[420px]:w-full">
-          Amankan tempat
+          {c.cta}
         </span>
       </div>
     </div>
@@ -299,15 +578,9 @@ function MiniKencang() {
 
 /* ── 4. Dapur Nawa — katering sehat: strip menu harian + paket ────── */
 
-function MiniNawa() {
-  const menu: [string, string][] = [
-    ["Sen", "Nasi merah, ayam kecap"],
-    ["Sel", "Bubur protein jagung"],
-    ["Rab", "Mie shirataki lada"],
-    ["Kam", "Nasi tim ayam jamur"],
-    ["Jum", "Quinoa tempe panggang"],
-    ["Sab", "Pumpkin soup roti gandum"],
-  ];
+function MiniNawa({ lang }: { lang: Locale }) {
+  const c = COPY[lang].catering;
+  const menu = c.menu;
   return (
     <div className="bg-[#FDF8EE] text-[#1E2A1F]" style={{ minHeight: "100%" }}>
       {/* Nav */}
@@ -316,25 +589,24 @@ function MiniNawa() {
           Dapur<span className="text-[#2F7D46]">Nawa</span>
         </span>
         <span className="hidden gap-4 text-[clamp(0.58rem,1.6cqw,0.74rem)] font-medium text-[#1E2A1F]/55 @min-[512px]:flex">
-          <span>Menu</span>
-          <span>Paket</span>
-          <span>Cara kerja</span>
+          <span>{c.nav[0]}</span>
+          <span>{c.nav[1]}</span>
+          <span>{c.nav[2]}</span>
         </span>
         <span className="rounded-full bg-[#E14E38] px-[clamp(8px,2.2cqw,14px)] py-[clamp(3px,1cqw,7px)] text-[clamp(0.55rem,1.55cqw,0.72rem)] font-bold text-white">
-          Mulai langganan
+          {c.cta}
         </span>
       </div>
 
       {/* Headline */}
       <div className="px-[clamp(12px,3.4cqw,22px)] pb-[clamp(8px,2.2cqw,18px)]">
         <p className="font-display text-[clamp(1.35rem,5.4cqw,2.5rem)] leading-[1.02] font-black tracking-tight">
-          Makan sehat,
+          {c.title[0]}
           <br />
-          <span className="text-[#2F7D46]">enam hari seminggu.</span>
+          <span className="text-[#2F7D46]">{c.title[1]}</span>
         </p>
         <p className="mt-[clamp(4px,1.3cqw,10px)] max-w-[36ch] text-[clamp(0.6rem,1.7cqw,0.78rem)] leading-relaxed text-[#1E2A1F]/60">
-          Bergizi seimbang oleh ahli gizi, dimasak pagi itu juga, diantar
-          sebelum jam 07.00.
+          {c.desc}
         </p>
       </div>
 
@@ -352,10 +624,7 @@ function MiniNawa() {
 
       {/* Dua paket */}
       <div className="grid grid-cols-2 gap-[clamp(6px,1.8cqw,12px)] px-[clamp(12px,3.4cqw,22px)] pb-[clamp(12px,3.2cqw,24px)] @max-[420px]:grid-cols-1">
-        {[
-          { name: "Reguler", price: "Rp 450rb", per: "/ minggu · 12 makan", tag: null as string | null, hi: false },
-          { name: "Protein+", price: "Rp 525rb", per: "/ minggu · 12 makan", tag: "Terlaris", hi: true },
-        ].map((p) => (
+        {c.packs.map((p) => (
           <div
             key={p.name}
             className={`relative rounded-[clamp(6px,1.7cqw,13px)] p-[clamp(8px,2.3cqw,16px)] ${
@@ -381,12 +650,12 @@ function MiniNawa() {
 
 /** Foto suasana pernikahan outdoor: gerbang bunga saat golden hour.
  * Sumber Unsplash (lisensi bebas), load lazy, tone hangat lewat CSS. */
-function ArunikaGerbang() {
+function ArunikaGerbang({ lang }: { lang: Locale }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=70"
-      alt="Gerbang bunga pernikahan outdoor saat sore"
+      alt={COPY[lang].wedding.alt}
       loading="lazy"
       decoding="async"
       className="mx-auto w-full object-cover"
@@ -399,12 +668,9 @@ function ArunikaGerbang() {
   );
 }
 
-function MiniArunika() {
-  const langkah: [string, string][] = [
-    ["Konsultasi", "Ceritakan konsep dan keduanya kami dengar baik-baik."],
-    ["Rencana", "Venue, vendor, dan jadwal kami rangkai satu per satu."],
-    ["Hari-H", "Tim kami berjaga. Anda cukup datang dan menikmati."],
-  ];
+function MiniArunika({ lang }: { lang: Locale }) {
+  const c = COPY[lang].wedding;
+  const langkah = c.steps;
   return (
     <div className="bg-[#FAF6EE] text-[#2A2118]" style={{ minHeight: "100%" }}>
       {/* Wordmark tengah */}
@@ -420,7 +686,7 @@ function MiniArunika() {
 
       {/* Gerbang pernikahan — jualan suasana sebelum teks */}
       <div className="px-[clamp(14px,4cqw,36px)] pt-[clamp(6px,1.6cqw,13px)]">
-        <ArunikaGerbang />
+        <ArunikaGerbang lang={lang} />
       </div>
 
       {/* Headline editorial tengah */}
@@ -428,27 +694,22 @@ function MiniArunika() {
         className="mx-auto max-w-[26ch] px-6 pt-[clamp(4px,1.2cqw,10px)] text-center font-normal leading-[1.14] tracking-tight"
         style={fs(1.1, 4.2, 32)}
       >
-        Hari besar yang tenang, dirancang sampai detail terkecil.
+        {c.title}
       </p>
       <p className="mx-auto mt-[clamp(5px,1.5cqw,12px)] max-w-[36ch] px-6 text-center text-[clamp(0.58rem,1.65cqw,0.76rem)] leading-relaxed text-[#2A2118]/55">
-        Setiap pernikahan kami rancang dari nol bersama kedua mempelai,
-        bukan paket jadi.
+        {c.desc}
       </p>
 
       {/* Baris undangan: tanggal dan lokasi — kepastian yang dicari calon klien */}
       <div className="mt-[clamp(8px,2.2cqw,18px)] flex justify-center">
         <span className="border border-[#A8833B]/45 px-[clamp(10px,2.8cqw,22px)] py-[clamp(4px,1.2cqw,9px)] text-[clamp(0.52rem,1.5cqw,0.68rem)] font-medium tracking-[0.18em] text-[#A8833B] uppercase">
-          Minggu, 14 Juni 2027 · Tawangmangu
+          {c.date}
         </span>
       </div>
 
       {/* Tiga paket dengan harga — calon klien langsung tahu titik masuknya */}
       <div className="mx-[clamp(14px,4cqw,36px)] mt-[clamp(8px,2.2cqw,18px)] flex items-stretch justify-center divide-x divide-[#2A2118]/12 border-y border-[#2A2118]/12">
-        {[
-          { nama: "Intimate", tamu: "20 tamu", harga: "Rp 45jt" },
-          { nama: "Signature", tamu: "60 tamu", harga: "Rp 85jt" },
-          { nama: "Grand", tamu: "200+ tamu", harga: "Rp 160jt" },
-        ].map((p) => (
+        {c.packs.map((p) => (
           <div key={p.nama} className="flex-1 px-[clamp(6px,1.8cqw,14px)] py-[clamp(7px,1.9cqw,13px)] text-center">
             <p className="text-[clamp(0.5rem,1.45cqw,0.66rem)] font-semibold tracking-[0.14em] text-[#A8833B] uppercase">
               {p.nama}
@@ -482,17 +743,17 @@ function MiniArunika() {
           className="max-w-[30ch] rounded-[clamp(6px,1.6cqw,12px)] bg-[#F6E0E6]/70 px-[clamp(10px,3cqw,22px)] py-[clamp(6px,1.8cqw,14px)] text-center font-normal leading-snug text-[#2A2118]/80"
           style={fs(0.72, 2.2, 17)}
         >
-          “Kami cukup datang. Semua berjalan rapi, semua terasa kami.”
+          {c.quote}
         </p>
         <p className="mt-[clamp(3px,1cqw,8px)] text-[clamp(0.5rem,1.45cqw,0.66rem)] font-medium tracking-[0.14em] text-[#2A2118]/45 uppercase">
-          Tirza &amp; Bagas · Juni 2026
+          {c.quoteBy}
         </p>
       </div>
 
       {/* CTA outline emas */}
       <div className="flex justify-center px-4 pb-[clamp(12px,3.2cqw,26px)] pt-[clamp(6px,1.8cqw,16px)]">
         <span className="bg-[#A8833B] px-[clamp(12px,3.4cqw,24px)] py-[clamp(5px,1.5cqw,10px)] text-[clamp(0.56rem,1.6cqw,0.74rem)] font-semibold tracking-[0.12em] text-[#FAF6EE] uppercase">
-          Jadwalkan konsultasi
+          {c.cta}
         </span>
       </div>
     </div>
@@ -508,13 +769,27 @@ type DemoTheme = {
   render: () => ReactNode;
 };
 
-const themes: DemoTheme[] = [
-  { key: "resort", pill: "Resor vila", domain: "sedasa.id", render: () => <MiniSedasa /> },
-  { key: "fintech", pill: "Dompet digital", domain: "arus.id", render: () => <MiniArus /> },
-  { key: "gym", pill: "Studio fitness", domain: "kencang.fit", render: () => <MiniKencang /> },
-  { key: "katering", pill: "Katering sehat", domain: "dapurnawa.id", render: () => <MiniNawa /> },
-  { key: "wedding", pill: "Wedding organizer", domain: "arunika.id", render: () => <MiniArunika /> },
-];
+/** Katalog per locale: pill & domain dari COPY, render menyalurkan lang. */
+function themesFor(lang: Locale): DemoTheme[] {
+  const render: Record<string, () => ReactNode> = {
+    resort: () => <MiniSedasa lang={lang} />,
+    fintech: () => <MiniArus lang={lang} />,
+    gym: () => <MiniKencang lang={lang} />,
+    katering: () => <MiniNawa lang={lang} />,
+    wedding: () => <MiniArunika lang={lang} />,
+  };
+  return COPY[lang].themes.map((th) => ({ ...th, render: render[th.key] }));
+}
+
+/**
+ * Jumlah tema dipakai di dalam efek auto-play. Sengaja diambil dari konstanta
+ * module-level (bukan `themes` lokal komponen) supaya identitasnya stabil:
+ * array paralel per locale wajib sama panjang, dicek sekali saat modul load.
+ */
+const THEME_COUNT = COPY.id.themes.length;
+if (COPY.en.themes.length !== THEME_COUNT) {
+  throw new Error("COPY.id.themes dan COPY.en.themes harus sama panjang");
+}
 
 /**
  * Viewport Hidup — mini-browser yang bisa diseret lebarnya.
@@ -526,7 +801,9 @@ const themes: DemoTheme[] = [
  * Semua ukuran memakai satuan cqw — skala mengikuti lebar frame.
  * Reflow struktur memakai container query (@max-512px, @max-672px).
  */
-export default function ViewportDemo() {
+export default function ViewportDemo({ lang }: { lang: Locale }) {
+  const uiCopy = COPY[lang].ui;
+  const themes = themesFor(lang);
   const [width, setWidth] = useState(680);
   const [avail, setAvail] = useState<number | null>(null);
   const [auto, setAuto] = useState(true);
@@ -583,7 +860,7 @@ export default function ViewportDemo() {
           next = effMax;
           dir.current = -1;
           // Satu siklus selesai — lanjut ke klien berikutnya
-          setThemeIdx((i) => (i + 1) % themes.length);
+          setThemeIdx((i) => (i + 1) % THEME_COUNT);
         }
         if (next <= effMin) {
           next = effMin;
@@ -604,7 +881,7 @@ export default function ViewportDemo() {
   // Di layar sempit sweep tidak muat — putar contoh klien saja tiap 4 detik
   useEffect(() => {
     if (rangeOk || !inView || (reducedMotion && !forced)) return;
-    const iv = setInterval(() => setThemeIdx((i) => (i + 1) % themes.length), 4000);
+    const iv = setInterval(() => setThemeIdx((i) => (i + 1) % THEME_COUNT), 4000);
     return () => clearInterval(iv);
   }, [rangeOk, inView, reducedMotion, forced]);
 
@@ -697,7 +974,7 @@ export default function ViewportDemo() {
             }}
             className="order-2 flex min-h-9 cursor-pointer items-center text-[11px] font-medium text-brand-600 hover:text-ink-950 sm:order-3 sm:ml-auto"
           >
-            Putar demo
+            {uiCopy.play}
           </button>
         ) : (
           <span className="order-2 flex min-h-9 items-center gap-2 text-[11px] font-medium text-ink-900/60 sm:order-3 sm:ml-auto">
@@ -710,10 +987,10 @@ export default function ViewportDemo() {
       {/* Pilih contoh konsep — scroll horizontal di layar sempit */}
       <div
         className="mb-3 flex flex-wrap items-center gap-1.5 max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:pb-1"
-        aria-label="Contoh konsep desain"
+        aria-label={uiCopy.concepts}
       >
         <span className="sr-only">
-          Konsep desain ilustratif, bukan situs klien nyata.
+          {uiCopy.conceptsNote}
         </span>
         {themes.map((th, i) => (
           <button
@@ -760,11 +1037,11 @@ export default function ViewportDemo() {
         {/* Handle geser — selalu terlihat: hairline penuh + pil biru ber-halo putih */}
         <div
           role="slider"
-          aria-label="Lebar viewport demo"
+          aria-label={uiCopy.widthLabel}
           aria-valuemin={effMin}
           aria-valuemax={effMax}
           aria-valuenow={shown}
-          aria-valuetext={`${shown} piksel, mode ${bp}`}
+          aria-valuetext={uiCopy.pxText(shown, bp)}
           tabIndex={0}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}

@@ -25,7 +25,7 @@ const COPY: Record<Locale, Phrases> = {
   },
   en: {
     phrases: [
-      "Professional website services, from Rp 1.5M, costs stated up front.",
+      "Professional website services, starting at Rp 1.5M, with costs stated up front.",
       "Tell us about your business on WhatsApp — the consultation is free.",
       "No templates: every site is drawn and written just for you.",
     ],
