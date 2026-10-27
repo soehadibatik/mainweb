@@ -4,6 +4,7 @@ import type { Plan } from "@/lib/plans";
 import { tiers, plansOfTier, fullPrice } from "@/lib/tiers";
 import { waLink } from "@/lib/site";
 import CategoryChooser from "@/components/CategoryChooser";
+import PlanRecommender from "@/components/PlanRecommender";
 import { ui } from "@/lib/i18n/ui";
 import { tierText } from "@/lib/i18n/content";
 import { tPrice } from "@/lib/i18n/price";
@@ -166,7 +167,10 @@ export default async function Pricing({ lang }: { lang: Locale }) {
 
         <CategoryChooser tiers={chooserTiers} lang={lang} />
 
-        {/* Lima kategori kondisi bisnis, masing-masing berisi tiga paket */}
+        {/* Kalkulator rekomendasi paket interaktif */}
+        <PlanRecommender lang={lang} />
+
+        {/* Lima kategori kondisi bisnis, masing-masing berisi tiga paket, sesuai urutan asli */}
         <div className="mt-14 space-y-14">
           {tiers.map((tier) => {
             const tierPlans = plansOfTier(tier, plans);

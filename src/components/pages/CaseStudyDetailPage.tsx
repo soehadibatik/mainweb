@@ -147,6 +147,40 @@ export default async function CaseStudyDetailPage({
         </div>
       </section>
 
+      {/* Visual mockup hasil tayang */}
+      <section className="border-b border-line bg-paper py-10 sm:py-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="reveal mx-auto max-w-5xl overflow-hidden border border-line bg-white shadow-sm">
+            <div className="flex items-center justify-between border-b border-line bg-paper px-4 py-2.5 font-mono text-xs text-ink-900/60">
+              <div className="flex items-center gap-1.5" aria-hidden>
+                <span className="h-2.5 w-2.5 rounded-full bg-ink-900/15" />
+                <span className="h-2.5 w-2.5 rounded-full bg-ink-900/15" />
+                <span className="h-2.5 w-2.5 rounded-full bg-ink-900/15" />
+              </div>
+              <div className="flex max-w-[280px] sm:max-w-md flex-1 items-center justify-center gap-1.5 overflow-hidden rounded border border-line bg-white px-3 py-1 text-[11px] text-ink-900/70">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden className="shrink-0 text-brand-600">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <span className="truncate">https://{study.domain}</span>
+              </div>
+              <span className="font-mono text-[10px] font-semibold text-brand-600 uppercase tracking-wider">
+                Live Site
+              </span>
+            </div>
+            <div className="relative aspect-[16/10] w-full overflow-hidden bg-ink-900/5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/case-studies/${study.domain}.webp`}
+                alt={`Tampilan situs ${study.client}`}
+                className="h-full w-full object-cover object-top"
+                loading="eager"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Narasi: kebutuhan klien */}
       <section className="border-b border-line bg-white py-14 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

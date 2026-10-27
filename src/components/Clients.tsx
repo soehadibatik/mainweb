@@ -52,7 +52,91 @@ export default async function Clients({ lang }: { lang: Locale }) {
           </div>
         </div>
 
-        <ul className="stagger mt-10 grid grid-cols-2 border-t border-l border-line sm:grid-cols-3 lg:grid-cols-6">
+        {/* Showcase hasil karya nyata dengan screenshot langsung */}
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            {
+              name: "CISC Solo Raya",
+              domain: "ciscsolo.com",
+              tag: lang === "id" ? "Komunitas & Toko Merchandise" : "Community & Merchandise Store",
+              slug: "cisc-solo-raya",
+            },
+            {
+              name: "Batik Soehadi",
+              domain: "batiksoehadi.com",
+              tag: lang === "id" ? "Katalog & Brand Produsen" : "Catalog & Brand Producer",
+              slug: "batik-soehadi",
+            },
+            {
+              name: "Daster Murah",
+              domain: "dastermurah.com",
+              tag: lang === "id" ? "Grosir Fashion & Alur WA" : "Fashion Wholesale & WA Checkout",
+              slug: "daster-murah",
+            },
+          ].map((item) => (
+            <article
+              key={item.domain}
+              className="reveal flex flex-col overflow-hidden border border-line bg-paper transition-all hover:border-ink-950/40 hover:shadow-md"
+            >
+              {/* Browser bar */}
+              <div className="flex items-center justify-between border-b border-line bg-white px-3 py-2 font-mono text-[11px] text-ink-900/60">
+                <div className="flex items-center gap-1" aria-hidden>
+                  <span className="h-2 w-2 rounded-full bg-ink-900/20" />
+                  <span className="h-2 w-2 rounded-full bg-ink-900/20" />
+                  <span className="h-2 w-2 rounded-full bg-ink-900/20" />
+                </div>
+                <span className="truncate px-2 text-[10px] text-ink-900/50">
+                  {item.domain}
+                </span>
+                <span className="font-mono text-[9px] font-semibold text-brand-600 uppercase">
+                  Live
+                </span>
+              </div>
+              {/* Screenshot */}
+              <Link
+                href={localizePath(lang, `/studi-kasus/${item.slug}`)}
+                className="group relative aspect-[16/10] overflow-hidden bg-ink-900/5"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/case-studies/${item.domain}.webp`}
+                  alt={`Tampilan situs ${item.name}`}
+                  className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
+                  loading="lazy"
+                />
+              </Link>
+              {/* Info & link */}
+              <div className="flex flex-1 flex-col justify-between p-4 bg-white">
+                <div>
+                  <p className="font-mono text-[10px] text-brand-600 uppercase tracking-wider">
+                    {item.tag}
+                  </p>
+                  <h3 className="mt-1 font-display text-base font-bold text-ink-950">
+                    {item.name}
+                  </h3>
+                </div>
+                <div className="mt-3 flex items-center justify-between border-t border-line pt-3 font-mono text-[11px]">
+                  <a
+                    href={`https://${item.domain}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-ink-900/60 transition-colors hover:text-brand-600"
+                  >
+                    {item.domain} ↗
+                  </a>
+                  <Link
+                    href={localizePath(lang, `/studi-kasus/${item.slug}`)}
+                    className="font-medium text-brand-600 transition-colors hover:text-ink-950"
+                  >
+                    {t.clients.viewCases}
+                  </Link>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <ul className="stagger mt-12 grid grid-cols-2 border-t border-l border-line sm:grid-cols-3 lg:grid-cols-6">
           {featured.map((c) => {
             const study = STUDY_BY_DOMAIN[c.domain] ?? null;
             return (

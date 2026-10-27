@@ -26,7 +26,7 @@ export const tiers: Tier[] = [
     name: "Unicorn",
     hint: "Sistem digital sebagai infrastruktur bisnis",
     desc: "Untuk perusahaan yang mengoperasikan sistem digital sebagai tulang punggung: website yang terintegrasi dengan sistem internal, alur kerja, dan operasional skala besar.",
-    planIds: ["z", "y", "x"],
+    planIds: ["x", "y", "z"],
     featured: "z",
   },
   {
@@ -34,7 +34,7 @@ export const tiers: Tier[] = [
     name: "Startup",
     hint: "Startup berpendanaan yang butuh sistem pertama",
     desc: "Untuk startup yang baru punya pendanaan atau pengguna aktif, dan butuh sistem pertama yang rapi — website produk, akun pengguna, dashboard, hingga platform siap skala.",
-    planIds: ["alpha", "theta", "beta"],
+    planIds: ["beta", "theta", "alpha"],
     featured: "alpha",
   },
   {
@@ -42,7 +42,7 @@ export const tiers: Tier[] = [
     name: "Perwujudan",
     hint: "Kebutuhan website dan sistem yang kompleks",
     desc: "Untuk perusahaan yang membutuhkan website, platform, atau sistem digital dengan kebutuhan lebih kompleks.",
-    planIds: ["pro-max", "max", "proficient"],
+    planIds: ["proficient", "max", "pro-max"],
     featured: "max",
   },
   {
@@ -50,7 +50,7 @@ export const tiers: Tier[] = [
     name: "UMKM",
     hint: "Sudah berjalan, butuh lebih lengkap",
     desc: "Untuk bisnis yang sudah berjalan dan membutuhkan website yang lebih lengkap.",
-    planIds: ["advance", "intermediate", "light"],
+    planIds: ["light", "intermediate", "advance"],
     featured: "intermediate",
   },
   {
@@ -58,7 +58,7 @@ export const tiers: Tier[] = [
     name: "Babad Alas",
     hint: "Baru mulai atau usaha sederhana",
     desc: "Untuk usaha yang baru mulai atau membutuhkan kehadiran profesional di internet.",
-    planIds: ["elementary", "beginner", "basic"],
+    planIds: ["basic", "beginner", "elementary"],
     featured: "elementary",
   },
 ];

@@ -74,11 +74,11 @@ export default function CategoryChooser({
 
       {chosen && (
         <p role="status" className="fade-rise mt-4 font-mono text-xs text-ink-900/60">
-          {/* plans diurutkan termahal dulu; "mulai" = harga termurah. */}
+          {/* plans sekarang diurutkan dari yang terkecil dulu; "mulai" = indeks ke-0. */}
           {t.chooser.status(
             chosen.name,
             chosen.plans.length,
-            chosen.plans[chosen.plans.length - 1]?.build ?? "",
+            chosen.plans[0]?.build ?? "",
           )}{" "}
           <button
             type="button"

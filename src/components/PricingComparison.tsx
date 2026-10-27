@@ -41,9 +41,18 @@ export default function PricingComparison({
   sections: CompareSection[];
   lang: Locale;
 }) {
+  const isId = lang === "id";
   const t = ui[lang];
   const [activeCol, setActiveCol] = useState<string | null>(null);
   const [hidden, setHidden] = useState<Set<string>>(new Set());
+
+  // State untuk mode perbandingan mobile head-to-head (2 paket berdampingan)
+  const [mobilePlanAId, setMobilePlanAId] = useState<string>("basic");
+  const [mobilePlanBId, setMobilePlanBId] = useState<string>("beginner");
+  const [showFullTableMobile, setShowFullTableMobile] = useState<boolean>(false);
+
+  const planA = plans.find((p) => p.id === mobilePlanAId) ?? plans[0];
+  const planB = plans.find((p) => p.id === mobilePlanBId) ?? plans[1];
 
   const visiblePlans = plans.filter((p) => !hidden.has(p.id));
 
@@ -65,6 +74,135 @@ export default function PricingComparison({
 
   return (
     <div>
+      {/* Tampilan Khusus Mobile: Perbandingan 2 Paket Head-to-Head */}
+      <div className="block md:hidden mb-8 border border-line bg-paper p-4">
+        <div className="flex items-center justify-between border-b border-line pb-3">
+          <p className="font-mono text-xs font-semibold text-brand-600 uppercase tracking-wider">
+            {isId ? "Komparasi Praktis di HP" : "Mobile Comparison"}
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowFullTableMobile(!showFullTableMobile)}
+            className="font-mono text-[11px] text-ink-900/60 underline hover:text-ink-950"
+          >
+            {showFullTableMobile
+              ? (isId ? "Tutup Tabel Penuh" : "Hide Full Table")
+              : (isId ? "Buka Tabel 15 Kolom" : "View 15-Col Table")}
+          </button>
+        </div>
+
+        <p className="mt-2 text-xs text-ink-900/65 leading-relaxed">
+          {isId
+            ? "Pilih 2 paket untuk melihat perbandingan fitur secara berdampingan tanpa perlu geser layar lebar:"
+            : "Select 2 plans to compare features side-by-side comfortably without wide scrolling:"}
+        </p>
+
+        {/* Pemilih 2 paket */}
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <div>
+            <label htmlFor="plan-a-select" className="block font-mono text-[10px] text-ink-900/50 mb-1">
+              {isId ? "Paket Pertama:" : "First Plan:"}
+            </label>
+            <select
+              id="plan-a-select"
+              value={mobilePlanAId}
+              onChange={(e) => setMobilePlanAId(e.target.value)}
+              className="w-full border border-line bg-white p-2 font-mono text-xs font-semibold text-ink-950"
+            >
+              {plans.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name} ({p.build})
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="plan-b-select" className="block font-mono text-[10px] text-ink-900/50 mb-1">
+              {isId ? "Paket Kedua:" : "Second Plan:"}
+            </label>
+            <select
+              id="plan-b-select"
+              value={mobilePlanBId}
+              onChange={(e) => setMobilePlanBId(e.target.value)}
+              className="w-full border border-line bg-white p-2 font-mono text-xs font-semibold text-ink-950"
+            >
+              {plans.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name} ({p.build})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Kartu perbandingan berdampingan 2 kolom */}
+        <div className="mt-4 border border-line bg-white overflow-hidden shadow-sm">
+          {/* Header 2 paket */}
+          <div className="grid grid-cols-2 border-b border-line bg-paper">
+            <div className="p-3 text-center border-r border-line">
+              <span className="font-display text-sm font-bold text-ink-950">{planA.name}</span>
+              <p className="font-mono text-sm font-extrabold text-brand-600 mt-0.5">{tPrice(lang, planA.build)}</p>
+              <a
+                href={waLink(t.comparison.orderWaMessage(planA.name, planA.build))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-block w-full bg-brand-600 py-1.5 font-mono text-[10px] font-semibold text-white"
+              >
+                {t.comparison.orderShort}
+              </a>
+            </div>
+            <div className="p-3 text-center">
+              <span className="font-display text-sm font-bold text-ink-950">{planB.name}</span>
+              <p className="font-mono text-sm font-extrabold text-brand-600 mt-0.5">{tPrice(lang, planB.build)}</p>
+              <a
+                href={waLink(t.comparison.orderWaMessage(planB.name, planB.build))}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-block w-full border border-ink-900/30 bg-white py-1.5 font-mono text-[10px] font-semibold text-ink-950"
+              >
+                {t.comparison.orderShort}
+              </a>
+            </div>
+          </div>
+
+          {/* Rincian per seksi */}
+          <div className="divide-y divide-line">
+            {sections.map((section, sIdx) => (
+              <div key={section.title} className="p-2.5">
+                <p className="font-mono text-[10px] font-bold text-brand-700 uppercase tracking-wider mb-2">
+                  {tComparisonSectionTitle(lang, sIdx, section.title)}
+                </p>
+                <div className="space-y-2">
+                  {section.rows.map((row) => (
+                    <div key={row.label} className="border-t border-line/60 pt-1.5">
+                      <p className="text-[11px] font-medium text-ink-900/60 mb-1">
+                        {tComparisonLabel(lang, row.label)}
+                      </p>
+                      <div className="grid grid-cols-2 text-center font-mono text-xs">
+                        <div className="border-r border-line/60 pr-2">
+                          <Cell
+                            value={tComparisonValue(lang, row.values[planA.id]) as CompareValue}
+                            label={String(row.values[planA.id])}
+                          />
+                        </div>
+                        <div className="pl-2">
+                          <Cell
+                            value={tComparisonValue(lang, row.values[planB.id]) as CompareValue}
+                            label={String(row.values[planB.id])}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Kontrol Desktop Filter Kolom */}
+      <div className={`${showFullTableMobile ? "block" : "hidden md:block"}`}>
       <div className="mb-6 border border-line bg-white p-4 sm:p-5">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
           <span className="font-mono text-xs font-semibold text-ink-900">{t.comparison.showPlans}</span>
@@ -223,6 +361,7 @@ export default function PricingComparison({
           </table>
         </div>
       )}
+      </div>
 
       <p className="mt-4 font-mono text-[11px] leading-relaxed text-ink-900/50">
         {t.comparison.footnote}{" "}
