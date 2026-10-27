@@ -7,6 +7,7 @@ import { waLink } from "@/lib/site";
 import { ui } from "@/lib/i18n/ui";
 import { localizePath, type Locale } from "@/lib/i18n/config";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import AnimatedWordmark from "@/components/AnimatedWordmark";
 
 export default function Navbar({ lang }: { lang: Locale }) {
   const [open, setOpen] = useState(false);
@@ -35,9 +36,7 @@ export default function Navbar({ lang }: { lang: Locale }) {
             className="h-8 w-auto"
           />
           <span className="hidden h-3.5 w-px bg-ink-900/15 sm:block" />
-          <span className="brand-wordmark font-display text-[18px] leading-none font-black tracking-[-0.045em]">
-            {t.brand.wordmark}
-          </span>
+          <AnimatedWordmark text={t.brand.wordmark} />
         </Link>
 
         <div className="hidden items-center gap-5 lg:flex xl:gap-7">
