@@ -475,7 +475,7 @@ body {
 }
 
 /* ==========================================================================
-   Animasi Logo Kinetik Jelly Morphing & Gradient Shift (Referensi Lottie CSS)
+   Animasi Logo Kinetik Jelly Morphing & Gradient Shift (Ultra Smooth & Fluid)
    ========================================================================== */
 
 .logo-animated-wordmark {
@@ -486,31 +486,40 @@ body {
   align-items: center;
   position: relative;
   user-select: none;
-  animation: logoBreatheSpacing 3s infinite ease-in-out;
+  animation: logoBreatheSpacing 5s infinite ease-in-out;
 }
 
 @keyframes logoBreatheSpacing {
   0%, 100% {
-    letter-spacing: -0.05em;
+    letter-spacing: -0.038em;
   }
   50% {
-    letter-spacing: 0.02em;
+    letter-spacing: -0.012em;
   }
 }
 
 .logo-jelly-char {
   display: inline-block;
   transform-origin: bottom center;
-  background: linear-gradient(90deg, #00f0ff, #0047d2, #5700ff, #ff00c8, #00f0ff);
+  will-change: transform, filter;
+  background: linear-gradient(
+    90deg,
+    #00b4d8 0%,
+    #0047d2 25%,
+    #6c27ff 50%,
+    #e01e9d 75%,
+    #00b4d8 100%
+  );
   background-size: 300% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
   animation:
-    logoJellyMorph 2.5s infinite cubic-bezier(0.45, 0, 0.15, 1),
-    logoGradientShift 3s infinite linear;
-  animation-delay: calc(var(--i) * 0.12s);
+    logoJellyMorph 3.6s infinite cubic-bezier(0.37, 0, 0.25, 1),
+    logoGradientShift 6s infinite linear;
+  animation-delay: calc(var(--i) * 0.14s);
+  transition: filter 0.3s ease;
 }
 
 @keyframes logoGradientShift {
@@ -522,30 +531,34 @@ body {
   }
 }
 
+/* 
+   Morphing yang lembut dan organik (fluid wave):
+   Amplitudo diperhalus agar huruf tetap terbaca jelas, anggun, dan bouncy lembut
+*/
 @keyframes logoJellyMorph {
   0%, 100% {
-    transform: translateY(0) scale(1, 1) skew(0deg) rotate(0deg);
-    filter: drop-shadow(0px 0px 2px rgba(87, 0, 255, 0.2));
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+    filter: drop-shadow(0 1px 4px rgba(0, 71, 210, 0.18));
   }
-  15% {
-    /* Persiapan melompat: Menyusut (Squish) dan melebar ke samping, menekan ke bawah */
-    transform: translateY(1.6px) scale(1.28, 0.72) skew(-7deg) rotate(-2.5deg);
-    filter: drop-shadow(0px 1px 2px rgba(0, 240, 255, 0.6));
+  18% {
+    /* Bantalan tekan lembut ke bawah (soft compression) */
+    transform: translateY(0.8px) scale(1.07, 0.94) rotate(-0.8deg);
+    filter: drop-shadow(0 2px 6px rgba(0, 180, 216, 0.28));
   }
-  35% {
-    /* Melompat tinggi: Meregang panjang ke atas (Stretch), menyempit di samping */
-    transform: translateY(-5.5px) scale(0.75, 1.35) skew(9deg) rotate(3.5deg);
-    filter: drop-shadow(0px 4px 6px rgba(255, 0, 200, 0.65));
+  38% {
+    /* Melayang anggun ke atas (fluid gentle lift) */
+    transform: translateY(-3.6px) scale(0.95, 1.07) rotate(1deg);
+    filter: drop-shadow(0 6px 12px rgba(108, 39, 255, 0.3));
   }
-  55% {
-    /* Titik puncak di udara: Menggeliat (wobble) mencari keseimbangan */
-    transform: translateY(-3px) scale(1.12, 0.88) skew(-4deg) rotate(-1.5deg);
-    filter: drop-shadow(0px 3px 4px rgba(87, 0, 255, 0.5));
+  58% {
+    /* Puncak mengambang tenang (soft float apex) */
+    transform: translateY(-1.8px) scale(1.02, 0.98) rotate(-0.4deg);
+    filter: drop-shadow(0 4px 8px rgba(224, 30, 157, 0.24));
   }
-  75% {
-    /* Mendarat dan over-correct: Menyusut lagi */
-    transform: translateY(1px) scale(1.2, 0.8) skew(4deg) rotate(2deg);
-    filter: drop-shadow(0px 1px 2px rgba(0, 240, 255, 0.5));
+  78% {
+    /* Sentuhan kembali lembut (gentle cushion landing) */
+    transform: translateY(0.4px) scale(1.03, 0.97) rotate(0.4deg);
+    filter: drop-shadow(0 2px 5px rgba(0, 180, 216, 0.22));
   }
 }
 
