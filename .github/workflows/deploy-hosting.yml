@@ -204,16 +204,22 @@ jobs:
           ssh hosting "test -f '$H_PATH/index.html'" \
             || { echo "::error::index.html gagal terpasang"; exit 1; }
 
+      # .htaccess & .well-known/ wajib ada (AutoSSL gagal kalau .well-known hilang).
+      # .user.ini / php.ini kadang tidak dibuat cPanel sama sekali dan tidak
+      # direferensikan .htaccess -> cukup warning, jangan gagalkan job.
+      # Catatan: \$f di-escape agar di-expand shell remote, $H_PATH tidak
+      # (di-expand lokal) karena env ini tidak ikut terkirim lewat ssh.
       - name: Pastikan file cPanel masih ada
         if: steps.cfg.outputs.enabled == 'true'
         run: |
           set -euo pipefail
           ssh hosting "
             miss=0
-            for f in .htaccess .user.ini php.ini; do
-              [ -f '$H_PATH'/\$f ] || { echo \"::error::\$f hilang di \$H_PATH\"; miss=1; }
+            [ -f '$H_PATH'/.htaccess ] || { echo \"::error::.htaccess hilang di $H_PATH\"; miss=1; }
+            [ -d '$H_PATH'/.well-known ] || { echo \"::error::.well-known hilang di $H_PATH\"; miss=1; }
+            for f in .user.ini php.ini; do
+              [ -f '$H_PATH'/\$f ] || echo \"::warning::\$f tidak ada di $H_PATH (opsional)\"
             done
-            [ -d '$H_PATH'/.well-known ] || { echo \"::error::.well-known hilang di \$H_PATH\"; miss=1; }
             exit \$miss
           "
 
