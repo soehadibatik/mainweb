@@ -1,9 +1,12 @@
 import Hero from "@/components/Hero";
+import ServicesSection from "@/components/ServicesSection";
 import Features from "@/components/Features";
 import Pricing from "@/components/Pricing";
 import ComparisonSection from "@/components/ComparisonSection";
 import Process from "@/components/Process";
 import Clients from "@/components/Clients";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import HomeArticlesSection from "@/components/HomeArticlesSection";
 import Faq from "@/components/Faq";
 import BrandStrip from "@/components/BrandStrip";
 import CtaSection from "@/components/CtaSection";
@@ -69,11 +72,14 @@ export default function HomePage({ lang }: { lang: Locale }) {
       <JsonLd data={website} />
       <JsonLd data={faqPage} />
       <Hero lang={lang} />
+      <ServicesSection lang={lang} />
       <Features lang={lang} />
       <Pricing lang={lang} />
       <ComparisonSection lang={lang} />
       <Process lang={lang} />
       <Clients lang={lang} />
+      <TestimonialsSection lang={lang} />
+      <HomeArticlesSection lang={lang} />
       <Faq lang={lang} />
       <BrandStrip lang={lang} />
       <CtaSection lang={lang} />

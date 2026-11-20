@@ -56,39 +56,69 @@ export default async function Clients({ lang }: { lang: Locale }) {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[
             {
-              name: "CISC Solo Raya",
-              domain: "ciscsolo.com",
-              tag: lang === "id" ? "Komunitas & Toko Merchandise" : "Community & Merchandise Store",
-              slug: "cisc-solo-raya",
-            },
-            {
               name: "Batik Soehadi",
               domain: "batiksoehadi.com",
               tag: lang === "id" ? "Katalog & Brand Produsen" : "Catalog & Brand Producer",
               slug: "batik-soehadi",
+              metric: "0.7s Mobile Load",
+              stack: "Next.js + S3 CDN",
+            },
+            {
+              name: "CISC Solo Raya",
+              domain: "ciscsolo.com",
+              tag: lang === "id" ? "Komunitas & Toko Merchandise" : "Community & Merchandise Store",
+              slug: "cisc-solo-raya",
+              metric: "100% PageSpeed",
+              stack: "Next.js Static Export",
+            },
+            {
+              name: "Bahan Kain ID",
+              domain: "bahankain.id",
+              tag: lang === "id" ? "B2B Tekstil & Supplier" : "B2B Textile & Supplier",
+              slug: "bahan-kain",
+              metric: "SEO Peringkat #1",
+              stack: "Edge Network + SEO",
             },
             {
               name: "Daster Murah",
               domain: "dastermurah.com",
               tag: lang === "id" ? "Grosir Fashion & Alur WA" : "Fashion Wholesale & WA Checkout",
               slug: "daster-murah",
+              metric: "Konversi WA Tinggi",
+              stack: "Optimized Landing",
+            },
+            {
+              name: "Bikin Batik Solo",
+              domain: "bikinbatik.com",
+              tag: lang === "id" ? "Custom Seragam & Maklon" : "Custom Uniforms & Manufacturing",
+              slug: "bikin-batik",
+              metric: "Desain Interaktif",
+              stack: "Dynamic UI Component",
+            },
+            {
+              name: "Monitoring Batik Prod",
+              domain: "batiksoehadi.my.id",
+              tag: lang === "id" ? "Internal Web App & Dashboard" : "Internal App & Operations Dashboard",
+              slug: "monitoring-batik",
+              metric: "Real-time Tracking",
+              stack: "Custom Web App SaaS",
             },
           ].map((item) => (
             <article
               key={item.domain}
-              className="reveal flex flex-col overflow-hidden border border-line bg-paper transition-all hover:border-ink-950/40 hover:shadow-md"
+              className="reveal flex flex-col overflow-hidden border border-line bg-paper transition-all duration-300 hover:border-brand-600 hover:shadow-xl hover:-translate-y-1"
             >
               {/* Browser bar */}
-              <div className="flex items-center justify-between border-b border-line bg-white px-3 py-2 font-mono text-[11px] text-ink-900/60">
-                <div className="flex items-center gap-1" aria-hidden>
-                  <span className="h-2 w-2 rounded-full bg-ink-900/20" />
-                  <span className="h-2 w-2 rounded-full bg-ink-900/20" />
-                  <span className="h-2 w-2 rounded-full bg-ink-900/20" />
+              <div className="flex items-center justify-between border-b border-line bg-white px-3.5 py-2 font-mono text-[11px] text-ink-900/60">
+                <div className="flex items-center gap-1.5" aria-hidden>
+                  <span className="h-2 w-2 rounded-full bg-red-400" />
+                  <span className="h-2 w-2 rounded-full bg-amber-400" />
+                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
                 </div>
-                <span className="truncate px-2 text-[10px] text-ink-900/50">
-                  {item.domain}
+                <span className="truncate px-2 text-[10px] text-ink-900/70 font-semibold">
+                  https://{item.domain}
                 </span>
-                <span className="font-mono text-[9px] font-semibold text-brand-600 uppercase">
+                <span className="font-mono text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200 uppercase">
                   Live
                 </span>
               </div>
@@ -101,34 +131,48 @@ export default async function Clients({ lang }: { lang: Locale }) {
                 <img
                   src={`/case-studies/${item.domain}.webp`}
                   alt={`Tampilan situs ${item.name}`}
-                  className="h-full w-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
+                  className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
+                <div className="absolute inset-0 bg-ink-950/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
+                  <span className="rounded bg-paper px-3 py-1.5 font-mono text-xs font-semibold text-ink-950 shadow-md">
+                    {lang === "id" ? "Buka Studi Kasus →" : "View Case Study →"}
+                  </span>
+                </div>
               </Link>
               {/* Info & link */}
-              <div className="flex flex-1 flex-col justify-between p-4 bg-white">
+              <div className="flex flex-1 flex-col justify-between p-5 bg-white">
                 <div>
-                  <p className="font-mono text-[10px] text-brand-600 uppercase tracking-wider">
-                    {item.tag}
-                  </p>
-                  <h3 className="mt-1 font-display text-base font-bold text-ink-950">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-mono text-[10px] font-semibold text-brand-600 uppercase tracking-wider">
+                      {item.tag}
+                    </p>
+                    <span className="rounded bg-brand-50 px-1.5 py-0.5 font-mono text-[10px] font-bold text-brand-700 border border-brand-200">
+                      ⚡ {item.metric}
+                    </span>
+                  </div>
+                  <h3 className="mt-2 font-display text-lg font-bold text-ink-950 group-hover:text-brand-600 transition-colors">
                     {item.name}
                   </h3>
+                  <p className="mt-1 font-mono text-[11px] text-ink-900/50">
+                    Stack: {item.stack}
+                  </p>
                 </div>
-                <div className="mt-3 flex items-center justify-between border-t border-line pt-3 font-mono text-[11px]">
+                <div className="mt-4 flex items-center justify-between border-t border-line/60 pt-3 font-mono text-[11px]">
                   <a
                     href={`https://${item.domain}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-ink-900/60 transition-colors hover:text-brand-600"
+                    className="text-ink-900/60 transition-colors hover:text-brand-600 flex items-center gap-1 font-medium"
                   >
-                    {item.domain} ↗
+                    <span>{item.domain}</span>
+                    <span aria-hidden>↗</span>
                   </a>
                   <Link
                     href={localizePath(lang, `/studi-kasus/${item.slug}`)}
-                    className="font-medium text-brand-600 transition-colors hover:text-ink-950"
+                    className="font-bold text-brand-600 transition-colors hover:text-ink-950"
                   >
-                    {t.clients.viewCases}
+                    {t.clients.viewCases} →
                   </Link>
                 </div>
               </div>

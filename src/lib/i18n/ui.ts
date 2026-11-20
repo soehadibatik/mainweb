@@ -176,9 +176,9 @@ const id: UIStrings = {
   },
   nav: {
     items: [
-      { href: "/#keunggulan", label: "Keunggulan" },
+      { href: "/layanan", label: "Layanan" },
       { href: "/#paket", label: "Paket" },
-      { href: "/#perbandingan", label: "Perbandingan" },
+      { href: "/#keunggulan", label: "Keunggulan" },
       { href: "/#proses", label: "Cara Kerja" },
       { href: "/klien", label: "Klien" },
       { href: "/artikel", label: "Artikel" },
@@ -350,9 +350,9 @@ const id: UIStrings = {
     index: "Indeks",
     kontak: "Kontak",
     links: [
+      { href: "/layanan", label: "Layanan" },
+      { href: "/#paket", label: "Tarif & Paket" },
       { href: "/#keunggulan", label: "Keunggulan" },
-      { href: "/#paket", label: "Tarif" },
-      { href: "/#perbandingan", label: "Perbandingan" },
       { href: "/#proses", label: "Cara kerja" },
       { href: "/klien", label: "Klien" },
       { href: "/studi-kasus", label: "Studi kasus" },
@@ -391,9 +391,9 @@ const en: UIStrings = {
   },
   nav: {
     items: [
-      { href: "/#keunggulan", label: "Why us" },
+      { href: "/layanan", label: "Services" },
       { href: "/#paket", label: "Packages" },
-      { href: "/#perbandingan", label: "Comparison" },
+      { href: "/#keunggulan", label: "Why us" },
       { href: "/#proses", label: "How it works" },
       { href: "/klien", label: "Clients" },
       { href: "/artikel", label: "Articles" },
@@ -565,9 +565,9 @@ const en: UIStrings = {
     index: "Index",
     kontak: "Contact",
     links: [
+      { href: "/layanan", label: "Services" },
+      { href: "/#paket", label: "Pricing & Plans" },
       { href: "/#keunggulan", label: "Why us" },
-      { href: "/#paket", label: "Pricing" },
-      { href: "/#perbandingan", label: "Comparison" },
       { href: "/#proses", label: "How it works" },
       { href: "/klien", label: "Clients" },
       { href: "/studi-kasus", label: "Case studies" },
