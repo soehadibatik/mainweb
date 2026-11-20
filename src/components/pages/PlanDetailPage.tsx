@@ -8,6 +8,97 @@ import { fullPrice } from "@/lib/tiers";
 import { tPrice } from "@/lib/i18n/price";
 import JsonLd from "@/components/JsonLd";
 import { localizePath, type Locale } from "@/lib/i18n/config";
+import { articles } from "@/lib/articles";
+
+function parseNumericPrice(build: string): number {
+  const m = build.match(/Rp\s*([\d.,]+)\s*(jt|miliar)?/i);
+  if (!m) return 0;
+  const valStr = m[1].replace(/\./g, "").replace(",", ".");
+  const unit = (m[2] || "").toLowerCase();
+  const val = parseFloat(valStr);
+  if (unit === "jt") return Math.round(val * 1_000_000);
+  if (unit === "miliar") return Math.round(val * 1_000_000_000);
+  return Math.round(val);
+}
+
+// Map each plan to relevant SEO cluster articles
+const relatedArticlesMap: Record<string, string[]> = {
+  basic: [
+    "biaya-pembuatan-website-bisnis-2026",
+    "perbedaan-company-profile-landing-page-web-app",
+    "jasa-website-murah-vs-profesional",
+  ],
+  beginner: [
+    "biaya-pembuatan-website-bisnis-2026",
+    "perbedaan-company-profile-landing-page-web-app",
+    "template-instan-vs-website-hand-built",
+  ],
+  elementary: [
+    "biaya-pembuatan-website-bisnis-2026",
+    "perbedaan-company-profile-landing-page-web-app",
+    "pentingnya-core-web-vitals-untuk-seo-bisnis",
+  ],
+  light: [
+    "biaya-bikin-toko-online-sendiri-vs-developer",
+    "standar-website-perusahaan-manufaktur-ekspor",
+    "template-instan-vs-website-hand-built",
+  ],
+  intermediate: [
+    "biaya-bikin-toko-online-sendiri-vs-developer",
+    "cara-membuat-website-katalog-properti-yang-ringan-dan-seo-friendly",
+    "fitur-wajib-website-villa-hotel-resort",
+  ],
+  advance: [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "perbedaan-company-profile-landing-page-web-app",
+    "pentingnya-core-web-vitals-untuk-seo-bisnis",
+  ],
+  proficient: [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "standar-website-perusahaan-manufaktur-ekspor",
+    "biaya-pembuatan-website-bisnis-2026",
+  ],
+  max: [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "standar-website-perusahaan-manufaktur-ekspor",
+    "pentingnya-core-web-vitals-untuk-seo-bisnis",
+  ],
+  "pro-max": [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "biaya-pembuatan-website-bisnis-2026",
+    "template-instan-vs-website-hand-built",
+  ],
+  beta: [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "perbedaan-company-profile-landing-page-web-app",
+    "pentingnya-core-web-vitals-untuk-seo-bisnis",
+  ],
+  theta: [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "pentingnya-core-web-vitals-untuk-seo-bisnis",
+    "biaya-pembuatan-website-bisnis-2026",
+  ],
+  alpha: [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "perbedaan-company-profile-landing-page-web-app",
+    "template-instan-vs-website-hand-built",
+  ],
+  x: [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "biaya-pembuatan-website-bisnis-2026",
+    "perbedaan-company-profile-landing-page-web-app",
+  ],
+  y: [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "pentingnya-core-web-vitals-untuk-seo-bisnis",
+    "standar-website-perusahaan-manufaktur-ekspor",
+  ],
+  z: [
+    "kapan-bisnis-butuh-website-custom-integrasi-api",
+    "biaya-pembuatan-website-bisnis-2026",
+    "perbedaan-company-profile-landing-page-web-app",
+  ],
+};
 
 export default async function PlanDetailPage({
   lang,
@@ -26,6 +117,8 @@ export default async function PlanDetailPage({
   const idx = all.findIndex((x) => x.id === plan.id);
   const prev = idx > 0 ? all[idx - 1] : null;
   const next = idx > -1 && idx < all.length - 1 ? all[idx + 1] : null;
+
+  const numericPrice = parseNumericPrice(plan.build);
 
   const breadcrumb = {
     "@context": "https://schema.org",
@@ -46,11 +139,43 @@ export default async function PlanDetailPage({
     ],
   };
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `${lang === "id" ? "Jasa Pembuatan Website Paket" : "Website Development Package"} ${plan.name} — ${site.name}`,
+    description: plan.tagline,
+    brand: {
+      "@type": "Brand",
+      name: site.name,
+    },
+    offers: {
+      "@type": "Offer",
+      url: `${site.url}${localizePath(lang, `/paket/${plan.id}`)}`,
+      priceCurrency: "IDR",
+      price: numericPrice,
+      availability: "https://schema.org/InStock",
+      seller: {
+        "@type": "Organization",
+        name: site.name,
+        url: site.url,
+      },
+    },
+  };
+
   const specCount = plan.featureGroups.reduce((n, g) => n + g.items.length, 0);
+
+  // Retrieve contextual related articles
+  const relevantArticleSlugs = relatedArticlesMap[plan.id] || [
+    "biaya-pembuatan-website-bisnis-2026",
+    "perbedaan-company-profile-landing-page-web-app",
+  ];
+  const relatedArticles = articles.filter((a) => relevantArticleSlugs.includes(a.slug));
 
   return (
     <main className="flex-1">
       <JsonLd data={breadcrumb} />
+      <JsonLd data={productSchema} />
+
       {/* Meta bar dokumen */}
       <div className="border-b border-line pt-14">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-8 gap-y-2 px-4 py-4 font-mono text-[11px] text-ink-900/50 sm:px-6 lg:px-8">
@@ -173,6 +298,59 @@ export default async function PlanDetailPage({
           </div>
         </div>
       </section>
+
+      {/* Panduan & Artikel Terkait (SEO Piramida) */}
+      {relatedArticles.length > 0 && (
+        <section className="border-b border-line bg-paper/60 py-14 sm:py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <p className="font-mono text-xs font-semibold uppercase tracking-wider text-brand-600">
+              {lang === "id" ? "Edukasi & Panduan Terkait" : "Related Guides & Insights"}
+            </p>
+            <h3 className="mt-2 font-display text-2xl font-bold tracking-tight text-ink-950 sm:text-3xl">
+              {lang === "id"
+                ? `Pelajari Lebih Dalam Sebelum Memilih Paket ${plan.name}`
+                : `Learn More Before Choosing the ${plan.name} Package`}
+            </h3>
+            <p className="mt-2 text-sm text-ink-900/70">
+              {lang === "id"
+                ? "Panduan komprehensif kami membantu Anda memahami rincian teknis, perbandingan biaya, dan standar performa."
+                : "Our comprehensive guides help you understand technical details, cost breakdowns, and performance standards."}
+            </p>
+
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {relatedArticles.map((article) => (
+                <div
+                  key={article.slug}
+                  className="flex flex-col justify-between border border-line bg-white p-6 transition-all hover:border-brand-600 hover:shadow-sm"
+                >
+                  <div>
+                    <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-brand-600">
+                      {article.category}
+                    </span>
+                    <h4 className="mt-3 font-display text-base font-bold text-ink-950 leading-snug">
+                      <Link
+                        href={localizePath(lang, `/blog/${article.slug}`)}
+                        className="hover:text-brand-600 transition-colors"
+                      >
+                        {article.title}
+                      </Link>
+                    </h4>
+                    <p className="mt-2 text-xs text-ink-900/65 leading-relaxed line-clamp-3">
+                      {article.summary}
+                    </p>
+                  </div>
+                  <Link
+                    href={localizePath(lang, `/blog/${article.slug}`)}
+                    className="mt-5 inline-flex items-center gap-1 font-mono text-xs font-semibold text-brand-600 hover:underline"
+                  >
+                    {lang === "id" ? "Baca panduan lengkap →" : "Read full guide →"}
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Navigasi paket */}
       <section className="py-14">

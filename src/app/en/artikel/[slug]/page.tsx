@@ -23,7 +23,7 @@ export async function generateMetadata({
     pathname: `/artikel/${article.slug}`,
     title: `${article.title} | ${site.name}`,
     description: article.summary,
-    image: "/og/en/studi-kasus.png",
+    image: article.image || "/og/en/studi-kasus.png",
     alt: article.title,
     type: "article",
   });

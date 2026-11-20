@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getPlans } from "@/lib/catalog";
 import { caseStudies } from "@/lib/case-studies";
 import { articles } from "@/lib/articles";
+import { services } from "@/lib/services";
 import { site } from "@/lib/site";
 import { localizePath, LOCALES } from "@/lib/i18n/config";
 
@@ -39,13 +40,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...entriesFor("/", "weekly", 1),
+    ...entriesFor("/layanan", "weekly", 0.95),
+    ...services.flatMap((s) => entriesFor(`/layanan/${s.slug}`, "weekly", 0.95)),
     ...entriesFor("/klien", "monthly", 0.7),
     ...entriesFor("/studi-kasus", "monthly", 0.7),
     ...entriesFor("/artikel", "weekly", 0.8),
+    ...entriesFor("/blog", "weekly", 0.8),
     ...entriesFor("/kebijakan-privasi", "yearly", 0.3),
     ...entriesFor("/syarat-layanan", "yearly", 0.3),
     ...caseStudies.flatMap((c) => entriesFor(`/studi-kasus/${c.slug}`, "monthly", 0.7)),
-    ...articles.flatMap((a) => entriesFor(`/artikel/${a.slug}`, "weekly", 0.8)),
-    ...plans.flatMap((plan) => entriesFor(`/paket/${plan.id}`, "monthly", 0.8)),
+    ...articles.flatMap((a) => [
+      ...entriesFor(`/blog/${a.slug}`, "weekly", 0.9),
+      ...entriesFor(`/artikel/${a.slug}`, "weekly", 0.8),
+    ]),
+    ...plans.flatMap((plan) => entriesFor(`/paket/${plan.id}`, "monthly", 0.85)),
   ];
 }
