@@ -9,6 +9,7 @@ import { tPrice } from "@/lib/i18n/price";
 import JsonLd from "@/components/JsonLd";
 import { localizePath, type Locale } from "@/lib/i18n/config";
 import { articles } from "@/lib/articles";
+import { OG_FALLBACK_IMAGE } from "@/lib/og";
 
 function parseNumericPrice(build: string): number {
   const m = build.match(/Rp\s*([\d.,]+)\s*(jt|miliar)?/i);
@@ -139,10 +140,15 @@ export default async function PlanDetailPage({
     ],
   };
 
+  const planImageUrl = lang === "en"
+    ? `${site.url}/og/en/paket-${plan.id}.png`
+    : `${site.url}/og/paket-${plan.id}.png`;
+
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: `${lang === "id" ? "Jasa Pembuatan Website Paket" : "Website Development Package"} ${plan.name} — ${site.name}`,
+    image: [planImageUrl, OG_FALLBACK_IMAGE],
     description: plan.tagline,
     brand: {
       "@type": "Brand",
